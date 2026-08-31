@@ -1,0 +1,12 @@
+import { createDemo } from './candidate-kit';
+import { mountColumns } from '../web/widgets/columns';
+import { mountQueues } from '../web/widgets/queues';
+import type { WidgetHandle, WidgetPort } from '../web/widgets/types';
+const variant=document.body.dataset.variant==='B'?'B':'A';
+let widget:WidgetHandle|undefined;
+const demo=createDemo(()=>widget?.update());
+const status=document.getElementById('status')!;
+const port:WidgetPort={paneId:variant,getState:()=>({revision:demo.revision,queues:demo.queues,undo:[]}),isEditable:()=>true,announce:message=>{status.textContent=message;},interaction:active=>{document.body.dataset.dragging=String(active);},move:async move=>{if(move.expectedPaneRevision!==demo.revision)return false;demo.move(move.ticketId,move.toOwnerId,move.beforeTicketId);return true;}};
+widget=(variant==='A'?mountColumns:mountQueues)(document.getElementById('widget')!,port);
+document.getElementById('reset')!.addEventListener('click',()=>demo.reset());
+document.getElementById('undo')!.addEventListener('click',()=>demo.undo());

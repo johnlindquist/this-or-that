@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Triage · This or that</title>
+  <link rel="stylesheet" href="/chrome-designs/fonts.css">
+  <script src="/chrome-designs/runtime.js" defer></script>
+  <style>
+    :root {
+      --paper: #fafbfc;
+      --surface: #fdfdfe;
+      --shelf: #f2f3f5;
+      --hover: #e9ebef;
+      --ink: #252830;
+      --muted: #626773;
+      --rule: #dfe2e7;
+      --rule-strong: #b9bec8;
+      --accent: #4858a6;
+      --selected: #e7eaf8;
+      --selected-ink: #354483;
+      --selection: #dce2fc;
+      --focus: #4a5bac;
+      --s1: 4px;
+      --s2: 8px;
+      --s3: 12px;
+      --s4: 16px;
+      --s5: 20px;
+      --s6: 24px;
+      --s8: 32px;
+      --s10: 40px;
+      --s12: 48px;
+      --radius: 4px;
+      --text-small: 12px;
+      --text-body: 13px;
+      --text-label: 14px;
+      --text-title: 20px;
+      --ease: cubic-bezier(.16, 1, .3, 1);
+      font-family: 'Geist', sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      font-synthesis: none;
+      scrollbar-color: var(--rule-strong) var(--paper);
+      scrollbar-width: thin;
+      caret-color: var(--accent);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-size: var(--text-body); line-height: 1.5; }
+    ::selection { color: var(--ink); background: var(--selection); }
+    button, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: var(--s1); }
+    button:focus-visible, a:focus-visible, textarea:focus-visible, iframe:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 3px;
+    }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    svg { width: var(--s4); height: var(--s4); flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .symbol-library { position: absolute; width: 0; height: 0; overflow: hidden; }
+    .masthead { min-height: var(--s12); display: flex; align-items: stretch; gap: var(--s6); padding-inline: var(--s8); background: var(--surface); border-bottom: 1px solid var(--rule); }
+    .brand { display: flex; align-items: center; gap: var(--s2); font-weight: 600; letter-spacing: -.02em; white-space: nowrap; }
+    .brand svg { width: var(--s5); height: var(--s5); }
+    .section-link { display: inline-flex; align-items: center; gap: var(--s2); padding-inline: var(--s1); border-bottom: 2px solid var(--ink); text-decoration: none; font-weight: 550; }
+    .section-link:hover { color: var(--accent); }
+    .workspace-kind { margin: auto 0 auto auto; color: var(--muted); font-size: var(--text-small); }
+    .project-line { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: var(--s4); padding: var(--s4) var(--s8); }
+    .project-title { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--s4); }
+    h1 { margin: 0; font-size: var(--text-title); line-height: 1.3; font-weight: 600; letter-spacing: -.025em; }
+    .project-title p { margin: 0; color: var(--muted); }
+    .text-action { display: inline-flex; align-items: center; justify-content: center; gap: var(--s2); padding: var(--s2); border: 0; border-radius: var(--radius); color: var(--muted); background: transparent; text-decoration: none; white-space: nowrap; }
+    .text-action:hover { color: var(--ink); background: var(--hover); }
+    .comparison { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s6); padding: 0 var(--s8) var(--s6); }
+    .candidate { min-width: 0; }
+    .candidate-label { display: flex; align-items: center; gap: var(--s3); min-height: var(--s10); border-top: 1px solid var(--rule); }
+    .side { color: var(--muted); font-size: var(--text-small); min-width: var(--s8); }
+    h2 { margin: 0; font-size: var(--text-label); line-height: 1.4; font-weight: 550; letter-spacing: -.015em; }
+    .candidate-id { color: var(--muted); font-size: var(--text-small); font-variant-numeric: tabular-nums; }
+    .candidate-label .text-action { margin-left: auto; font-size: var(--text-small); padding-inline: var(--s1); }
+    iframe { display: block; width: 100%; height: clamp(400px, 52vh, 468px); border: 0; background: var(--surface); }
+    .notes-shelf { padding: var(--s3) var(--s8) var(--s4); border-block: 1px solid var(--rule); background: var(--shelf); }
+    .shelf-heading { display: flex; align-items: center; gap: var(--s2); margin-bottom: var(--s2); }
+    .shelf-heading h2 { font-size: var(--text-body); }
+    .shelf-heading span { margin-left: var(--s1); color: var(--muted); font-size: var(--text-small); }
+    .note-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s6); }
+    .note-field { display: grid; grid-template-columns: 148px minmax(0, 1fr); align-items: start; gap: var(--s3); }
+    .note-field label { padding-top: var(--s2); font-size: var(--text-small); color: var(--muted); }
+    textarea { display: block; width: 100%; min-height: 60px; resize: vertical; padding: var(--s2) var(--s3); border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink); background: var(--surface); line-height: 1.5; }
+    textarea::placeholder { color: var(--muted); opacity: 1; }
+    textarea:hover { border-color: var(--rule-strong); }
+    textarea:focus { border-color: var(--focus); }
+    .response-line { display: flex; align-items: center; gap: var(--s4); padding: var(--s4) var(--s8) var(--s2); }
+    .response-label { color: var(--muted); margin-right: auto; white-space: nowrap; }
+    .choice-strip { display: flex; align-items: stretch; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
+    .choice-strip button { display: inline-flex; align-items: center; justify-content: center; gap: var(--s2); min-height: var(--s10); padding: var(--s2) var(--s3); border: 0; border-right: 1px solid var(--rule); border-radius: 0; color: var(--ink); background: transparent; line-height: 1.4; }
+    .choice-strip button:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+    .choice-strip button:last-child { border-right: 0; border-radius: 0 var(--radius) var(--radius) 0; }
+    .choice-strip button:hover { background: var(--hover); }
+    .choice-strip button[aria-pressed="true"] { background: var(--selected); color: var(--selected-ink); box-shadow: inset 0 -2px var(--accent); }
+    .choice-strip button:focus-visible { position: relative; z-index: 1; }
+    .choice-strip .choose { font-weight: 550; }
+    .status-line { padding: 0 var(--s8) var(--s4); color: var(--muted); font-size: var(--text-small); min-height: var(--s8); }
+    .status-line p { margin: 0; }
+    @media (prefers-reduced-motion: no-preference) {
+      .choice-strip button { transition: background-color 180ms var(--ease), color 180ms var(--ease), box-shadow 180ms var(--ease); }
+    }
+    @media (max-width: 1100px) {
+      .note-field { grid-template-columns: 1fr; gap: var(--s1); }
+      .note-field label { padding-top: 0; }
+      .response-line { align-items: flex-start; flex-direction: column; gap: var(--s2); }
+      .choice-strip { width: 100%; }
+      .choice-strip button { flex: 1; }
+    }
+    @media (max-width: 700px) {
+      .masthead { padding-inline: var(--s4); gap: var(--s5); }
+      .workspace-kind { display: none; }
+      .project-line { padding: var(--s5) var(--s4); align-items: flex-start; }
+      .project-title { gap: var(--s1); }
+      .project-title p { width: 100%; }
+      .project-line .text-action { padding-right: 0; }
+      .comparison { grid-template-columns: minmax(0, 1fr); padding: 0 var(--s4) var(--s5); gap: var(--s6); }
+      .candidate-label { gap: var(--s2); flex-wrap: wrap; padding-block: var(--s2); }
+      .candidate-label .text-action { margin-left: auto; }
+      .candidate-label h2 { font-size: var(--text-body); }
+      .candidate-id { display: none; }
+      iframe { height: 440px; }
+      .notes-shelf { padding: var(--s4); }
+      .note-fields { grid-template-columns: 1fr; gap: var(--s4); }
+      .response-line { padding: var(--s4); }
+      .choice-strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+      .choice-strip button { grid-column: span 2; padding: var(--s3) var(--s2); }
+      .choice-strip .choose { grid-column: span 3; border-bottom: 1px solid var(--rule); }
+      .choice-strip button:nth-child(2) { border-right: 0; }
+      .choice-strip button:first-child { border-radius: var(--radius) 0 0 0; }
+      .choice-strip button:last-child { border-radius: 0 0 var(--radius) 0; }
+      .status-line { padding: 0 var(--s4) var(--s5); }
+    }
+  </style>
+</head>
+<body data-design="linear-triage">
+  <!-- THESIS: A light review inbox becomes a horizontal decision desk, with working previews free of card chrome. OWN-WORLD: Geist, cool paper, fine rules, dense label rows and a quiet segmented response strip. FIRST VIEWPORT: Compact project context, two equal live candidates, then a shared notes shelf and local response controls. INTERACTION: Each preview stays independent; notes and response selection use the shared local-only runtime. SEED: 9743c350, index 3; user-pinned Linear reference takes precedence. -->
+  <svg class="symbol-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <symbol id="triage-brand" viewBox="0 0 24 24"><path d="M4 5h6v14H4zM14 5h6v14h-6zM7 9v6M17 9v6"/></symbol>
+      <symbol id="triage-inbox" viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 14h5l2 3h2l2-3h5M8 8h8"/></symbol>
+      <symbol id="triage-open" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M10 5H5v14h14v-5"/></symbol>
+      <symbol id="triage-reset" viewBox="0 0 24 24"><path d="M4 5v5h5M4 10a8 8 0 1 1 1 8"/></symbol>
+      <symbol id="triage-note" viewBox="0 0 24 24"><path d="M5 4h14v12l-4 4H5zM15 20v-4h4M9 8h6M9 12h6"/></symbol>
+      <symbol id="triage-left" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+      <symbol id="triage-right" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+      <symbol id="triage-like" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6M5 19h14"/></symbol>
+      <symbol id="triage-hate" viewBox="0 0 24 24"><path d="m7 6 10 10M17 6 7 16M5 20h14"/></symbol>
+      <symbol id="triage-skip" viewBox="0 0 24 24"><path d="m7 5 7 7-7 7M18 5v14"/></symbol>
+    </defs>
+  </svg>
+  <header class="masthead">
+    <div class="brand"><svg aria-hidden="true"><use href="#triage-brand"/></svg>This or that</div>
+    <a class="section-link" href="#comparison" aria-current="page"><svg aria-hidden="true"><use href="#triage-inbox"/></svg>Triage</a>
+    <p class="workspace-kind">Design comparison</p>
+  </header>
+  <main>
+    <div class="project-line">
+      <div class="project-title"><h1>Sprint distribution</h1><p>Choose a direction.</p></div>
+      <button class="text-action" type="button" data-action="reset"><svg aria-hidden="true"><use href="#triage-reset"/></svg>Reset</button>
+    </div>
+    <section class="comparison" id="comparison" aria-label="Candidate comparison">
+      <article class="candidate" aria-labelledby="triage-left-title">
+        <header class="candidate-label">
+          <span class="side">Left</span><h2 id="triage-left-title">Blueprint workbench</h2><span class="candidate-id">20</span>
+          <a class="text-action" href="/candidates/20-blueprint-desk.html" target="_blank" rel="noopener" aria-label="Open Blueprint workbench larger in a new tab">Open larger<svg aria-hidden="true"><use href="#triage-open"/></svg></a>
+        </header>
+        <iframe data-candidate="left" title="Blueprint workbench interactive preview" src="/candidates/20-blueprint-desk.html" sandbox="allow-scripts allow-same-origin"></iframe>
+      </article>
+      <article class="candidate" aria-labelledby="triage-right-title">
+        <header class="candidate-label">
+          <span class="side">Right</span><h2 id="triage-right-title">Team routes</h2><span class="candidate-id">11</span>
+          <a class="text-action" href="/candidates/11-metro-routes.html" target="_blank" rel="noopener" aria-label="Open Team routes larger in a new tab">Open larger<svg aria-hidden="true"><use href="#triage-open"/></svg></a>
+        </header>
+        <iframe data-candidate="right" title="Team routes interactive preview" src="/candidates/11-metro-routes.html" sandbox="allow-scripts allow-same-origin"></iframe>
+      </article>
+    </section>
+    <section class="notes-shelf" aria-labelledby="triage-notes-title">
+      <div class="shelf-heading"><svg aria-hidden="true"><use href="#triage-note"/></svg><h2 id="triage-notes-title">Comparison notes</h2><span>Optional</span></div>
+      <div class="note-fields">
+        <div class="note-field"><label for="triage-left-note">Blueprint workbench notes</label><textarea id="triage-left-note" data-note="left" rows="2" placeholder="What works? What gets in the way?"></textarea></div>
+        <div class="note-field"><label for="triage-right-note">Team routes notes</label><textarea id="triage-right-note" data-note="right" rows="2" placeholder="What works? What gets in the way?"></textarea></div>
+      </div>
+    </section>
+    <div class="response-line">
+      <span class="response-label" id="triage-response-title">Your preference</span>
+      <div class="choice-strip" role="group" aria-labelledby="triage-response-title">
+        <button class="choose" type="button" data-vote="left" aria-pressed="false"><svg aria-hidden="true"><use href="#triage-left"/></svg>Choose Blueprint workbench</button>
+        <button class="choose" type="button" data-vote="right" aria-pressed="false">Choose Team routes<svg aria-hidden="true"><use href="#triage-right"/></svg></button>
+        <button type="button" data-vote="like" aria-pressed="false"><svg aria-hidden="true"><use href="#triage-like"/></svg>Like both</button>
+        <button type="button" data-vote="hate" aria-pressed="false"><svg aria-hidden="true"><use href="#triage-hate"/></svg>Hate both</button>
+        <button type="button" data-vote="skip" aria-pressed="false">Skip<svg aria-hidden="true"><use href="#triage-skip"/></svg></button>
+      </div>
+    </div>
+    <footer class="status-line"><p data-status role="status" aria-live="polite">Preview only. Responses are not recorded.</p></footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manuscript · This or that</title>
+  <link rel="stylesheet" href="/chrome-designs/fonts.css">
+  <script src="/chrome-designs/runtime.js" defer></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #eaeae8;
+      --paper: #f9f9f8;
+      --ink: #242625;
+      --muted: #616460;
+      --rule: #d1d3ce;
+      --control-rule: #858982;
+      --hover: #e4e6e0;
+      --selection: #ced7d7;
+      --focus: #32606a;
+      --clear: transparent;
+      --font-reading: 'Literata', Georgia, serif;
+      --font-control: 'Inter', sans-serif;
+      --text-small: 12px;
+      --text-label: 13px;
+      --text-body: 14px;
+      --text-brand: 16px;
+      --text-title: 24px;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --space-14: 56px;
+      --note-height: 56px;
+      --preview-height: clamp(400px, 49vh, 460px);
+      --page-width: 1600px;
+      --stroke: 1px;
+      --focus-width: 2px;
+      --radius-control: 2px;
+      --duration: 160ms;
+      --ease-out: cubic-bezier(.16, 1, .3, 1);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--canvas); scrollbar-color: var(--control-rule) var(--canvas); scrollbar-width: thin; }
+    body { margin: 0; color: var(--ink); font: 400 var(--text-body)/1.5 var(--font-control); }
+    ::selection { background: var(--selection); color: var(--ink); }
+    ::-webkit-scrollbar { width: var(--space-2); height: var(--space-2); }
+    ::-webkit-scrollbar-track { background: var(--canvas); }
+    ::-webkit-scrollbar-thumb { background: var(--control-rule); border: var(--focus-width) solid var(--canvas); }
+    button, textarea { font: inherit; }
+    button, a { touch-action: manipulation; }
+    button { cursor: pointer; }
+    a { color: inherit; text-underline-offset: var(--space-1); }
+    :where(button, a, textarea, iframe):focus-visible { outline: var(--focus-width) solid var(--focus); outline-offset: var(--space-1); }
+    svg { width: var(--space-4); height: var(--space-4); flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .project-header { display: flex; align-items: baseline; gap: var(--space-6); min-height: var(--space-14); padding: var(--space-4) var(--space-12); border-bottom: var(--stroke) solid var(--rule); }
+    .brand { font: 600 var(--text-brand)/1.5 var(--font-reading); letter-spacing: -.025em; white-space: nowrap; }
+    h1 { margin: 0; font-size: var(--text-body); line-height: 1.5; font-weight: 450; }
+    .view-name { margin-left: auto; color: var(--muted); font: italic var(--text-label)/1.5 var(--font-reading); }
+    main { max-width: var(--page-width); margin: 0 auto; padding: var(--space-6) var(--space-12) 0; }
+    .manuscript { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8); }
+    .page { min-width: 0; padding: var(--space-6); background: var(--paper); border-top: var(--stroke) solid var(--control-rule); }
+    h2 { margin: 0; font: 500 var(--text-title)/1.3 var(--font-reading); letter-spacing: -.025em; text-wrap: balance; }
+    .page-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin: var(--space-2) 0 var(--space-3); color: var(--muted); font-size: var(--text-small); }
+    .position { font: italic var(--text-label)/1.5 var(--font-reading); }
+    .open { display: inline-flex; align-items: center; gap: var(--space-1); min-height: var(--space-6); text-decoration: none; }
+    .open:hover { color: var(--ink); text-decoration: underline; }
+    .open svg { width: var(--space-3); height: var(--space-3); }
+    iframe { display: block; width: 100%; height: var(--preview-height); border: var(--stroke) solid var(--rule); background: var(--canvas); color-scheme: normal; }
+    .annotation { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--space-4); margin-top: var(--space-5); }
+    .annotation label { padding-top: var(--space-2); font: italic var(--text-body)/1.5 var(--font-reading); }
+    textarea { width: 100%; height: var(--note-height); min-height: var(--note-height); padding: var(--space-2) 0; resize: vertical; color: var(--ink); background: var(--clear); border: 0; border-bottom: var(--stroke) solid var(--control-rule); border-radius: 0; font-size: var(--text-label); line-height: 1.5; caret-color: var(--focus); transition: border-color var(--duration) var(--ease-out), background-color var(--duration) var(--ease-out); }
+    textarea::placeholder { color: var(--muted); opacity: 1; }
+    textarea:hover { border-color: var(--ink); }
+    textarea:focus { border-color: var(--focus); background: var(--paper); }
+    .choose { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); width: 100%; min-height: var(--space-10); margin-top: var(--space-3); padding: var(--space-2) 0; border: 0; border-radius: var(--radius-control); background: var(--clear); color: var(--ink); font-size: var(--text-label); font-weight: 600; text-align: left; transition: background-color var(--duration) var(--ease-out), color var(--duration) var(--ease-out); }
+    .choose span { text-decoration: underline; text-decoration-thickness: var(--stroke); text-underline-offset: var(--space-1); }
+    .choose:hover:not(:disabled) { background: var(--hover); }
+    .choose .selected-mark { display: none; }
+    .choose[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+    .choose[aria-pressed="true"] span { text-decoration: none; }
+    .choose[aria-pressed="true"] .arrow { display: none; }
+    .choose[aria-pressed="true"] .selected-mark { display: block; }
+    .response-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2) var(--space-6); min-height: var(--space-14); padding-block: var(--space-3); margin-top: var(--space-3); }
+    .shared-responses { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); }
+    .shared-responses button { min-height: var(--space-10); padding: var(--space-2) var(--space-3); background: var(--clear); color: var(--ink); border: var(--stroke) solid var(--clear); border-radius: var(--radius-control); font-size: var(--text-label); text-decoration: underline; text-underline-offset: var(--space-1); transition: background-color var(--duration) var(--ease-out), color var(--duration) var(--ease-out); }
+    .shared-responses button:first-child { margin-left: calc(-1 * var(--space-3)); }
+    .shared-responses button:hover:not(:disabled) { background: var(--hover); }
+    .shared-responses button[aria-pressed="true"] { background: var(--ink); color: var(--paper); text-decoration: none; }
+    .shared-responses .skip { margin-left: var(--space-2); border-left-color: var(--rule); }
+    .status { margin: 0; color: var(--muted); font-size: var(--text-small); max-width: 60ch; }
+    button:disabled, textarea:disabled { color: var(--muted); background: var(--canvas); cursor: not-allowed; text-decoration: none; }
+    @media (max-width: 1100px) {
+      .project-header { padding-inline: var(--space-6); }
+      main { padding-inline: var(--space-6); }
+      .manuscript { gap: var(--space-6); }
+      .page { padding: var(--space-4); }
+      .annotation { gap: var(--space-3); }
+    }
+    @media (max-width: 720px) {
+      :root { --preview-height: 440px; }
+      .project-header { flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-4); padding: var(--space-3) var(--space-4); }
+      .brand { flex: 1; }
+      h1 { order: 3; flex-basis: 100%; color: var(--muted); font-size: var(--text-label); }
+      .view-name { margin-left: 0; }
+      main { padding: var(--space-6) var(--space-4) 0; }
+      .manuscript { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+      .page { padding: var(--space-4); }
+      .annotation { grid-template-columns: minmax(0, 1fr); gap: 0; }
+      .annotation label { padding-top: 0; }
+      .response-footer { align-items: flex-start; flex-direction: column; gap: var(--space-2); padding-bottom: var(--space-6); }
+      .status { max-width: 36ch; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body data-design="writer-manuscript">
+  <!-- THESIS: A comparison is a close reading, not a dashboard. OWN-WORLD: Literata manuscript titles, open paper margins, fine rules, and small Inter controls; neutral paper-gray without texture or decorative warmth. FIRST VIEWPORT: Two original, independently interactive previews occupy facing review pages beneath a compact project line. INTERACTION: Annotate each page, choose its candidate, or make a shared sample response below; selection becomes ink with an explicit check. SEED: 9743c350; user-pinned iA Writer reference family, Manuscript variant. -->
+  <header class="project-header">
+    <span class="brand">This or that</span>
+    <h1>Sprint distribution</h1>
+    <span class="view-name">Manuscript</span>
+  </header>
+  <main>
+    <div class="manuscript" aria-label="Compare candidate designs">
+      <section class="page" aria-labelledby="manuscript-left-title">
+        <h2 id="manuscript-left-title">Blueprint workbench</h2>
+        <div class="page-meta">
+          <span class="position">Left candidate</span>
+          <a class="open" href="/candidates/20-blueprint-desk.html" target="_blank" rel="noopener">Open larger<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3h8v8M13 3 3 13"/></svg></a>
+        </div>
+        <iframe data-candidate="left" title="Blueprint workbench interactive preview" src="/candidates/20-blueprint-desk.html" sandbox="allow-scripts allow-same-origin"></iframe>
+        <div class="annotation">
+          <label for="manuscript-left-note">Notes</label>
+          <textarea data-note="left" id="manuscript-left-note" aria-label="Notes on Blueprint workbench" placeholder="What stands out? Add an optional note."></textarea>
+        </div>
+        <button type="button" class="choose" data-vote="left" aria-pressed="false">
+          <span>Choose Blueprint workbench</span>
+          <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg>
+          <svg class="selected-mark" viewBox="0 0 16 16" aria-hidden="true"><path d="m3 8 3 3 7-7"/></svg>
+        </button>
+      </section>
+      <section class="page" aria-labelledby="manuscript-right-title">
+        <h2 id="manuscript-right-title">Team routes</h2>
+        <div class="page-meta">
+          <span class="position">Right candidate</span>
+          <a class="open" href="/candidates/11-metro-routes.html" target="_blank" rel="noopener">Open larger<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3h8v8M13 3 3 13"/></svg></a>
+        </div>
+        <iframe data-candidate="right" title="Team routes interactive preview" src="/candidates/11-metro-routes.html" sandbox="allow-scripts allow-same-origin"></iframe>
+        <div class="annotation">
+          <label for="manuscript-right-note">Notes</label>
+          <textarea data-note="right" id="manuscript-right-note" aria-label="Notes on Team routes" placeholder="What stands out? Add an optional note."></textarea>
+        </div>
+        <button type="button" class="choose" data-vote="right" aria-pressed="false">
+          <span>Choose Team routes</span>
+          <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg>
+          <svg class="selected-mark" viewBox="0 0 16 16" aria-hidden="true"><path d="m3 8 3 3 7-7"/></svg>
+        </button>
+      </section>
+    </div>
+    <footer class="response-footer">
+      <div class="shared-responses" role="group" aria-label="Shared sample responses">
+        <button type="button" data-vote="like" aria-pressed="false">Like both</button>
+        <button type="button" data-vote="hate" aria-pressed="false">Hate both</button>
+        <button type="button" class="skip" data-vote="skip" aria-pressed="false">Skip</button>
+      </div>
+      <p class="status" data-status role="status" aria-live="polite">Preview only. Responses are not recorded.</p>
+    </footer>
+  </main>
+</body>
+</html>

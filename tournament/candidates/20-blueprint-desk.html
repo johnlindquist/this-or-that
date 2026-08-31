@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blueprint workbench · Sprint distribution</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#d9f7ff;background:#092c47;color-scheme:dark;--line:#42758d;--cyan:#86e5f7;--muted:#a1c7d7}*{box-sizing:border-box}body{margin:0}button,select{font:inherit}button{cursor:pointer;color:inherit;background:transparent;border:1px solid var(--line)}button:hover{background:#164764;border-color:var(--cyan)}button:disabled{opacity:.38;cursor:default}button:focus-visible,select:focus-visible{outline:3px solid #ffe59b;outline-offset:2px}::selection{background:#86e5f7;color:#092c47}*{scrollbar-color:#42758d #092c47;scrollbar-width:thin}.app{height:100dvh;min-height:520px;display:grid;grid-template-rows:58px minmax(0,1fr) 29px}.top{display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid var(--cyan)}h1{font-size:19px;font-weight:500;letter-spacing:-.025em;margin:0}.demo{font-size:10px;color:var(--muted);border:1px solid var(--line);padding:3px 5px;white-space:nowrap}.tools{margin-left:auto;display:flex;gap:6px}.tools button{padding:7px 9px;font-size:12px}.workspace{display:grid;grid-template-columns:255px minmax(0,1fr);min-height:0}.specs{border-right:1px solid var(--cyan);display:flex;flex-direction:column;min-height:0;background:#0b304b}.section-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:0;padding:14px 14px 10px;color:var(--muted);font-weight:400}.spec-list{padding:0 10px;overflow:auto;flex:1;min-height:100px}.spec{display:grid;grid-template-columns:minmax(0,1fr) 35px;width:100%;text-align:left;border-width:0 0 1px;padding:9px 6px;gap:4px}.spec[aria-pressed=true]{background:#86e5f7;color:#092c47;border-color:#86e5f7}.spec .id{font-family:ui-monospace,monospace;font-size:10px;display:block;opacity:.82}.spec .title{font-size:12px;line-height:1.25;display:block;margin-top:3px}.spec .points{text-align:right;font-family:ui-monospace,monospace;font-size:11px;align-self:center}.inspector{padding:12px 14px 14px;border-top:1px solid var(--cyan);background:#103954}.selection-line{display:flex;justify-content:space-between;gap:8px;font:11px ui-monospace,monospace;color:var(--cyan)}.inspector h2{font-size:14px;line-height:1.35;margin:8px 0 10px;font-weight:500}.assign{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:11px;color:var(--muted)}select{max-width:135px;padding:6px;background:#092c47;border:1px solid var(--line);color:#d9f7ff}.order{display:flex;gap:5px;margin-top:10px}.order button{flex:1;font-size:11px;padding:7px 4px}.backlog{margin-top:7px;width:100%;font-size:11px;padding:7px}.drawing{display:flex;flex-direction:column;min-width:0;min-height:0;padding:14px 14px 0}.drawing-title{display:flex;justify-content:space-between;gap:10px;align-items:baseline}h2{margin:0;font-size:15px;font-weight:500}.drawing-title span{font:10px ui-monospace,monospace;color:var(--muted)}.instruction{font-size:12px;color:var(--muted);line-height:1.45;margin:8px 0 13px}.instruction strong{color:var(--cyan);font-weight:500}.canvas{overflow:auto;flex:1;min-height:0;padding-bottom:14px}.owner-heads,.placement-grid{display:grid;grid-template-columns:25px repeat(3,minmax(0,1fr))}.owner-heads{position:sticky;top:0;z-index:1;background:#092c47}.axis{font:9px ui-monospace,monospace;color:var(--muted);align-self:end;padding-bottom:10px}.owner{padding:8px 5px 10px;text-align:center;border-top:1px solid var(--cyan);border-right:1px solid var(--line);border-bottom:1px solid var(--cyan)}.owner:nth-child(2){border-left:1px solid var(--line)}.owner-name{font-size:14px}.owner-measure{display:block;font:10px ui-monospace,monospace;color:var(--cyan);margin-top:5px}.placement-grid{grid-auto-rows:minmax(112px,auto)}.rank{font:10px ui-monospace,monospace;padding-top:10px;color:var(--cyan);position:relative}.rank:after{content:'';position:absolute;right:0;top:15px;width:6px;border-top:1px solid var(--cyan)}.position{border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative;text-align:left;padding:10px 8px 25px;display:flex;flex-direction:column;gap:6px;min-width:0;border-radius:0}.position:nth-child(4n+2){border-left:1px solid var(--line)}.position.selected{background:#194c66;box-shadow:inset 0 0 0 1px var(--cyan)}.position-id{font:10px ui-monospace,monospace;color:var(--cyan)}.position-title{font-size:12px;line-height:1.35;overflow-wrap:anywhere}.position-measure{font:10px ui-monospace,monospace;color:var(--muted)}.placement-action{position:absolute;left:8px;bottom:8px;font-size:10px;color:var(--cyan)}.position:hover:not(:disabled) .placement-action{color:#ffe59b}.empty{border-bottom:1px dashed var(--line);color:var(--muted);justify-content:center;font-size:12px}.empty .position-id{color:var(--muted)}.unavailable{border-right:1px solid #254e68;border-bottom:1px solid #254e68;position:relative}.unavailable:nth-child(4n+2){border-left:1px solid #254e68}.unavailable:before{content:'';position:absolute;left:50%;top:50%;height:8px;border-left:1px solid #42758d;transform:translateY(-50%)}.unavailable:after{content:'';position:absolute;left:50%;top:50%;width:8px;border-top:1px solid #42758d;transform:translateX(-50%)}.dimensions{font:10px ui-monospace,monospace;color:var(--muted);border-top:1px solid var(--line);padding:10px 0;line-height:1.5}.footer{padding:7px 14px;border-top:1px solid var(--line);font:10px ui-monospace,monospace;display:flex;justify-content:space-between;color:var(--muted);gap:12px}@media(min-width:1000px){.workspace{grid-template-columns:310px minmax(0,1fr)}.position-title{font-size:14px}.placement-grid{grid-auto-rows:minmax(125px,auto)}}@media(max-width:600px){.workspace{grid-template-columns:205px minmax(330px,1fr);overflow:auto}.top{padding:0 10px;gap:6px}h1{font-size:16px}.demo{font-size:9px}.tools button{padding:6px}.drawing{padding:12px 9px 0}.footer span:last-child{display:none}}
+</style>
+</head>
+<body>
+<!-- Concept 20: Blueprint workbench. Exploration draft: a specification index feeds a true owner-by-priority placement canvas; measurements are ticket counts and story points, never invented capacity. -->
+<div class="app">
+<header class="top"><h1>Blueprint workbench</h1><span class="demo">DEMO DATA</span><div class="tools"><button type="button" data-action="undo">Undo</button><button type="button" data-action="reset">Reset</button></div></header>
+<main class="workspace"><aside class="specs" aria-label="Ticket specifications"><h2 class="section-label">Ticket specifications</h2><div id="spec-list" class="spec-list"></div><section id="inspector" class="inspector" aria-label="Selected ticket controls"></section></aside><section class="drawing" aria-label="Ownership placement diagram"><div class="drawing-title"><h2>Ownership placement</h2><span>PRIORITY ↓</span></div><p class="instruction" id="instruction"></p><div class="canvas"><div id="owner-heads" class="owner-heads"></div><div id="placement-grid" class="placement-grid"></div></div><div class="dimensions" id="dimensions"></div></section></main>
+<footer class="footer"><span id="status" role="status" aria-live="polite">Select a specification to place it.</span><span>Scratch planning · not saved</span></footer>
+</div>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+let selected='SPR-101';
+let message='Select a specification, then place it on the drawing.';
+const demo=createDemo(render);
+const esc=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+function render(){
+ const active=document.activeElement?.dataset.focus;
+ const ticket=demo.tickets.find(item=>item.id===selected)||demo.tickets[0];
+ selected=ticket.id;
+ const ownerId=demo.ownerOf(selected);
+ const queue=demo.list(ownerId);
+ const index=queue.findIndex(item=>item.id===selected);
+ const owners=demo.owners.filter(owner=>owner.id!=='backlog');
+ document.querySelector('#spec-list').innerHTML=demo.tickets.map(item=>`<button class="spec" type="button" data-action="select" data-ticket-id="${esc(item.id)}" data-focus="spec-${esc(item.id)}" aria-pressed="${item.id===selected}"><span><span class="id">${esc(item.id)} · ${esc(demo.owners.find(owner=>owner.id===demo.ownerOf(item.id)).name)}</span><span class="title">${esc(item.title)}</span></span><span class="points">${item.points}<br>pts</span></button>`).join('');
+ document.querySelector('#inspector').innerHTML=`<div class="selection-line"><span>${esc(ticket.id)}</span><span>${esc(ticket.kind)} · ${ticket.points} pts</span></div><h2>${esc(ticket.title)}</h2><label class="assign">Assigned to<select aria-label="Assign ${esc(ticket.id)} to owner" data-focus="owner" id="owner-select">${demo.owners.map(owner=>`<option value="${esc(owner.id)}" ${owner.id===ownerId?'selected':''}>${esc(owner.name)}</option>`).join('')}</select></label><div class="order"><button type="button" data-action="earlier" data-focus="earlier" ${index===0?'disabled':''}>Earlier</button><button type="button" data-action="later" data-focus="later" ${index===queue.length-1?'disabled':''}>Later</button></div><button class="backlog" type="button" data-action="backlog" data-focus="backlog" ${ownerId==='backlog'?'disabled':''}>Return to backlog</button>`;
+ document.querySelector('#instruction').innerHTML=`Select a specification on the left. Click a position to place <strong>${esc(selected)}</strong>; existing tickets shift down.`;
+ document.querySelector('#owner-heads').innerHTML='<span class="axis">RANK</span>'+owners.map(owner=>`<div class="owner" data-owner-id="${esc(owner.id)}"><span class="owner-name">${esc(owner.name)}</span><span class="owner-measure">${demo.list(owner.id).length} tickets / ${demo.points(owner.id)} pts</span></div>`).join('');
+ const rows=Math.max(...owners.map(owner=>demo.list(owner.id).length))+1;
+ let cells='';
+ for(let row=0;row<rows;row++){
+  cells+=`<div class="rank">${row+1}</div>`;
+  for(const owner of owners){
+   const list=demo.list(owner.id),item=list[row];
+   if(row>list.length){cells+='<div class="unavailable" aria-hidden="true"></div>';continue;}
+   const current=item?.id===selected;
+   const label=`Place ${selected} with ${owner.name} at priority ${row+1}${item?', before '+item.id:''}`;
+   cells+=`<button type="button" class="position ${item?'':'empty'} ${current?'selected':''}" data-action="place" data-owner-id="${esc(owner.id)}" data-before="${item?esc(item.id):''}" data-focus="slot-${esc(owner.id)}-${row}" aria-label="${esc(current?selected+' is currently here':label)}" ${current?'disabled':''}>${item?`<span class="position-id">${esc(item.id)}</span><span class="position-title">${esc(item.title)}</span><span class="position-measure">${item.points} pts · ${esc(item.kind)}</span>`:`<span class="position-id">P${row+1} / OPEN</span><span>Append here</span>`}<span class="placement-action">${current?'Selected position':item?'Insert before':'Place selected'}</span></button>`;
+  }
+ }
+ document.querySelector('#placement-grid').innerHTML=cells;
+ const assigned=owners.reduce((total,owner)=>total+demo.list(owner.id).length,0),points=owners.reduce((total,owner)=>total+demo.points(owner.id),0);
+ document.querySelector('#dimensions').textContent=`${owners.length} owner columns × ${rows} priority positions · ${assigned} assigned / ${points} pts · Backlog ${demo.list('backlog').length} tickets / ${demo.points('backlog')} pts`;
+ document.querySelector('#status').textContent=message;
+ if(active){const focusTarget=Array.from(document.querySelectorAll('[data-focus]')).find(element=>element.dataset.focus===active);if(focusTarget&&!focusTarget.disabled)focusTarget.focus({preventScroll:true});}
+}
+document.addEventListener('click',event=>{
+ const button=event.target.closest('button[data-action]');if(!button)return;
+ const action=button.dataset.action;
+ if(action==='select'){selected=button.dataset.ticketId;message=`${selected} selected. Choose an owner and priority position.`;render();}
+ else if(action==='place'){const owner=demo.owners.find(item=>item.id===button.dataset.ownerId);message=`Placed ${selected} with ${owner.name}.`;demo.move(selected,owner.id,button.dataset.before||null);}
+ else if(action==='earlier'||action==='later'){message=`Moved ${selected} ${action} in its queue.`;demo.shift(selected,action==='earlier'?-1:1);}
+ else if(action==='backlog'){message=`Returned ${selected} to backlog.`;demo.move(selected,'backlog');}
+ else if(action==='undo'){message='Undo requested.';demo.undo();document.querySelector('#status').textContent=message;}
+ else if(action==='reset'){message='Demo placement reset.';demo.reset();}
+});
+document.addEventListener('change',event=>{if(event.target.id==='owner-select'){const owner=demo.owners.find(item=>item.id===event.target.value);message=`Assigned ${selected} to ${owner.name}, at the end of the queue.`;demo.move(selected,owner.id);}});
+render();
+</script>
+</body>
+</html>

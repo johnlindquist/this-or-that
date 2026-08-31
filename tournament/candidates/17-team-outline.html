@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Team outline — Sprint distribution</title>
+<style>
+:root{font-family:"Courier New",Courier,monospace;color:#2d302f;background:#fff;--coral:#f27f6d;--ink:#2d302f;--muted:#727571;--line:#e8e9e5}*{box-sizing:border-box}body{margin:0;height:100dvh;display:flex;flex-direction:column}button,select{font:inherit;color:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.3}button:focus-visible,select:focus-visible{outline:2px solid #a83726;outline-offset:3px}::selection{background:#f6b6a9;color:#242624}header{display:flex;align-items:center;gap:16px;padding:17px 25px 13px;border-bottom:1px solid var(--line);flex:none}h1{font-size:19px;font-weight:700;letter-spacing:-.8px;margin:0}header .demo{font-size:10px;color:#777a75;margin-top:4px}.head-actions{margin-left:auto;display:flex;gap:7px}.head-actions button{background:white;border:1px solid #d5d8d1;border-radius:3px;padding:6px 9px;font-size:11px}.head-actions button:hover{background:#f4f5f1}.instruction{padding:10px 26px 3px;font-size:10px;color:#696d68;display:flex;justify-content:space-between;gap:10px;flex:none}.instruction span:last-child{color:#8a5349}main{overflow:auto;flex:1;min-height:0;padding:0 25px 22px;scrollbar-width:thin;scrollbar-color:#c3c7be #fff}.owner-section{margin:15px 0 0}.owner-heading{display:flex;align-items:center;gap:9px;height:27px}h2{font-size:13px;margin:0;font-weight:700;display:flex;align-items:center;gap:7px;flex:1;min-width:0}.fold{width:18px;height:23px;border:0;background:none;padding:3px;display:flex;align-items:center;justify-content:center}.fold svg{width:11px;height:11px;transition:transform .12s}.fold[aria-expanded=false] svg{transform:rotate(-90deg)}.owner-number{font-size:10px;color:#82867e;font-weight:400}.owner-name{white-space:nowrap}.owner-rule{flex:1;height:1px;background:var(--line);margin:0 7px}.owner-total{font-size:10px;color:#71766d;font-weight:400;white-space:nowrap}ol{list-style:none;margin:3px 0 0 10px;padding:0 0 0 16px;border-left:1px solid #e0e2da}.ticket{display:grid;grid-template-columns:23px minmax(0,1fr) 31px 90px 48px;align-items:center;gap:7px;min-height:44px;position:relative;padding:4px 6px;border-radius:1px}.ticket+.ticket{border-top:1px dotted #eceee7}.ticket::before{content:"";position:absolute;left:-16px;top:22px;width:12px;border-top:1px solid #e0e2da}.ticket.selected{background:#fff0ec;box-shadow:inset 3px 0 var(--coral)}.ticket.selected .number{color:#9a3b2d}.number{font-size:11px;color:#979b90;text-align:center}.ticket-name{display:block;text-align:left;min-width:0;background:none;border:0;padding:3px 0}.ticket-name:hover .title{text-decoration:underline;text-decoration-color:#cb6858;text-underline-offset:3px}.title{font-size:12px;line-height:1.25;display:block;font-weight:700;overflow-wrap:anywhere}.metadata{font-size:9px;line-height:1.5;color:#72776d;display:block;margin-top:2px}.points{font-size:10px;white-space:nowrap;color:#62685e}.assign{font-size:10px;width:90px;max-width:100%;border:0;border-bottom:1px solid #b8beb0;background:transparent;border-radius:0;padding:4px 0;cursor:pointer}.order{display:flex;gap:2px}.order button{display:flex;align-items:center;justify-content:center;width:23px;height:26px;border:0;background:transparent;border-radius:2px;padding:4px}.order button:hover:not(:disabled){background:#f6c8bc}.order svg{width:13px;height:13px;stroke:currentColor;stroke-width:1.5;fill:none}.empty{margin:5px 0 6px 34px;color:#838879;font-size:11px;font-style:italic;padding:5px 0}footer{padding:9px 25px;border-top:1px solid var(--line);font-size:10px;display:flex;justify-content:space-between;gap:15px;flex:none;background:#fafbf8;color:#687060}#status{color:#875145}button,select{-webkit-tap-highlight-color:transparent}@media(min-width:1000px){main{padding-left:max(35px,calc((100vw - 960px)/2));padding-right:max(35px,calc((100vw - 960px)/2))}.ticket{min-height:51px}.title{font-size:14px}.owner-heading{height:33px}}@media(max-width:550px){header{padding:13px 14px;gap:8px}h1{font-size:16px}main{padding:0 12px 15px}.instruction{padding:9px 14px 2px}.instruction span:last-child{display:none}.ticket{grid-template-columns:18px minmax(0,1fr) 23px 75px 44px;gap:4px;padding-right:1px}.assign{width:75px;font-size:9px}.title{font-size:11px}.metadata{font-size:8px}.order button{width:21px}ol{padding-left:10px}.ticket::before{left:-10px;width:7px}footer{padding:8px 14px}footer .summary{display:none}.owner-rule{margin:0 2px}.owner-total{font-size:9px}}
+</style>
+</head>
+<body>
+<!-- Candidate 17: Team outline. Exploration draft: one flowing, foldable document with indented priority lines, not card queues. -->
+<header><div><h1>Team outline</h1><div class="demo">SPRINT DISTRIBUTION / DEMO DATA</div></div><div class="head-actions"><button type="button" id="undo">Undo</button><button type="button" id="reset">Reset</button></div></header>
+<div class="instruction"><span>Owner → numbered priorities</span><span>Assign inline. Move lines up or down.</span></div>
+<main id="outline" aria-label="Sprint team outline"></main>
+<footer><span id="status" role="status" aria-live="polite">Select a line to begin.</span><span class="summary" id="summary"></span></footer>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+const outline=document.querySelector('#outline');
+const status=document.querySelector('#status');
+const folded=new Set();
+let selected='SPR-101';
+let message='Select a line; assignment is always inline.';
+const demo=createDemo(render);
+const escape=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const arrow=direction=>`<svg viewBox="0 0 16 16" aria-hidden="true"><path d="${direction==='up'?'M3 10l5-5 5 5':'M3 6l5 5 5-5'}"/></svg>`;
+function render(){
+  const active=document.activeElement?.dataset.focus;
+  const scroll=outline.scrollTop;
+  outline.innerHTML=demo.owners.map((owner,ownerIndex)=>{
+    const tickets=demo.list(owner.id);
+    const closed=folded.has(owner.id);
+    return `<section class="owner-section" data-owner="${owner.id}"><div class="owner-heading"><button class="fold" type="button" data-fold="${owner.id}" data-focus="fold-${owner.id}" aria-expanded="${!closed}" aria-controls="lines-${owner.id}" aria-label="${closed?'Expand':'Fold'} ${escape(owner.name)}"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></button><h2><span class="owner-number">${String(ownerIndex+1).padStart(2,'0')}.</span><span class="owner-name">${escape(owner.name)}</span><span class="owner-rule"></span><span class="owner-total">${tickets.length} lines · ${demo.points(owner.id)} pt</span></h2></div><div id="lines-${owner.id}" ${closed?'hidden':''}>${tickets.length?`<ol aria-label="${escape(owner.name)} priority order">${tickets.map((ticket,index)=>`<li class="ticket ${selected===ticket.id?'selected':''}" data-ticket-id="${ticket.id}"><span class="number" aria-label="Priority ${index+1}">${index+1}.</span><button class="ticket-name" type="button" data-select="${ticket.id}" data-focus="select-${ticket.id}" aria-pressed="${selected===ticket.id}"><span class="title">${escape(ticket.title)}</span><span class="metadata">${escape(ticket.id)} / ${escape(ticket.kind)}</span></button><span class="points">${ticket.points}p</span><select class="assign" data-assign="${ticket.id}" data-focus="assign-${ticket.id}" aria-label="Assign ${escape(ticket.id)} to owner">${demo.owners.map(choice=>`<option value="${choice.id}" ${choice.id===owner.id?'selected':''}>${escape(choice.name)}</option>`).join('')}</select><div class="order"><button type="button" data-shift="-1" data-id="${ticket.id}" data-focus="up-${ticket.id}" aria-label="Raise priority of ${ticket.id}" title="Raise priority" ${index===0?'disabled':''}>${arrow('up')}</button><button type="button" data-shift="1" data-id="${ticket.id}" data-focus="down-${ticket.id}" aria-label="Lower priority of ${ticket.id}" title="Lower priority" ${index===tickets.length-1?'disabled':''}>${arrow('down')}</button></div></li>`).join('')}</ol>`:'<p class="empty">No lines assigned.</p>'}</div></section>`;
+  }).join('');
+  status.textContent=message;
+  const assigned=demo.tickets.length-demo.list('backlog').length;
+  document.querySelector('#summary').textContent=`${assigned}/${demo.tickets.length} assigned · ${demo.tickets.reduce((sum,ticket)=>sum+ticket.points,0)} total pt`;
+  if(active){
+    const next=[...outline.querySelectorAll('[data-focus]')].find(el=>el.dataset.focus===active);
+    if(next&&!next.disabled)next.focus({preventScroll:true});
+    else if(selected)outline.querySelector(`[data-select="${selected}"]`)?.focus({preventScroll:true});
+  }
+  outline.scrollTop=scroll;
+}
+outline.addEventListener('click',event=>{
+  const button=event.target.closest('button');
+  if(!button)return;
+  if(button.dataset.fold){
+    const owner=button.dataset.fold;
+    folded.has(owner)?folded.delete(owner):folded.add(owner);
+    render();
+  }else if(button.dataset.select){
+    selected=button.dataset.select;
+    message=`${selected} selected. Change its owner or priority inline.`;
+    render();
+  }else if(button.dataset.shift){
+    selected=button.dataset.id;
+    message=`${selected} moved ${Number(button.dataset.shift)<0?'up':'down'} one line.`;
+    demo.shift(selected,Number(button.dataset.shift));
+  }
+});
+outline.addEventListener('change',event=>{
+  const control=event.target.closest('[data-assign]');
+  if(!control)return;
+  selected=control.dataset.assign;
+  const owner=demo.owners.find(item=>item.id===control.value);
+  folded.delete(owner.id);
+  message=`${selected} → ${owner.name}; appended as the last priority.`;
+  demo.move(selected,owner.id);
+});
+document.querySelector('#undo').addEventListener('click',()=>{
+  message='Undo requested. Latest change restored if available.';
+  folded.clear();
+  demo.undo();
+  render();
+});
+document.querySelector('#reset').addEventListener('click',()=>{
+  selected='SPR-101';
+  folded.clear();
+  message='Demo data reset to the starting outline.';
+  demo.reset();
+});
+render();
+</script>
+</body>
+</html>

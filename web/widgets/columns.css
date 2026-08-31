@@ -1,0 +1,18 @@
+.columns-widget { display: flex; flex-direction: column; gap: var(--space-3); }
+.developer-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
+.column { min-width: 0; }
+.backlog-column .owner-heading { flex-direction: row; align-items: center; justify-content: space-between; }
+.backlog-list { --queue-direction: horizontal; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
+.backlog-list .empty-queue { grid-column: 1 / -1; }
+.columns-widget .ticket-title { min-height: var(--space-10); }
+.column > .ticket-list { padding-bottom: var(--space-3); }
+.backlog-order { font-size: var(--text-xs); margin-bottom: var(--space-2); }
+.backlog-order-vertical { display: none; }
+@media (max-width: 700px) {
+  .developer-columns { grid-template-columns: 1fr; gap: var(--space-4); }
+  .backlog-list { --queue-direction: vertical; display: flex; align-items: stretch; }
+  .owner-heading { flex-direction: row; align-items: center; justify-content: space-between; }
+  .columns-widget .ticket-title { min-height: 0; }
+  .backlog-order-horizontal { display: none; }
+  .backlog-order-vertical { display: inline; }
+}

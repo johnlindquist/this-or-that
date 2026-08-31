@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ownership orbit — sprint planning</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#37243f;background:#f6f2fa;font-synthesis:none;--plum:#673b79;--ink:#37243f;--muted:#76627e;--line:#d6c6e0;--pale:#eadef2}
+*{box-sizing:border-box}body{margin:0}button,select{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.42}button:focus-visible,select:focus-visible{outline:3px solid #a358be;outline-offset:3px}::selection{color:white;background:var(--plum)}*{scrollbar-width:thin;scrollbar-color:#bca6ca #f2ecf6}
+.shell{max-width:1080px;margin:auto;padding:14px 18px 12px}header{display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}h1{font-size:19px;font-weight:750;letter-spacing:-.5px;margin:0}.demo{font-size:10px;color:var(--muted);padding:3px 6px;border:1px solid var(--line);white-space:nowrap}.tools{margin-left:auto;display:flex;gap:6px}.quiet{border:1px solid var(--line);background:#fffafd;color:var(--ink);border-radius:6px;padding:6px 10px;font-size:12px}.quiet:hover:not(:disabled){background:var(--pale)}.instruction{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);min-height:35px;margin:0}.instruction strong{color:var(--ink)}.instruction .step{font-size:11px;width:19px;height:19px;border-radius:50%;background:var(--plum);color:white;display:inline-grid;place-items:center;flex:none}
+.orbit{height:420px;position:relative}.connections{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}.orbit-ring{fill:none;stroke:#e2d6ea;stroke-width:1;stroke-dasharray:3 5}.spoke{fill:none;stroke:#c9b5d7;stroke-width:1.5;vector-effect:non-scaling-stroke}.spoke.lit{stroke:var(--plum);stroke-width:3}.joint{fill:#f6f2fa;stroke:#b399c3;stroke-width:1.5;vector-effect:non-scaling-stroke}
+.station{position:absolute;display:flex;flex-direction:column;border:1px solid #cdbbd8;border-radius:12px;background:#fffafd;overflow:hidden;min-width:0}.station.maya{left:0;top:2px;width:32%;height:172px}.station.leo{right:0;top:2px;width:32%;height:172px}.station.priya{left:32%;bottom:2px;width:36%;height:141px}.station.backlog{left:34%;top:127px;width:32%;height:142px;background:#ece1f3;border-color:#b79ac8}.station.eligible{border-color:#a581b8}.station.lit{border:2px solid var(--plum);background:#f0e4f7}.station.lit .station-action{background:var(--plum);color:white}.station-action{display:flex;align-items:center;gap:8px;width:100%;text-align:left;padding:9px 10px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);flex:none}.station-action:hover:not(:disabled){background:#e3d1ef}.station.lit .station-action:hover{background:#512a62}.station-action:disabled{opacity:1;cursor:default}.avatar{height:27px;width:27px;display:grid;place-items:center;border-radius:50%;border:1px solid currentColor;font-weight:700;font-size:10px;flex:none}.station-name{font-size:13px;font-weight:750;display:block}.station-meta{display:block;font-size:10px;opacity:.85;margin-top:2px}.destination{font-size:10px;margin-left:auto;max-width:43px;line-height:1.25;text-align:right}.queue{overflow:auto;padding:3px 6px 5px;min-height:0;flex:1}.ticket{display:grid;grid-template-columns:18px 1fr;gap:3px;text-align:left;border:0;border-bottom:1px solid #e9dfef;background:transparent;color:var(--ink);padding:7px 2px;width:100%;border-radius:3px}.ticket:last-child{border-bottom:0}.ticket:hover{background:#eee3f5}.ticket.selected{background:#e1cbed;outline:1px solid #a884bd;outline-offset:-1px}.rank{font-size:10px;color:var(--muted);padding-top:2px;font-variant-numeric:tabular-nums}.ticket-title{font-size:12px;font-weight:600;line-height:1.27;display:block;overflow-wrap:anywhere}.ticket-meta{font-size:9px;display:flex;justify-content:space-between;gap:4px;color:#71547f;margin-top:3px;font-variant-numeric:tabular-nums}.empty{font-size:11px;color:var(--muted);padding:12px 4px;margin:0;line-height:1.5}.diagram-note{position:absolute;bottom:14px;left:0;max-width:27%;font-size:11px;color:var(--muted);line-height:1.5}.diagram-note strong{display:block;font-size:12px;color:var(--ink)}.diagram-legend{position:absolute;bottom:16px;right:0;width:27%;font-size:10px;color:var(--muted);text-align:right;line-height:1.5}
+.inspector{margin-top:8px;border-top:1px solid #bda7cb;padding-top:10px;min-height:114px}.inspector-top{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}.inspector h2{font-size:12px;margin:0;color:var(--muted);font-weight:600;flex:none}.selection-title{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.inspector-body{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap}.field{display:grid;gap:4px;font-size:10px;color:var(--muted)}select{color:var(--ink);background:white;border:1px solid #baa4c8;border-radius:6px;padding:6px 25px 6px 8px;font-size:12px;max-width:150px;height:31px}.priority{display:flex;align-items:center;gap:5px}.position{font-size:12px;padding:7px 4px;font-variant-numeric:tabular-nums}.priority button{width:31px;height:31px;display:grid;place-items:center;padding:0}.priority svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.8;fill:none}.return{margin-left:auto;height:31px}.notice{font-size:11px;color:var(--muted);margin:9px 0 0;min-height:14px}.idle{font-size:12px;color:var(--muted);margin:10px 0;line-height:1.5}.ticket-id{font-variant-numeric:tabular-nums}
+@media(min-height:760px){.orbit{height:calc(100vh - 225px);max-height:650px}.station.maya,.station.leo{height:38%}.station.backlog{top:35%;height:30%}.station.priya{height:29%}}
+@media(max-width:560px){.shell{padding:12px 10px}header{gap:7px}h1{font-size:17px}.demo{font-size:9px}.quiet{padding:6px 8px}.orbit{height:540px}.station.maya,.station.leo{width:46%;height:175px}.station.backlog{left:24%;width:52%;top:194px;height:148px}.station.priya{left:24%;width:52%;height:169px}.diagram-note,.diagram-legend{display:none}.return{margin-left:0}.instruction{font-size:11px}.inspector{min-height:145px}.station-name{font-size:12px}.connections{display:none}.inspector-top{display:block}.selection-title{display:block;margin-top:5px}.tools{gap:4px}}
+</style>
+</head>
+<body>
+<!-- Ownership orbit: exploratory tournament draft. Three developer stations surround a central unassigned hub; readable ticket lists and a compact priority inspector favor assignment over decorative bubbles. Demo data; not production polish. -->
+<div class="shell">
+<header><h1>Ownership orbit</h1><span class="demo">Demo data</span><div class="tools"><button class="quiet" id="undo" type="button">Undo</button><button class="quiet" id="reset" type="button">Reset</button></div></header>
+<main id="app"></main>
+</div>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+let selected=null;
+let destination=null;
+let notice='Choose a ticket anywhere in the orbit.';
+const app=document.querySelector('#app');
+const demo=createDemo(render);
+const escape=value=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const ownerName=id=>id==='backlog'?'Unassigned':demo.owners.find(owner=>owner.id===id).name;
+const arrow=direction=>`<svg viewBox="0 0 16 16" aria-hidden="true"><path d="${direction===-1?'M3 10 8 5l5 5':'M3 6l5 5 5-5'}"/></svg>`;
+function station(owner){
+ const tickets=demo.list(owner.id);
+ const current=selected?demo.ownerOf(selected):null;
+ const canAssign=selected&&current!==owner.id;
+ return `<section class="station ${owner.id} ${canAssign?'eligible':''} ${canAssign&&destination===owner.id?'lit':''}" data-owner="${owner.id}" aria-label="${escape(ownerName(owner.id))} queue">
+ <button type="button" class="station-action" id="station-${owner.id}" data-assign="${owner.id}" ${canAssign?'':'disabled'} aria-label="${canAssign?`Assign ${selected} to ${escape(ownerName(owner.id))}`:escape(ownerName(owner.id))}">
+ <span class="avatar" aria-hidden="true">${owner.id==='backlog'?'<svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5h14v11H3zM3 11h4l1 2h4l1-2h4"/></svg>':escape(owner.initials)}</span>
+ <span><span class="station-name">${escape(ownerName(owner.id))}</span><span class="station-meta">${tickets.length} tickets · ${demo.points(owner.id)} pts</span></span><span class="destination">${canAssign?(owner.id==='backlog'?'Return here':'Send here'):current===owner.id?'Current owner':''}</span></button>
+ <div class="queue">${tickets.length?tickets.map((ticket,index)=>`<button class="ticket ${selected===ticket.id?'selected':''}" type="button" id="ticket-${ticket.id}" data-ticket-id="${ticket.id}" aria-pressed="${selected===ticket.id}"><span class="rank">${index+1}</span><span><span class="ticket-title">${escape(ticket.title)}</span><span class="ticket-meta"><span>${ticket.id} · ${escape(ticket.kind)}</span><span>${ticket.points} pt</span></span></span></button>`).join(''):`<p class="empty">${owner.id==='backlog'?'All tickets have an owner.':'No tickets assigned.'}</p>`}</div></section>`;
+}
+function render(){
+ const focused=document.activeElement?.id;
+ const ticket=demo.tickets.find(item=>item.id===selected);
+ const owner=ticket?demo.ownerOf(ticket.id):null;
+ const queue=owner?demo.list(owner):[];
+ const index=queue.findIndex(item=>item.id===selected);
+ const paths={maya:'M50 48 L16 20',leo:'M50 48 L84 20',priya:'M50 48 L50 84'};
+ app.innerHTML=`<p class="instruction"><span class="step">${selected?'2':'1'}</span>${selected?`<strong>${selected}</strong> selected. Click a station header to assign.`:'Select a ticket. Then send it to a developer station.'}</p>
+ <div class="orbit" aria-label="Radial assignment planner">
+ <svg class="connections" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><ellipse class="orbit-ring" cx="50" cy="49" rx="34" ry="34"/>${Object.entries(paths).map(([id,path])=>`<path class="spoke ${selected&&destination===id?'lit':''}" data-spoke="${id}" d="${path}"/>`).join('')}<circle class="joint" cx="50" cy="68" r=".8"/><circle class="joint" cx="33" cy="34" r=".8"/><circle class="joint" cx="67" cy="34" r=".8"/></svg>
+ ${demo.owners.map(station).join('')}
+ <div class="diagram-note"><strong>One ticket. One owner.</strong>Pick a route, then set its place in the queue.</div><div class="diagram-legend">Queue numbers are priority.<br>Highest priority comes first.</div>
+ </div>
+ <section class="inspector" aria-label="Ticket priority inspector"><div class="inspector-top"><h2>Priority inspector</h2><span class="selection-title">${ticket?`${ticket.id} · ${escape(ticket.title)}`:'Nothing selected'}</span></div>
+ ${ticket?`<div class="inspector-body"><label class="field">Assign to<select id="assign-select" aria-label="Assign selected ticket">${demo.owners.map(item=>`<option value="${item.id}" ${item.id===owner?'selected':''}>${escape(ownerName(item.id))}</option>`).join('')}</select></label><div class="field"><span>Priority in ${escape(ownerName(owner))}</span><div class="priority"><span class="position">${index+1} of ${queue.length}</span><button type="button" id="priority-up" class="quiet" data-shift="-1" aria-label="Move selected ticket earlier" ${index===0?'disabled':''}>${arrow(-1)}</button><button type="button" id="priority-down" class="quiet" data-shift="1" aria-label="Move selected ticket later" ${index===queue.length-1?'disabled':''}>${arrow(1)}</button></div></div><button class="quiet return" type="button" id="return-backlog" data-assign="backlog" ${owner==='backlog'?'disabled':''}>Return to unassigned</button></div>`:'<p class="idle">Every ticket stays readable in its station. Select one to assign it or adjust its priority.</p>'}
+ <p class="notice" role="status" aria-live="polite">${escape(notice)}</p></section>`;
+ if(focused)document.getElementById(focused)?.focus({preventScroll:true});
+}
+function assign(owner){
+ if(!selected||demo.ownerOf(selected)===owner)return;
+ notice=`${selected} moved to ${ownerName(owner)}, at the end of the queue.`;
+ destination=null;
+ demo.move(selected,owner);
+}
+app.addEventListener('click',event=>{
+ const ticketButton=event.target.closest('[data-ticket-id]');
+ if(ticketButton){
+  selected=ticketButton.dataset.ticketId;
+  destination=demo.owners.find(owner=>owner.id!=='backlog'&&owner.id!==demo.ownerOf(selected))?.id??'backlog';
+  notice=`${selected} selected. Lit station suggests a destination; any other station also works.`;
+  render();return;
+ }
+ const stationButton=event.target.closest('[data-assign]');
+ if(stationButton){assign(stationButton.dataset.assign);return;}
+ const shiftButton=event.target.closest('[data-shift]');
+ if(shiftButton&&selected){notice=`${selected} moved ${shiftButton.dataset.shift==='-1'?'earlier':'later'} in its queue.`;demo.shift(selected,Number(shiftButton.dataset.shift));}
+});
+app.addEventListener('change',event=>{if(event.target.id==='assign-select')assign(event.target.value);});
+function highlight(event){
+ const button=event.target.closest('.station-action');
+ if(!selected||!button||button.disabled)return;
+ destination=button.dataset.assign;
+ app.querySelectorAll('.station').forEach(node=>node.classList.toggle('lit',node.dataset.owner===destination));
+ app.querySelectorAll('[data-spoke]').forEach(node=>node.classList.toggle('lit',node.dataset.spoke===destination));
+}
+app.addEventListener('pointerover',highlight);
+app.addEventListener('focusin',highlight);
+document.querySelector('#undo').addEventListener('click',()=>{notice='Last change undone, if available.';destination=null;demo.undo();render();});
+document.querySelector('#reset').addEventListener('click',()=>{selected=null;destination=null;notice='Demo sprint restored to its starting assignments.';demo.reset();});
+render();
+</script>
+</body>
+</html>

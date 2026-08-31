@@ -1,0 +1,159 @@
+{
+  "title": "Sprint distribution \u00b7 22 directions",
+  "options": [
+    {
+      "id": "01",
+      "name": "Developer columns",
+      "src": "/candidates/01-incumbent.html",
+      "description": "Existing candidate: visible developer columns and a shared backlog",
+      "source": "tournament/candidates/01-incumbent.html"
+    },
+    {
+      "id": "02",
+      "name": "Expandable queues",
+      "src": "/candidates/02-incumbent.html",
+      "description": "Existing candidate: compact owner rows with expandable queues",
+      "source": "tournament/candidates/02-incumbent.html"
+    },
+    {
+      "id": "03",
+      "name": "Dispatch ledger",
+      "src": "/candidates/03-dispatch-ledger.html",
+      "description": "An editorial operations ledger: wide horizontal ticket rows with a narrow owner rail, stamped priority numerals, ink/navy on white. Assignment happens inline in each row; not cards in developer columns.",
+      "source": "tournament/candidates/03-dispatch-ledger.html"
+    },
+    {
+      "id": "04",
+      "name": "Horizontal swimlanes",
+      "src": "/candidates/04-swimlanes.html",
+      "description": "One horizontal lane per developer, tickets sequenced left-to-right. Unassigned is a docking strip above. Bright blue/white transit-planning utility. Make the timeline-like reading order feel unmistakable; no invented dates.",
+      "source": "tournament/candidates/04-swimlanes.html"
+    },
+    {
+      "id": "05",
+      "name": "Ownership orbit",
+      "src": "/candidates/05-ownership-orbit.html",
+      "description": "A radial planning diagram: developer stations around a central unassigned hub. Ticket selection lights a destination station; clicking station assigns. Crisp SVG geometry and a small priority inspector, plum and pale lavender. Keep actual tickets readable, not decorative bubbles.",
+      "source": "tournament/candidates/05-ownership-orbit.html"
+    },
+    {
+      "id": "06",
+      "name": "Command desk",
+      "src": "/candidates/06-command-desk.html",
+      "description": "Keyboard/search-first assignment console, large command input with concrete ticket suggestions, developer destination actions and one focused queue preview. Clean light command launcher with dark command region. Support selecting a real ticket then owner and priority; do not fake command execution.",
+      "source": "tournament/candidates/06-command-desk.html"
+    },
+    {
+      "id": "07",
+      "name": "Allocation sheet",
+      "src": "/candidates/07-allocation-sheet.html",
+      "description": "Spreadsheet allocation: all eight ticket rows, columns for title, kind, points, editable owner, priority; tight data grid, row selection, spreadsheet-style blue active cell. Inline selects and move up/down actions, not boards.",
+      "source": "tournament/candidates/07-allocation-sheet.html"
+    },
+    {
+      "id": "08",
+      "name": "Ticket inspector",
+      "src": "/candidates/08-master-detail.html",
+      "description": "Master-detail workbench: compact ticket list left, substantial editable inspector right, developer roster as navigation. Calm gray/teal desktop tool. Selecting ticket reveals assignment and priority editor; all actual fields visible.",
+      "source": "tournament/candidates/08-master-detail.html"
+    },
+    {
+      "id": "09",
+      "name": "One ticket at a time",
+      "src": "/candidates/09-ticket-deck.html",
+      "description": "Focused triage deck: one large current ticket, progress through eight tickets, three clearly differentiated owner destinations plus backlog, small queue summaries. Warm orange/white with oversized content and minimal chrome. Assignment advances deck, previous/next allow revisiting, order editable.",
+      "source": "tournament/candidates/09-ticket-deck.html"
+    },
+    {
+      "id": "10",
+      "name": "Magnetic planning board",
+      "src": "/candidates/10-magnetic-board.html",
+      "description": "Freeform spatial planning mat with four labeled owner territories and ticket tiles, not a four-column kanban. Asymmetric 2D zones, subtle paper material, restrained colored tape-like headers. Real native drag/drop between territories plus click assignment controls and priority shifts.",
+      "source": "tournament/candidates/10-magnetic-board.html"
+    },
+    {
+      "id": "11",
+      "name": "Team routes",
+      "src": "/candidates/11-metro-routes.html",
+      "description": "Metro diagram metaphor implemented as real SVG lines/stops for Maya, Leo, Priya and backlog. Tickets are labeled stops in priority order; selecting stop opens compact move control. White background, three colored route lines, typography carrying actual content; no invented analytics.",
+      "source": "tournament/candidates/11-metro-routes.html"
+    },
+    {
+      "id": "12",
+      "name": "Point shelves",
+      "src": "/candidates/12-point-shelves.html",
+      "description": "Inventory shelf allocation: developer shelves made of ticket blocks sized by actual points, with readable list below/alongside; unassigned bins. Ochre/charcoal workshop palette. Points are informational, never enforce imaginary capacity. Selecting block assigns and shifts priority.",
+      "source": "tournament/candidates/12-point-shelves.html"
+    },
+    {
+      "id": "13",
+      "name": "Sprint inbox",
+      "src": "/candidates/13-inbox-triage.html",
+      "description": "Email-client-style triage: folder rail for owners, compact subject list with selection, reading pane and assign toolbar. Blue-gray professional mail aesthetic; backlog is inbox, ticket details and ownership are real. Support multi-select assignment if simple; individual assignment/reordering essential.",
+      "source": "tournament/candidates/13-inbox-triage.html"
+    },
+    {
+      "id": "14",
+      "name": "Priority ladders",
+      "src": "/candidates/14-priority-ladder.html",
+      "description": "Three vertical numbered priority ladders, but tickets live on horizontal rungs spanning a shared ranking grid with backlog parked in a separate drawer. Strong numeric hierarchy and square lavender/black controls. Emphasize priority slots and move-to-rung rather than generic owner cards.",
+      "source": "tournament/candidates/14-priority-ladder.html"
+    },
+    {
+      "id": "15",
+      "name": "Planning strips",
+      "src": "/candidates/15-planning-strips.html",
+      "description": "Calendar-like planner without fabricated dates: numbered priority slots across top, people down side, tickets occupying cells with real points labels. Spacious mint-white grid, backlog strip, selecting cell/ticket and assigning to an owner/slot. Label columns Priority 1,2,3 rather than time.",
+      "source": "tournament/candidates/15-planning-strips.html"
+    },
+    {
+      "id": "16",
+      "name": "Transfer desk",
+      "src": "/candidates/16-transfer-desk.html",
+      "description": "Dual-pane file-manager transfer UI: choose source owner left and destination owner right; pick tickets and transfer with center controls; up/down priority in either list. Dense dark slate utility, high clarity, breadcrumb-like owner controls. Distinct from comparing UI candidates\u2014this is ownership transfer within one candidate.",
+      "source": "tournament/candidates/16-transfer-desk.html"
+    },
+    {
+      "id": "17",
+      "name": "Team outline",
+      "src": "/candidates/17-team-outline.html",
+      "description": "Outliner: owner headings and indented numbered ticket lines in one flowing document, folding optional. Typewriter-like white workspace, coral selection bar, compact inline assignment controls. Real moving between headings and reorder lines, not four expanded card queues.",
+      "source": "tournament/candidates/17-team-outline.html"
+    },
+    {
+      "id": "18",
+      "name": "Assignment mosaic",
+      "src": "/candidates/18-chip-mosaic.html",
+      "description": "Dense chips grouped into an asymmetric owner mosaic. Small ticket IDs expand selected chip into a full-width detail band; ownership selection via compact segmented control. Saturated cobalt regions with legible white and yellow highlights. Keep full titles accessible through selection and show actual counts.",
+      "source": "tournament/candidates/18-chip-mosaic.html"
+    },
+    {
+      "id": "19",
+      "name": "Terminal planner",
+      "src": "/candidates/19-terminal-planner.html",
+      "description": "A genuinely terminal-shaped task planner with fixed-width rows, numbered commands, command history/status and highlighted selected row. Amber on dark brown, no fake system telemetry. Real click/keyboard commands for owner assignment and priority; explain accepted commands and retain ordinary accessible buttons.",
+      "source": "tournament/candidates/19-terminal-planner.html"
+    },
+    {
+      "id": "20",
+      "name": "Blueprint workbench",
+      "src": "/candidates/20-blueprint-desk.html",
+      "description": "Drafting-table layout: ticket specifications on left, ownership placement diagram on right with technical dimension/priority labels derived only from actual data. Blueprint navy/cyan drawing surface; crisp linework and real controls. Grid justified as actual placement canvas, not decorative background.",
+      "source": "tournament/candidates/20-blueprint-desk.html"
+    },
+    {
+      "id": "21",
+      "name": "People first",
+      "src": "/candidates/21-people-desk.html",
+      "description": "People-centric roster: large typographic developer profiles arranged asymmetrically, each with assigned work as a readable numbered editorial list. A shared ticket tray and selected-person assign panel. Warm red/white humanist look, initials not stock avatars. Selecting person is the primary navigation.",
+      "source": "tournament/candidates/21-people-desk.html"
+    },
+    {
+      "id": "22",
+      "name": "Assignment matrix",
+      "src": "/candidates/22-choice-matrix.html",
+      "description": "Ticket-by-developer assignment matrix: eight rows and four owner columns, a single selected ownership cell per row, with points and priority displayed. High-contrast black/white and emerald selected cells. Clicking a cell reassigns; separate tiny priority arrows reorder. This should read as a decision matrix at a glance.",
+      "source": "tournament/candidates/22-choice-matrix.html"
+    }
+  ]
+}

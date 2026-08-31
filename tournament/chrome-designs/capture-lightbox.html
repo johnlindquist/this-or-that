@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lightbox · This or that</title>
+  <link rel="stylesheet" href="/chrome-designs/fonts.css">
+  <script src="/chrome-designs/runtime.js" defer></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --canvas: #202120;
+      --strip: #30312f;
+      --inspector: #292a28;
+      --field: #222320;
+      --control: #3a3c38;
+      --hover: #474a44;
+      --line: #484b44;
+      --frame-line: #696d63;
+      --ink: #eeeee7;
+      --muted: #b8bcb2;
+      --accent: #dfb078;
+      --selected: #443a2d;
+      --selected-ink: #f4d9b4;
+      --selection: #685035;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-11: 44px;
+      --space-14: 56px;
+      --space-16: 64px;
+      --text-xs: 12px;
+      --text-sm: 13px;
+      --text-base: 14px;
+      --text-lg: 16px;
+      --text-title: 20px;
+      --radius: 3px;
+      --line-width: 1px;
+      --focus-width: 2px;
+      --preview-height: clamp(400px, calc(100dvh - 352px), 550px);
+      --ease-out: cubic-bezier(.16, 1, .3, 1);
+      font: var(--text-base)/1.4 'Source Sans 3', sans-serif;
+      background: var(--canvas);
+      color: var(--ink);
+      accent-color: var(--accent);
+      scrollbar-color: var(--frame-line) var(--canvas);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; }
+    h1, h2, p, figure { margin: 0; }
+    button, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      min-height: var(--space-8);
+      padding: var(--space-1) var(--space-3);
+      border: var(--line-width) solid var(--frame-line);
+      border-radius: var(--radius);
+      background: var(--control);
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 160ms var(--ease-out), border-color 160ms var(--ease-out);
+    }
+    button:hover:not(:disabled) { background: var(--hover); border-color: var(--muted); }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    button[aria-pressed="true"] { border-color: var(--accent); background: var(--selected); color: var(--selected-ink); }
+    button:focus-visible, a:focus-visible, textarea:focus-visible { outline: var(--focus-width) solid var(--accent); outline-offset: var(--space-1); }
+    a { color: var(--muted); text-decoration: none; text-underline-offset: var(--space-1); }
+    a:hover { color: var(--ink); text-decoration: underline; }
+    ::selection { background: var(--selection); color: var(--ink); }
+    svg { width: var(--space-4); height: var(--space-4); flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    [hidden] { display: none !important; }
+    .tool-strip {
+      min-height: var(--space-14);
+      padding: var(--space-2) var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: var(--space-6);
+      background: var(--strip);
+      border-bottom: var(--line-width) solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: var(--space-3); font-size: var(--text-lg); font-weight: 600; white-space: nowrap; }
+    .brand svg { width: var(--space-6); height: var(--space-6); color: var(--muted); }
+    .project { font-size: var(--text-base); font-weight: 600; }
+    .tools { justify-self: end; display: flex; align-items: center; gap: var(--space-2); }
+    .quiet { border-color: transparent; background: transparent; color: var(--muted); font-size: var(--text-sm); font-weight: 400; }
+    .workspace { padding: 0 var(--space-6) var(--space-4); }
+    .view-strip { min-height: var(--space-10); display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+    h1 { font-size: var(--text-title); font-weight: 600; letter-spacing: -.02em; }
+    .view-mode { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); color: var(--muted); }
+    .proofs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+    .proof { min-width: 0; }
+    .preview-window { border: var(--line-width) solid var(--frame-line); padding: var(--space-1); background: var(--canvas); transition: border-color 160ms var(--ease-out); }
+    .preview-window:focus-within { border-color: var(--accent); }
+    iframe { display: block; width: 100%; height: var(--preview-height); border: 0; background: var(--canvas); color-scheme: normal; }
+    figcaption { min-height: calc(var(--space-8) + var(--space-1)); display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); }
+    .position { color: var(--muted); }
+    .candidate-name { font-weight: 600; }
+    .candidate-id { color: var(--muted); font-variant-numeric: tabular-nums; }
+    .open-link { margin-left: auto; display: inline-flex; align-items: center; gap: var(--space-1); white-space: nowrap; }
+    body:has([data-vote="left"][aria-pressed="true"]) .proof-left .preview-window,
+    body:has([data-vote="right"][aria-pressed="true"]) .proof-right .preview-window,
+    body:has([data-vote="like"][aria-pressed="true"]) .preview-window { border-color: var(--accent); }
+    body:has([data-vote="left"][aria-pressed="true"]) .proof-left .candidate-name,
+    body:has([data-vote="right"][aria-pressed="true"]) .proof-right .candidate-name,
+    body:has([data-vote="like"][aria-pressed="true"]) .candidate-name { color: var(--accent); }
+    .decision-strip { min-height: var(--space-16); display: flex; justify-content: center; align-items: center; gap: var(--space-6); padding: var(--space-3) var(--space-6); border-top: var(--line-width) solid var(--line); border-bottom: var(--line-width) solid var(--line); background: var(--strip); }
+    .choose { min-height: var(--space-10); }
+    .alternatives { display: flex; align-items: center; gap: var(--space-1); }
+    .alternatives button { border-color: transparent; background: transparent; font-size: var(--text-sm); color: var(--muted); font-weight: 400; }
+    .alternatives button[aria-pressed="true"] { background: var(--selected); border-color: var(--accent); color: var(--selected-ink); }
+    .inspector { background: var(--inspector); padding: 0 var(--space-6) var(--space-3); }
+    .inspector-heading { min-height: var(--space-10); display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); }
+    h2 { font-size: var(--text-sm); font-weight: 600; }
+    .inspector-heading h2 { display: inline-flex; align-items: center; gap: var(--space-2); }
+    .inspector-heading span { font-weight: 400; color: var(--muted); }
+    .note-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+    .note-field { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--space-3); }
+    label { padding-top: var(--space-2); color: var(--muted); font-size: var(--text-sm); }
+    textarea { display: block; width: 100%; min-height: var(--space-14); height: var(--space-14); resize: vertical; padding: var(--space-2) var(--space-3); border: var(--line-width) solid var(--line); border-radius: var(--radius); background: var(--field); color: var(--ink); caret-color: var(--accent); font-size: var(--text-sm); line-height: 1.4; }
+    textarea:hover { border-color: var(--frame-line); }
+    textarea::placeholder { color: var(--muted); opacity: 1; }
+    .status-bar { min-height: var(--space-8); padding: var(--space-2) var(--space-6); border-top: var(--line-width) solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); color: var(--muted); font-size: var(--text-xs); }
+    .status-bar p { max-width: 75ch; }
+    @media (max-width: 1100px) {
+      .tool-strip, .decision-strip { gap: var(--space-4); }
+      .decision-strip { padding-inline: var(--space-4); }
+      .choose { padding-inline: var(--space-3); }
+      .alternatives { gap: 0; }
+      .alternatives button { padding-inline: var(--space-2); }
+      .note-field { grid-template-columns: 1fr; gap: var(--space-1); }
+      label { padding-top: 0; }
+    }
+    @media (max-width: 720px) {
+      :root { --preview-height: 460px; }
+      .tool-strip { grid-template-columns: 1fr auto; padding: var(--space-3) var(--space-4); gap: var(--space-2); }
+      .project { grid-column: 1; grid-row: 2; color: var(--muted); font-size: var(--text-sm); font-weight: 400; }
+      .tools { grid-column: 2; grid-row: 1 / 3; }
+      .workspace { padding-inline: var(--space-3); }
+      .view-strip { min-height: var(--space-14); }
+      .proofs, .note-grid { grid-template-columns: 1fr; gap: var(--space-4); }
+      figcaption { flex-wrap: wrap; row-gap: var(--space-1); padding-top: var(--space-2); }
+      .candidate-id { display: none; }
+      .open-link { font-size: var(--text-xs); }
+      .decision-strip { display: grid; grid-template-columns: 1fr; gap: var(--space-2); padding: var(--space-4); }
+      .choose { width: 100%; }
+      .choose-right { grid-row: 2; }
+      .alternatives { justify-content: center; }
+      .alternatives button { min-height: var(--space-11); padding-inline: var(--space-4); }
+      .inspector { padding-inline: var(--space-4); padding-bottom: var(--space-4); }
+      .inspector-heading span { display: none; }
+      .status-bar { padding-inline: var(--space-4); }
+      .status-meta { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+  </style>
+</head>
+<body data-design="capture-lightbox">
+  <!-- THESIS: Get the chrome out of the image; judge two originals in one quiet field. OWN-WORLD: Capture One's graphite tools, matte proofing surround, precise captions and warm selection edge, composed as a full-width lightbox with no library rail. FIRST VIEWPORT: Two interactive previews occupy the stage; the decision strip and low notes inspector sit beneath them. INTERACTION: Independent preview controls, local sample choices, editable notes, expandable inspector and reset. SEED: 9743c350, user-pinned Capture One reference; Lightbox is the spacious dark proofing variant. -->
+  <header class="tool-strip">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M12 5v14M6 8h3M15 16h3"/></svg>
+      <span>This or that</span>
+    </div>
+    <p class="project">Sprint distribution</p>
+    <div class="tools">
+      <button type="button" class="quiet" data-panel-toggle="lightbox-notes" aria-controls="lightbox-notes" aria-expanded="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 14h16M8 17h8"/></svg>
+        Notes
+      </button>
+    </div>
+  </header>
+  <main>
+    <section class="workspace" aria-labelledby="lightbox-title">
+      <div class="view-strip">
+        <h1 id="lightbox-title">Lightbox</h1>
+        <div class="view-mode"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="7" height="14"/><rect x="14" y="5" width="7" height="14"/></svg><span>Interactive originals</span></div>
+      </div>
+      <div class="proofs">
+        <figure class="proof proof-left">
+          <div class="preview-window"><iframe data-candidate="left" title="Blueprint workbench interactive preview" src="/candidates/20-blueprint-desk.html" sandbox="allow-scripts allow-same-origin"></iframe></div>
+          <figcaption><span class="position">Left</span><span class="candidate-name">Blueprint workbench</span><span class="candidate-id">20</span><a class="open-link" href="/candidates/20-blueprint-desk.html" target="_blank" rel="noopener">Open larger<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M10 4H4v16h16v-6"/></svg></a></figcaption>
+        </figure>
+        <figure class="proof proof-right">
+          <div class="preview-window"><iframe data-candidate="right" title="Team routes interactive preview" src="/candidates/11-metro-routes.html" sandbox="allow-scripts allow-same-origin"></iframe></div>
+          <figcaption><span class="position">Right</span><span class="candidate-name">Team routes</span><span class="candidate-id">11</span><a class="open-link" href="/candidates/11-metro-routes.html" target="_blank" rel="noopener">Open larger<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M10 4H4v16h16v-6"/></svg></a></figcaption>
+        </figure>
+      </div>
+    </section>
+    <section class="decision-strip" aria-label="Sample decision">
+      <button type="button" class="choose choose-left" data-vote="left" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M12 5v14M6 12h3"/></svg>Choose Blueprint workbench</button>
+      <div class="alternatives" role="group" aria-label="Other sample responses">
+        <button type="button" data-vote="skip" aria-pressed="false">Skip</button>
+        <button type="button" data-vote="like" aria-pressed="false">Like both</button>
+        <button type="button" data-vote="hate" aria-pressed="false">Hate both</button>
+      </div>
+      <button type="button" class="choose choose-right" data-vote="right" aria-pressed="false">Choose Team routes<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M12 5v14M15 12h3"/></svg></button>
+    </section>
+    <section class="inspector" id="lightbox-notes" aria-labelledby="notes-title">
+      <div class="inspector-heading"><h2 id="notes-title">Comparison notes <span> / Local to this preview</span></h2><button type="button" class="quiet" data-action="reset">Reset notes &amp; response</button></div>
+      <div class="note-grid">
+        <div class="note-field"><label for="lightbox-left-note">Blueprint workbench</label><textarea id="lightbox-left-note" data-note="left" placeholder="What stands out on the left?" spellcheck="true"></textarea></div>
+        <div class="note-field"><label for="lightbox-right-note">Team routes</label><textarea id="lightbox-right-note" data-note="right" placeholder="What stands out on the right?" spellcheck="true"></textarea></div>
+      </div>
+    </section>
+  </main>
+  <footer class="status-bar"><p data-status role="status" aria-live="polite">Preview only. Responses are not recorded.</p><span class="status-meta">Lightbox / This or that</span></footer>
+</body>
+</html>

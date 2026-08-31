@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Terminal planner · Demo data</title>
+<!-- Candidate 19: Terminal planner. Exploratory draft for ranking; terminal rows and executable numbered commands, not production polish. -->
+<style>
+:root{color-scheme:dark;--bg:#21170e;--panel:#2b1e11;--line:#70502c;--ink:#ffcd7f;--muted:#c29c68;--bright:#ffe3af;--selected:#f1b85c}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}button,input{font:inherit}button{cursor:pointer;color:inherit;background:transparent;border:1px solid var(--line);padding:6px 9px}button:hover:not(:disabled){background:#493119;color:var(--bright)}button:disabled{opacity:.4;cursor:not-allowed}button:focus-visible,input:focus-visible{outline:2px solid var(--bright);outline-offset:2px}::selection{background:var(--ink);color:var(--bg)}*{scrollbar-color:var(--line) var(--bg);scrollbar-width:thin}.terminal{height:100dvh;min-height:550px;display:flex;flex-direction:column;padding:14px 18px 12px;max-width:1200px;margin:auto}header{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:9px;gap:12px}h1{font-size:16px;margin:0;font-weight:600}header small{color:var(--muted);white-space:nowrap}.summary{display:flex;gap:18px;flex-wrap:wrap;padding:10px 0;color:var(--muted);font-size:11px}.summary b{font-weight:500;color:var(--ink)}.ledger{flex:1;min-height:190px;overflow:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.columns,.ticket{display:grid;grid-template-columns:30px 82px minmax(150px,1fr) 78px 34px;align-items:center;gap:8px;min-width:460px}.columns{position:sticky;top:0;z-index:1;background:var(--panel);padding:6px 10px;color:var(--muted);font-size:11px}.owner-line{min-width:460px;padding:6px 10px 3px;color:var(--muted);font-size:11px}.owner-line strong{color:var(--ink);font-weight:500}.owner-line .rule{color:var(--line)}.ticket{border:0;border-bottom:1px solid #382616;width:100%;text-align:left;padding:6px 10px;min-height:32px}.ticket .title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ticket .id,.ticket .kind{font-size:11px}.ticket .rank{color:var(--muted)}.ticket .points{text-align:right}.ticket[aria-pressed="true"]{background:var(--selected);color:#231608}.ticket[aria-pressed="true"] .rank{color:#231608}.ticket[aria-pressed="true"]:hover{background:#ffce80;color:#231608}.empty{font-size:11px;color:var(--muted);padding:4px 10px 7px}.selection{padding:9px 0 6px;display:flex;justify-content:space-between;gap:10px}.selection span:last-child{font-size:11px;color:var(--muted)}.commands{display:flex;gap:5px;flex-wrap:wrap;padding-bottom:9px}.commands button{font-size:12px;padding:5px 8px}.commands kbd{color:var(--bright);font:inherit}.commands button.active{border-color:var(--ink);background:#493119}.help{border-top:1px dashed var(--line);padding:8px 0;color:var(--muted);font-size:11px}.help code{color:var(--ink);font:inherit}.history{height:62px;flex-shrink:0;overflow:auto;padding:5px 0;color:var(--muted);font-size:11px}.history p{margin:0;white-space:normal}.history .latest{color:var(--bright)}.history .error{color:#ffac84}.prompt{display:flex;gap:9px;align-items:center;border:1px solid var(--line);background:var(--panel);padding:5px 6px 5px 10px}.prompt label{color:var(--bright);white-space:nowrap}.prompt input{min-width:0;flex:1;border:0;background:transparent;color:var(--bright);padding:5px 0;caret-color:var(--ink)}.prompt input::placeholder{color:#b48b59}.prompt button{padding:5px 10px}footer{font-size:10px;color:var(--muted);padding-top:7px;display:flex;justify-content:space-between;gap:12px}@media(max-width:550px){.terminal{padding:10px}.summary{gap:9px}.selection{display:block}.selection span{display:block}.commands button{padding:5px}.help{font-size:10px}header small{font-size:10px}.columns,.ticket{grid-template-columns:25px 70px minmax(150px,1fr) 60px 25px;gap:6px}}
+</style>
+</head>
+<body>
+<main class="terminal">
+<header><h1>sprint / terminal planner</h1><small>DEMO DATA · 19</small></header>
+<div id="summary" class="summary" aria-label="Owner workload"></div>
+<section class="ledger" aria-label="Tickets grouped by owner in priority order">
+<div class="columns" aria-hidden="true"><span>PRI</span><span>TICKET</span><span>WORK ITEM</span><span>TYPE</span><span>PTS</span></div>
+<div id="rows"></div>
+</section>
+<div class="selection"><span id="selected"></span><span>Priority 1 runs first within each owner.</span></div>
+<nav class="commands" aria-label="Commands for selected ticket">
+<button id="cmd-0" data-command="0"><kbd>0</kbd> Backlog</button>
+<button id="cmd-1" data-command="1"><kbd>1</kbd> Maya</button>
+<button id="cmd-2" data-command="2"><kbd>2</kbd> Leo</button>
+<button id="cmd-3" data-command="3"><kbd>3</kbd> Priya</button>
+<button id="cmd-4" data-command="4"><kbd>4</kbd> Earlier</button>
+<button id="cmd-5" data-command="5"><kbd>5</kbd> Later</button>
+<button id="cmd-6" data-command="6"><kbd>6</kbd> Undo</button>
+<button id="cmd-7" data-command="7"><kbd>7</kbd> Reset</button>
+</nav>
+<div class="help">Click a row, then a command. Or type <code>select 101</code>, <code>move maya</code>, <code>backlog</code>, <code>up</code>, <code>down</code>, <code>undo</code>, <code>reset</code> or <code>0–7</code>.<br>Outside the prompt: <code>j/k</code> select next/previous; <code>0–7</code> run commands; <code>/</code> focuses prompt.</div>
+<div id="history" class="history" role="log" aria-label="Command history" aria-live="polite" aria-relevant="additions text"></div>
+<form id="prompt" class="prompt"><label for="command">plan &gt;</label><input id="command" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="move maya" aria-label="Planner command"><button type="submit">Run</button></form>
+<footer><span>Assignments append to the chosen queue.</span><span>Scratch session · reload clears changes</span></footer>
+</main>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+let selected='SPR-101';
+const events=[{text:'Ready. Select a ticket; assign an owner or change its priority.',error:false}];
+const rowHost=document.getElementById('rows');
+const input=document.getElementById('command');
+const escape=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const demo=createDemo(render);
+const ownerCommands=['backlog','maya','leo','priya'];
+function ordered(){return demo.owners.flatMap(owner=>demo.list(owner.id));}
+function render(){
+ const focusId=document.activeElement?.id;
+ const oldScroll=rowHost.parentElement.scrollTop;
+ document.getElementById('summary').innerHTML=demo.owners.map(owner=>`<span>${escape(owner.name)} <b>${demo.list(owner.id).length} tasks / ${demo.points(owner.id)}pt</b></span>`).join('');
+ rowHost.innerHTML=demo.owners.map(owner=>`<div class="owner-line"><span class="rule">── </span><strong>${escape(owner.name.toUpperCase())}</strong> / ${demo.points(owner.id)} points <span class="rule">────────────────</span></div>${demo.list(owner.id).map((ticket,index)=>`<button class="ticket" id="ticket-${ticket.id}" data-ticket="${ticket.id}" aria-pressed="${ticket.id===selected}" aria-label="Select ${escape(ticket.id+' '+ticket.title)}, ${escape(owner.name)}, priority ${index+1}" title="${escape(ticket.title)}"><span class="rank">${ticket.id===selected?'›':String(index+1).padStart(2,'0')}</span><span class="id">${ticket.id}</span><span class="title">${escape(ticket.title)}</span><span class="kind">${escape(ticket.kind)}</span><span class="points">${ticket.points}</span></button>`).join('')||'<div class="empty">   (empty queue)</div>'}`).join('');
+ const owner=demo.ownerOf(selected),queue=demo.list(owner),position=queue.findIndex(ticket=>ticket.id===selected);
+ document.getElementById('selected').textContent=`selected: ${selected} / priority ${position+1}`;
+ ownerCommands.forEach((id,index)=>{const button=document.getElementById('cmd-'+index);button.classList.toggle('active',id===owner);button.setAttribute('aria-label',`Assign selected ticket to ${id}`);});
+ document.getElementById('cmd-4').disabled=position===0;
+ document.getElementById('cmd-5').disabled=position===queue.length-1;
+ document.getElementById('history').innerHTML=events.slice(-3).map((event,index,array)=>`<p class="${event.error?'error':index===array.length-1?'latest':''}">${escape(event.text)}</p>`).join('');
+ if(focusId&&document.activeElement?.id!==focusId)document.getElementById(focusId)?.focus({preventScroll:true});
+ rowHost.parentElement.scrollTop=oldScroll;
+}
+function log(text,error=false){events.push({text,error});if(events.length>30)events.shift();render();}
+function select(id){selected=id;render();document.getElementById('ticket-'+id)?.scrollIntoView({block:'nearest'});}
+function execute(raw){
+ const text=raw.trim().toLowerCase();if(!text)return;
+ const aliases={'0':'backlog','1':'move maya','2':'move leo','3':'move priya','4':'up','5':'down','6':'undo','7':'reset'};
+ const command=aliases[text]||text;
+ const parts=command.split(/\s+/);
+ if(parts[0]==='select'&&parts.length===2){const id=parts[1].toUpperCase().startsWith('SPR-')?parts[1].toUpperCase():'SPR-'+parts[1];if(!demo.tickets.some(ticket=>ticket.id===id)){log(`! Unknown ticket: ${parts[1]}. Use select 101 through select 108.`,true);return;}select(id);log(`> ${text} — selected ${id}`);return;}
+ if(command==='backlog'||(parts[0]==='move'&&parts.length===2)){
+  const owner=command==='backlog'?'backlog':parts[1];
+  if(!ownerCommands.includes(owner)){log('! Owner must be backlog, maya, leo or priya.',true);return;}
+  if(demo.ownerOf(selected)===owner){log(`> ${text} — ${selected} already belongs to ${owner}; priority unchanged.`);return;}
+  demo.move(selected,owner);log(`> ${text} — ${selected} appended to ${owner}.`);return;
+ }
+ if(command==='up'||command==='down'){
+  const list=demo.list(demo.ownerOf(selected)),index=list.findIndex(ticket=>ticket.id===selected),delta=command==='up'?-1:1;
+  if(index+delta<0||index+delta>=list.length){log(`> ${text} — already at ${delta<0?'first':'last'} priority.`);return;}
+  demo.shift(selected,delta);log(`> ${text} — ${selected} is now priority ${index+delta+1}.`);return;
+ }
+ if(command==='undo'){const revision=demo.inspect().revision;demo.undo();log(`> ${text} — ${revision===demo.inspect().revision?'nothing to undo.':'previous distribution restored.'}`);return;}
+ if(command==='reset'){demo.reset();log(`> ${text} — demo distribution restored. Undo can reverse this.`);return;}
+ log(`! Unknown command: ${raw}. Use the commands listed above.`,true);
+}
+rowHost.addEventListener('click',event=>{const row=event.target.closest('[data-ticket]');if(row)select(row.dataset.ticket);});
+document.querySelector('.commands').addEventListener('click',event=>{const button=event.target.closest('[data-command]');if(button&&!button.disabled)execute(button.dataset.command);});
+document.getElementById('prompt').addEventListener('submit',event=>{event.preventDefault();const raw=input.value;input.value='';execute(raw);input.focus();});
+document.addEventListener('keydown',event=>{
+ if(event.ctrlKey||event.metaKey||event.altKey||event.target.closest('input,textarea,select,[contenteditable="true"]'))return;
+ if(event.key==='/'){event.preventDefault();input.focus();}
+ else if(/^[0-7]$/.test(event.key)){event.preventDefault();execute(event.key);}
+ else if(event.key==='j'||event.key==='k'){event.preventDefault();const tickets=ordered(),index=tickets.findIndex(ticket=>ticket.id===selected);select(tickets[Math.max(0,Math.min(tickets.length-1,index+(event.key==='j'?1:-1)))].id);}
+});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Transfer desk · Sprint distribution</title>
+<style>
+:root{color-scheme:dark;font-family:Arial,Helvetica,sans-serif;color:#e5ebf2;background:#151c25;font-size:13px}*{box-sizing:border-box}body{margin:0}button,select,input{font:inherit}button,select{border:1px solid #455365;border-radius:4px;background:#273340;color:#edf3f9}button{cursor:pointer;padding:7px 10px}button:hover:not(:disabled),select:hover{background:#354454}button:disabled{opacity:.35;cursor:not-allowed}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #85d6f6;outline-offset:3px}input{accent-color:#72c9ed}::selection{background:#34779a;color:white}*{scrollbar-color:#526172 #1d2733;scrollbar-width:thin}.app{min-height:100dvh;display:flex;flex-direction:column}header{padding:15px 18px 12px;display:flex;gap:12px;align-items:center;border-bottom:1px solid #394554}h1{font-size:20px;letter-spacing:-.5px;margin:0}header p{margin:4px 0 0;color:#a5b4c5;font-size:11px}.header-actions{margin-left:auto;display:flex;gap:6px}.intro{padding:11px 18px;color:#aebbcb;display:flex;justify-content:space-between;gap:12px;font-size:12px}.intro strong{color:#dce5ef;font-weight:normal}.desk{display:grid;grid-template-columns:minmax(0,1fr) 100px minmax(0,1fr);padding:0 14px;flex:1;min-height:420px}.pane{min-width:0;display:flex;flex-direction:column;border:1px solid #455262;background:#1c2631}.path{padding:12px 10px;background:#25323f;border-bottom:1px solid #455262}.path label{display:flex;align-items:center;gap:7px;color:#aab8c8;font-size:11px}.path select{font-weight:bold;min-width:0;width:100%;padding:7px;background:#18232e;color:#fff}.path .slash{color:#718497}.pane-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.pane-title strong{font-size:12px}.pane-title span{font-size:11px;color:#adbdcb;font-variant-numeric:tabular-nums}.list-head{display:flex;align-items:center;gap:6px;padding:8px 9px;background:#17212a;color:#a5b6c8;font-size:10px;border-bottom:1px solid #394554}.list-head label{display:flex;gap:6px;align-items:center}.list-head input{margin:0}.list-head span{margin-left:auto}.tickets{flex:1;overflow:auto;max-height:calc(100dvh - 287px);min-height:290px}.ticket{display:grid;grid-template-columns:18px minmax(0,1fr) 28px;gap:7px;padding:12px 9px;border-bottom:1px solid #354251;min-height:88px;background:#1d2834}.ticket:hover{background:#253545}.ticket.picked{background:#24475d}.ticket>input{margin:3px 0 0;width:14px;height:14px}.ticket label{cursor:pointer;display:block;line-height:1.35}.ticket .meta{display:flex;justify-content:space-between;gap:6px;color:#a9bacb;font-size:10px;margin-bottom:6px;font-variant-numeric:tabular-nums}.ticket .id{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#a6d7ee}.ticket .title{display:block;font-size:12px;color:#edf2f7}.kind{display:block;font-size:10px;color:#a4b3c4;margin-top:5px}.priority{display:flex;flex-direction:column;gap:3px;align-self:center}.priority button{padding:3px;width:26px;height:25px;display:grid;place-content:center;background:transparent;border-color:#506175}.priority svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8}.empty{padding:36px 16px;color:#b0c0d0;text-align:center;line-height:1.7}.pane-foot{border-top:1px solid #455262;padding:9px 10px;background:#25323f;color:#b4c5d6;font-size:11px;display:flex;justify-content:space-between}.pane-foot button{padding:0;background:none;border:none;font-size:11px;color:#80d2f3}.bridge{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:9px;padding:10px 9px}.bridge button{padding:10px 4px;font-size:11px;line-height:1.5}.bridge .transfer{background:#79c9e9;color:#102330;border-color:#79c9e9;font-weight:bold}.bridge .transfer:hover:not(:disabled){background:#a3e1f8}.bridge svg{display:block;margin:0 auto 3px;width:23px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7}.bridge .divider{height:1px;background:#3c4959;margin:7px 0}.bridge small{font-size:10px;text-align:center;color:#9cacbe;line-height:1.5}.team{padding:13px 15px;display:grid;grid-template-columns:repeat(4,1fr);gap:0}.team-item{padding:0 12px;border-right:1px solid #3b4755;display:flex;justify-content:space-between;gap:8px;font-size:11px;color:#b4c2d0}.team-item:first-child{padding-left:0}.team-item:last-child{border:0}.team-item b{font-variant-numeric:tabular-nums;color:#e1eaf3;font-weight:normal}footer{display:flex;justify-content:space-between;gap:14px;padding:10px 18px;background:#101821;border-top:1px solid #344353;color:#a5b5c6;font-size:10px;min-height:35px}#status{color:#8dd5f1}@media(min-width:1000px){.desk{grid-template-columns:minmax(0,1fr) 140px minmax(0,1fr)}.ticket{min-height:80px}.ticket .title{font-size:14px}.bridge{padding:10px 18px}}@media(max-width:550px){header{padding:12px 10px}h1{font-size:17px}.intro{padding:10px;font-size:10px}.desk{padding:0 6px;grid-template-columns:minmax(0,1fr) 76px minmax(0,1fr)}.bridge{padding:6px}.path{padding:8px 6px}.path label{flex-wrap:wrap;gap:4px}.ticket{grid-template-columns:15px minmax(0,1fr);gap:5px;padding:10px 6px}.priority{grid-column:2;flex-direction:row;justify-content:flex-end}.ticket .meta{flex-wrap:wrap}.team{padding:12px 8px}.team-item{padding:0 5px;flex-direction:column;gap:3px}.pane-title{align-items:flex-start;gap:4px;flex-direction:column}.pane-foot{padding:8px 5px;font-size:10px}.header-actions button{padding:6px}.tickets{max-height:none}footer{padding:9px}}
+</style>
+</head>
+<body>
+<!-- Candidate 16: Transfer desk. Exploratory draft: dual-pane file-manager ownership transfer, not a production-polished surface. -->
+<div id="app" class="app"></div>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+const root=document.getElementById('app');
+const views={left:'backlog',right:'maya'};
+const selected={left:new Set(),right:new Set()};
+let message='Choose tickets, then send them to the opposite owner.';
+const demo=createDemo(render);
+const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const arrow=direction=>`<svg viewBox="0 0 24 18" aria-hidden="true"><path d="${direction==='right'?'M3 9h17m-6-6 6 6-6 6':'M21 9H4m6-6-6 6 6 6'}"/></svg>`;
+const chevron=direction=>`<svg viewBox="0 0 12 12" aria-hidden="true"><path d="${direction==='up'?'m2 8 4-4 4 4':'m2 4 4 4 4-4'}"/></svg>`;
+function ownerName(id){return demo.owners.find(owner=>owner.id===id).name;}
+function pane(side){
+ const owner=views[side],tickets=demo.list(owner),count=selected[side].size;
+ return `<section class="pane" aria-label="${side==='left'?'Source':'Destination'} ticket queue"><div class="path"><div class="pane-title"><strong>${side==='left'?'SOURCE':'DESTINATION'}</strong><span>${tickets.length} tickets · ${demo.points(owner)} pts</span></div><label for="owner-${side}">Sprint <span class="slash">/</span> owners <span class="slash">/</span><select id="owner-${side}" data-owner="${side}" aria-label="${side==='left'?'Source':'Destination'} owner">${demo.owners.map(person=>`<option value="${person.id}" ${person.id===owner?'selected':''}>${esc(person.name)}</option>`).join('')}</select></label></div><div class="list-head"><label><input id="all-${side}" type="checkbox" data-all="${side}" ${tickets.length&&count===tickets.length?'checked':''} ${!tickets.length?'disabled':''}> Select all</label><span>PRIORITY / POINTS</span></div><div class="tickets">${tickets.map((ticket,index)=>`<article class="ticket ${selected[side].has(ticket.id)?'picked':''}" data-ticket-id="${ticket.id}" data-owner-id="${owner}"><input type="checkbox" id="pick-${side}-${ticket.id}" data-pick="${side}" data-id="${ticket.id}" ${selected[side].has(ticket.id)?'checked':''} aria-label="Select ${ticket.id}: ${esc(ticket.title)}"><label for="pick-${side}-${ticket.id}"><span class="meta"><span class="id">${ticket.id}</span><span>#${index+1} · ${ticket.points} pt</span></span><span class="title">${esc(ticket.title)}</span><span class="kind">${esc(ticket.kind)}</span></label><div class="priority"><button id="up-${side}-${ticket.id}" data-shift="-1" data-id="${ticket.id}" aria-label="Raise ${ticket.id} priority" title="Raise priority" ${index===0?'disabled':''}>${chevron('up')}</button><button id="down-${side}-${ticket.id}" data-shift="1" data-id="${ticket.id}" aria-label="Lower ${ticket.id} priority" title="Lower priority" ${index===tickets.length-1?'disabled':''}>${chevron('down')}</button></div></article>`).join('')||'<div class="empty">Queue is empty.<br>Transfer tickets here to begin.</div>'}</div><div class="pane-foot"><span>${count} selected</span><button data-clear="${side}" ${count?'':'disabled'}>Clear selection</button></div></section>`;
+}
+function render(){
+ const focused=document.activeElement?.id;
+ for(const side of ['left','right']) for(const id of selected[side]) if(demo.ownerOf(id)!==views[side]) selected[side].delete(id);
+ const backlogCount=['left','right'].reduce((n,side)=>n+(views[side]==='backlog'?0:selected[side].size),0);
+ root.innerHTML=`<header><div><h1>Transfer desk</h1><p>Sprint distribution · Demo data</p></div><div class="header-actions"><button id="undo" data-action="undo">Undo</button><button id="reset" data-action="reset">Reset</button></div></header><div class="intro"><strong>Two owners. One transfer at a time.</strong><span>Top of queue = highest priority</span></div><main class="desk">${pane('left')}<nav class="bridge" aria-label="Transfer selected tickets"><button id="send-right" class="transfer" data-transfer="left" ${selected.left.size?'':'disabled'}>${arrow('right')}Send right<br>${selected.left.size} selected</button><button id="send-left" data-transfer="right" ${selected.right.size?'':'disabled'}>${arrow('left')}Send left<br>${selected.right.size} selected</button><div class="divider"></div><button id="return" data-action="backlog" ${backlogCount?'':'disabled'}>Return to<br>backlog</button><small>Transfers append<br>to the queue.</small></nav>${pane('right')}</main><aside class="team" aria-label="All owner totals">${demo.owners.map(owner=>`<div class="team-item"><span>${esc(owner.name)}</span><b>${demo.points(owner.id)} pts</b></div>`).join('')}</aside><footer><span id="status" role="status">${esc(message)}</span><span>Undo: one ticket per step</span></footer>`;
+ for(const side of ['left','right']){const box=document.getElementById(`all-${side}`);box.indeterminate=selected[side].size>0&&selected[side].size<demo.list(views[side]).length;}
+ if(focused) document.getElementById(focused)?.focus({preventScroll:true});
+}
+function transfer(side,destination){
+ const ids=demo.list(views[side]).filter(ticket=>selected[side].has(ticket.id)).map(ticket=>ticket.id);
+ selected[side].clear();
+ message=`${ids.length} ticket${ids.length===1?'':'s'} sent to ${ownerName(destination)}.`;
+ for(const id of ids) demo.move(id,destination);
+}
+root.addEventListener('change',event=>{
+ const el=event.target;
+ if(el.dataset.owner){const side=el.dataset.owner,other=side==='left'?'right':'left',old=views[side];views[side]=el.value;if(views[other]===el.value) views[other]=old;selected.left.clear();selected.right.clear();message='Owner queues opened. Select tickets to transfer.';render();}
+ if(el.dataset.pick){const set=selected[el.dataset.pick];el.checked?set.add(el.dataset.id):set.delete(el.dataset.id);render();}
+ if(el.dataset.all){const side=el.dataset.all;selected[side].clear();if(el.checked) for(const ticket of demo.list(views[side])) selected[side].add(ticket.id);render();}
+});
+root.addEventListener('click',event=>{
+ const button=event.target.closest('button');if(!button||button.disabled)return;
+ if(button.dataset.clear){selected[button.dataset.clear].clear();render();}
+ if(button.dataset.transfer){const side=button.dataset.transfer;transfer(side,views[side==='left'?'right':'left']);}
+ if(button.dataset.shift){message=`${button.dataset.id} priority ${button.dataset.shift==='-1'?'raised':'lowered'}.`;demo.shift(button.dataset.id,Number(button.dataset.shift));}
+ if(button.dataset.action==='backlog'){
+  const ids=['left','right'].flatMap(side=>views[side]==='backlog'?[]:demo.list(views[side]).filter(ticket=>selected[side].has(ticket.id)).map(ticket=>ticket.id));
+  selected.left.clear();selected.right.clear();message=`${ids.length} ticket${ids.length===1?'':'s'} returned to backlog.`;for(const id of ids)demo.move(id,'backlog');
+ }
+ if(button.dataset.action==='undo'){selected.left.clear();selected.right.clear();message='Undo requested · reverses the most recent ticket change.';demo.undo();render();}
+ if(button.dataset.action==='reset'){selected.left.clear();selected.right.clear();message='Demo sprint restored.';demo.reset();render();}
+});
+render();
+</script>
+</body>
+</html>

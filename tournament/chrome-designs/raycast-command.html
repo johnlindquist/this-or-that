@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Command · This or that</title>
+  <link rel="stylesheet" href="/chrome-designs/fonts.css">
+  <script src="/chrome-designs/runtime.js" defer></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --canvas: #19191b;
+      --surface: #232325;
+      --raised: #2c2c2f;
+      --hover: #353538;
+      --field: #1e1e20;
+      --line: #3b3b3f;
+      --control-line: #64646a;
+      --ink: #efeeec;
+      --muted: #b0aeb3;
+      --accent: #f5836c;
+      --accent-ink: #301912;
+      --accent-surface: #4a2d28;
+      --accent-text: #ffc2b3;
+      --selection: #734437;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --text-small: 12px;
+      --text-body: 14px;
+      --text-title: 20px;
+      --text-heading: 24px;
+      --radius-small: 6px;
+      --radius: 12px;
+      --frame-height: clamp(400px, calc(100dvh - 384px), 520px);
+      --page-width: 1440px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+      font-family: 'Inter', sans-serif;
+      font-size: var(--text-body);
+      color: var(--ink);
+      background: var(--canvas);
+      font-synthesis: none;
+    }
+    * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--control-line) var(--canvas); }
+    body { margin: 0; min-width: 320px; }
+    h1, h2, p { margin: 0; }
+    button, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .45; }
+    a { color: inherit; text-underline-offset: var(--space-1); }
+    button:focus-visible, a:focus-visible, textarea:focus-visible, iframe:focus-visible { outline: 2px solid var(--accent); outline-offset: var(--space-1); }
+    ::selection { background: var(--selection); color: var(--ink); }
+    [hidden] { display: none !important; }
+    svg { width: var(--space-4); height: var(--space-4); fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+    .session { min-height: 52px; padding: var(--space-3) var(--space-8); display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: var(--space-3); font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 500; }
+    .brand svg { width: var(--space-5); height: var(--space-5); color: var(--accent); }
+    .session-name { color: var(--muted); font-size: var(--text-small); }
+    main { max-width: var(--page-width); margin: auto; padding: var(--space-6) var(--space-8); }
+    .introduction { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); margin-bottom: var(--space-6); }
+    h1 { font-family: 'Outfit', sans-serif; font-size: var(--text-heading); font-weight: 500; letter-spacing: -.025em; line-height: 1.25; }
+    .introduction p { margin-top: var(--space-1); color: var(--muted); line-height: 1.5; }
+    .preview-label { display: flex; align-items: center; gap: var(--space-2); white-space: nowrap; color: var(--muted); font-size: var(--text-small); }
+    .comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+    .candidate { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; transition: border-color 180ms var(--ease), background-color 180ms var(--ease); }
+    .candidate:has([aria-pressed="true"]) { border-color: var(--accent); }
+    .candidate-heading { min-height: 64px; padding: var(--space-3) var(--space-4); display: flex; align-items: center; gap: var(--space-3); }
+    .position { color: var(--muted); font-size: var(--text-small); min-width: var(--space-8); }
+    h2 { font-family: 'Outfit', sans-serif; font-size: var(--text-title); font-weight: 500; letter-spacing: -.02em; line-height: 1.25; }
+    .open { margin-left: auto; display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2); border-radius: var(--radius-small); color: var(--muted); font-size: var(--text-small); text-decoration: none; white-space: nowrap; }
+    .open:hover { background: var(--hover); color: var(--ink); }
+    iframe { display: block; width: 100%; height: var(--frame-height); border: 0; background: var(--field); }
+    .candidate-footer { padding: var(--space-3); }
+    .choose { width: 100%; min-height: var(--space-10); padding: var(--space-2) var(--space-3); display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); color: var(--ink); background: var(--raised); border: 1px solid var(--control-line); border-radius: var(--radius-small); text-align: left; transition: background-color 180ms var(--ease); }
+    .choose:hover { background: var(--hover); }
+    .choose[aria-pressed="true"] { color: var(--accent-text); background: var(--accent-surface); border-color: var(--accent); }
+    .selection-mark { display: inline-flex; align-items: center; gap: var(--space-1); font-size: var(--text-small); }
+    .selection-mark span, .selection-mark .check { display: none; }
+    .choose[aria-pressed="true"] .selection-mark span, .choose[aria-pressed="true"] .selection-mark .check { display: inline; }
+    .choose[aria-pressed="true"] .selection-mark .plus { display: none; }
+    .command-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); margin-top: var(--space-5); }
+    .navigation-hint { display: flex; align-items: center; gap: var(--space-2); color: var(--muted); font-size: var(--text-small); }
+    .key-pair { display: flex; gap: var(--space-1); }
+    kbd { min-width: var(--space-6); height: var(--space-6); display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--control-line); border-radius: var(--radius-small); background: var(--surface); color: var(--ink); font: inherit; }
+    kbd svg { width: var(--space-3); height: var(--space-3); }
+    .commands { display: flex; align-items: center; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+    .command { min-height: var(--space-10); padding: var(--space-2) var(--space-3); background: transparent; border: 1px solid transparent; border-radius: var(--radius-small); display: inline-flex; justify-content: center; align-items: center; gap: var(--space-2); color: var(--muted); white-space: nowrap; }
+    .command:hover { background: var(--hover); color: var(--ink); }
+    .command[aria-pressed="true"] { color: var(--accent-text); background: var(--accent-surface); border-color: var(--accent); }
+    .command[aria-expanded="true"] { color: var(--ink); background: var(--hover); }
+    .command-divider { width: 1px; height: var(--space-5); margin: 0 var(--space-1); background: var(--line); }
+    .notes-toggle { color: var(--ink); }
+    .notes-toggle .chevron { transition: transform 180ms var(--ease); }
+    .notes-toggle[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+    .status { margin-top: var(--space-3); color: var(--muted); font-size: var(--text-small); line-height: 1.5; }
+    .notes { margin-top: var(--space-6); padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+    .notes-header { display: flex; justify-content: space-between; align-items: start; gap: var(--space-4); margin-bottom: var(--space-5); }
+    .notes-header p { color: var(--muted); margin-top: var(--space-1); line-height: 1.5; }
+    .note-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
+    label { display: block; margin-bottom: var(--space-2); color: var(--ink); }
+    textarea { display: block; width: 100%; min-height: 112px; padding: var(--space-3); resize: vertical; color: var(--ink); caret-color: var(--accent); border: 1px solid var(--control-line); border-radius: var(--radius-small); background: var(--field); line-height: 1.6; }
+    textarea::placeholder { color: var(--muted); opacity: 1; }
+    @media (max-width: 1100px) {
+      .session { padding-inline: var(--space-6); }
+      main { padding-inline: var(--space-6); }
+      .candidate-heading { flex-wrap: wrap; gap: var(--space-2); }
+      h2 { font-size: 18px; }
+      .open { padding: var(--space-1); }
+      .open span { display: none; }
+      .command-row { gap: var(--space-3); }
+      .command { padding-inline: var(--space-2); }
+    }
+    @media (max-width: 700px) {
+      .session { padding-inline: var(--space-4); }
+      main { padding: var(--space-6) var(--space-4); }
+      .introduction { display: block; }
+      .preview-label { margin-top: var(--space-3); }
+      .comparison, .note-grid { grid-template-columns: minmax(0, 1fr); }
+      .comparison { gap: var(--space-6); }
+      iframe { height: 440px; }
+      .candidate-heading { min-height: 60px; }
+      .command-row { flex-direction: column-reverse; align-items: stretch; gap: var(--space-4); }
+      .commands { flex-wrap: wrap; justify-content: center; }
+      .command { font-size: var(--text-small); min-height: 44px; }
+      .command-divider { display: none; }
+      .notes-toggle { width: 100%; border-top-color: var(--line); border-radius: 0; }
+      .navigation-hint { justify-content: center; }
+      .status { text-align: center; }
+      .notes { padding: var(--space-4); }
+      .notes-header { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+  </style>
+</head>
+<body data-design="raycast-command">
+  <!-- THESIS: Comparison as a focused command workspace, not a desktop simulation. OWN-WORLD: Raycast's quiet charcoal surfaces, precise selection rows and compact action cluster; Outfit gives the working titles a calmer, rounder voice. FIRST VIEWPORT: A slim session line, project title and two large live previews, with decisions immediately beneath each. INTERACTION: Candidate controls stay live; five sample response buttons and an expandable Notes utility use shared hooks. Arrow keys browse designs and never cast votes. SEED: 9743c350, user-pinned Raycast reference, Command variant 1. -->
+  <header class="session">
+    <div class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 7 5 5-5 5M13 17h6M13 5l6 6"/></svg><span>This or that</span></div>
+    <span class="session-name">Command / comparison workspace</span>
+  </header>
+  <main>
+    <div class="introduction">
+      <div><h1>Sprint distribution</h1><p>Explore each design. Choose what works.</p></div>
+      <span class="preview-label"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></svg>Interactive previews</span>
+    </div>
+    <section class="comparison" aria-label="Compare Sprint distribution designs">
+      <article class="candidate" aria-labelledby="blueprint-title">
+        <header class="candidate-heading">
+          <span class="position">Left</span><h2 id="blueprint-title">Blueprint workbench</h2>
+          <a class="open" href="/candidates/20-blueprint-desk.html" target="_blank" rel="noopener" aria-label="Open Blueprint workbench larger"><span>Open larger</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4 10 14M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></svg></a>
+        </header>
+        <iframe data-candidate="left" title="Blueprint workbench interactive preview" src="/candidates/20-blueprint-desk.html" sandbox="allow-scripts allow-same-origin"></iframe>
+        <div class="candidate-footer"><button type="button" class="choose" data-vote="left" aria-pressed="false"><span>Choose Blueprint workbench</span><span class="selection-mark" aria-hidden="true"><span>Selected</span><svg class="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg><svg class="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button></div>
+      </article>
+      <article class="candidate" aria-labelledby="routes-title">
+        <header class="candidate-heading">
+          <span class="position">Right</span><h2 id="routes-title">Team routes</h2>
+          <a class="open" href="/candidates/11-metro-routes.html" target="_blank" rel="noopener" aria-label="Open Team routes larger"><span>Open larger</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4 10 14M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></svg></a>
+        </header>
+        <iframe data-candidate="right" title="Team routes interactive preview" src="/candidates/11-metro-routes.html" sandbox="allow-scripts allow-same-origin"></iframe>
+        <div class="candidate-footer"><button type="button" class="choose" data-vote="right" aria-pressed="false"><span>Choose Team routes</span><span class="selection-mark" aria-hidden="true"><span>Selected</span><svg class="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg><svg class="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button></div>
+      </article>
+    </section>
+    <div class="command-row">
+      <div class="navigation-hint"><span class="key-pair"><kbd aria-label="Left arrow"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3m4-4L3 8l4 4"/></svg></kbd><kbd aria-label="Right arrow"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></kbd></span><span>Browse designs, not responses</span></div>
+      <div class="commands" role="group" aria-label="Sample response and notes commands">
+        <button type="button" class="command" data-vote="skip" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 5 9 7-9 7V5ZM19 5v14"/></svg>Skip</button>
+        <button type="button" class="command" data-vote="like" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10v11H3V10h4Zm0 1 4-8h2v6h6a2 2 0 0 1 2 2l-2 8a2 2 0 0 1-2 2H7"/></svg>Like both</button>
+        <button type="button" class="command" data-vote="hate" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14V3H3v11h4Zm0-1 4 8h2v-6h6a2 2 0 0 0 2-2l-2-8a2 2 0 0 0-2-2H7"/></svg>Hate both</button>
+        <span class="command-divider" aria-hidden="true"></span>
+        <button type="button" class="command notes-toggle" data-panel-toggle="command-notes" aria-controls="command-notes" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-9M9 15l1-4 8-8 3 3-8 8-4 1Z"/></svg>Notes<svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4"/></svg></button>
+      </div>
+    </div>
+    <p class="status" data-status role="status" aria-live="polite">Preview only. Responses are not recorded.</p>
+    <section class="notes" id="command-notes" aria-labelledby="notes-title" hidden>
+      <div class="notes-header"><div><h2 id="notes-title">Comparison notes</h2><p>Capture what feels clearer, faster, or easier to use.</p></div><button class="command" type="button" data-action="reset">Clear notes &amp; response</button></div>
+      <div class="note-grid">
+        <div><label for="command-left-note">Blueprint workbench</label><textarea id="command-left-note" data-note="left" placeholder="What stands out in the left design?"></textarea></div>
+        <div><label for="command-right-note">Team routes</label><textarea id="command-right-note" data-note="right" placeholder="What stands out in the right design?"></textarea></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

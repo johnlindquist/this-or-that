@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planning strips · Demo data</title>
+<style>
+:root{font-family:Arial,sans-serif;color:#173e34;background:#f4faf7;font-size:13px;font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,select{font:inherit;color:inherit}button{cursor:pointer}button:disabled{opacity:.4;cursor:default}button:focus-visible,select:focus-visible{outline:3px solid #ad591d;outline-offset:2px}::selection{background:#bce8d5}*{scrollbar-color:#95b8aa #edf6f0}header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 18px 10px}h1{font-size:21px;letter-spacing:-.6px;margin:0;font-weight:600}h1 small{font-size:11px;font-weight:400;letter-spacing:0;margin-left:10px;color:#517367}.buttons{display:flex;gap:6px}.plain{background:transparent;border:1px solid #bad0c4;border-radius:5px;padding:6px 9px}.plain:hover{background:#e0f0e7}main{padding:0 18px 14px}.hint{margin:0 0 10px;color:#517367;font-size:12px}.planner{overflow:auto;background:#fff;border:1px solid #b5cdbf;border-radius:6px}.grid{display:grid;min-width:600px}.column{background:#e3f3e9;font-size:11px;font-weight:700;letter-spacing:.3px;padding:11px 12px;border-bottom:1px solid #b5cdbf;white-space:nowrap}.person{background:#f0f8f3;padding:18px 12px;border-bottom:1px solid #d3e5da;position:sticky;left:0;z-index:1}.person strong{display:block;font-size:15px;margin-bottom:7px}.person small{color:#5e7c6e;font-size:11px}.cell{padding:7px;min-height:95px;border-left:1px solid #d3e5da;border-bottom:1px solid #d3e5da;display:flex}.ticket{width:100%;text-align:left;border:1px solid #bfd8ca;background:#fff;border-radius:5px;padding:9px;display:flex;flex-direction:column;gap:6px;min-width:0}.ticket:hover{background:#eff9f3}.ticket.selected{background:#d6f2e2;border:2px solid #246b4e;padding:8px}.meta{display:flex;justify-content:space-between;gap:6px;font-size:10px;color:#537563}.title{font-size:12px;line-height:1.3;font-weight:600}.points{font-weight:700;color:#265b43;white-space:nowrap}.empty{width:100%;border:1px dashed #c6dacd;background:transparent;border-radius:5px;color:#62816f;font-size:12px}.empty:hover,.empty.target{background:#e4f4ea;border-color:#347657;color:#22553e}.backlog{margin-top:13px}.strip-label{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}.strip-label h2{font-size:13px;margin:0}.strip-label span{font-size:11px;color:#567762}.strip{display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;min-height:77px}.strip .ticket{flex:0 0 180px;min-height:73px;background:#f6f8ef}.strip .ticket.selected{background:#e4eccd}.empty-backlog{font-size:12px;color:#567762;padding:18px 0}.editor{border-top:1px solid #b8cfc0;margin-top:5px;padding-top:10px}.selection{font-size:12px;margin:0 0 9px;min-height:15px}.selection strong{color:#215f43}form{display:flex;align-items:end;gap:7px;flex-wrap:wrap}label{font-size:10px;color:#4b715c;display:flex;flex-direction:column;gap:4px}select{background:white;border:1px solid #a9c5b3;border-radius:4px;padding:7px 24px 7px 8px;min-height:32px}.primary{border:1px solid #245e43;background:#245e43;color:white;border-radius:4px;padding:8px 12px;font-weight:600}.primary:hover{background:#164b33}.actions{display:flex;gap:5px;margin-left:auto;align-self:end}.actions button{font-size:11px;padding:8px}.footnote{font-size:10px;color:#5e7869;margin:8px 0 0}@media(min-height:760px){.cell{min-height:130px}.ticket{padding:12px}.ticket.selected{padding:11px}.title{font-size:14px}.strip .ticket{min-height:90px}}@media(max-width:550px){header,main{padding-left:10px;padding-right:10px}h1 small{display:block;margin:3px 0 0}.actions{margin-left:0}.grid{min-width:580px}}
+</style>
+</head>
+<body>
+<!-- Candidate 15: Planning strips. Exploratory demo: priority-grid allocation, not a dated calendar. -->
+<header><h1>Planning strips <small>Demo data</small></h1><div class="buttons"><button class="plain" id="undo">Undo</button><button class="plain" id="reset">Reset</button></div></header>
+<main id="app"></main>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+let selected=null;
+let destination='maya';
+let slot=0;
+const app=document.querySelector('#app');
+const demo=createDemo(render);
+selected=demo.list('backlog')[0]?.id??demo.tickets[0].id;
+const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function ticketMarkup(ticket){return `<button type="button" class="ticket ${selected===ticket.id?'selected':''}" data-ticket-id="${ticket.id}" aria-pressed="${selected===ticket.id}" aria-label="Select ${esc(ticket.id+' '+ticket.title)}"><span class="meta"><span>${esc(ticket.id)} · ${esc(ticket.kind)}</span><span class="points">${ticket.points} pt</span></span><span class="title">${esc(ticket.title)}</span></button>`;}
+function render(){
+ const people=demo.owners.filter(o=>o.id!=='backlog');
+ const count=Math.max(3,...people.map(o=>demo.list(o.id).length+1));
+ const ticket=demo.tickets.find(t=>t.id===selected);
+ const remaining=demo.list(destination).filter(t=>t.id!==selected);
+ slot=Math.min(slot,remaining.length);
+ const owner=ticket?demo.ownerOf(ticket.id):'backlog';
+ const queue=ticket?demo.list(owner):[];
+ const index=queue.findIndex(t=>t.id===selected);
+ app.innerHTML=`<p class="hint">People down. Priority across. Select a ticket, then choose its place.</p><section class="planner" aria-label="Team priority planner"><div class="grid" style="grid-template-columns:102px repeat(${count},minmax(165px,1fr))"><div class="column">Sprint team</div>${Array.from({length:count},(_,i)=>`<div class="column">Priority ${i+1}</div>`).join('')}${people.map(person=>{const list=demo.list(person.id);return `<div class="person"><strong>${esc(person.name)}</strong><small>${list.length} tickets · ${demo.points(person.id)} pt</small></div>${Array.from({length:count},(_,i)=>`<div class="cell" data-owner="${person.id}" data-priority="${i+1}">${list[i]?ticketMarkup(list[i]):`<button type="button" class="empty ${destination===person.id&&slot===Math.min(i,list.filter(t=>t.id!==selected).length)?'target':''}" data-destination="${person.id}" data-slot="${i}" aria-label="Choose ${esc(person.name)}, priority ${i+1}">Place here</button>`}</div>`).join('')}`}).join('')}</div></section><section class="backlog" aria-label="Backlog"><div class="strip-label"><h2>Backlog strip</h2><span>${demo.list('backlog').length} unassigned · ${demo.points('backlog')} pt</span></div><div class="strip">${demo.list('backlog').map(ticketMarkup).join('')||'<span class="empty-backlog">Everything has a place. Return a ticket here any time.</span>'}</div></section><section class="editor" aria-label="Ticket assignment"><p class="selection">${ticket?`Selected <strong>${esc(ticket.id)}</strong> · ${esc(ticket.title)}`:'Select a ticket to plan it.'}</p><form id="assignment"><label>Assign to<select id="owner" aria-label="Assign selected ticket to owner">${demo.owners.map(o=>`<option value="${o.id}" ${destination===o.id?'selected':''}>${esc(o.name)}</option>`).join('')}</select></label><label>Insert at<select id="slot" aria-label="Priority slot">${Array.from({length:remaining.length+1},(_,i)=>`<option value="${i}" ${slot===i?'selected':''}>Priority ${i+1}</option>`).join('')}</select></label><button class="primary" ${ticket?'':'disabled'}>Place ticket</button><div class="actions"><button class="plain" type="button" data-shift="-1" ${index<=0?'disabled':''}>Earlier</button><button class="plain" type="button" data-shift="1" ${index>=queue.length-1?'disabled':''}>Later</button><button class="plain" type="button" id="return" ${owner==='backlog'?'disabled':''}>To backlog</button></div></form><p class="footnote">Slots are ordered priorities, not dates. Inserting shifts later tickets; empty gaps collapse.</p></section>`;
+}
+app.addEventListener('click',event=>{
+ const pick=event.target.closest('[data-ticket-id]');
+ if(pick){selected=pick.dataset.ticketId;destination=demo.ownerOf(selected);slot=demo.list(destination).findIndex(t=>t.id===selected);render();app.querySelector(`[data-ticket-id="${selected}"]`)?.focus();return;}
+ const target=event.target.closest('[data-destination]');
+ if(target){destination=target.dataset.destination;slot=Number(target.dataset.slot);render();app.querySelector('.primary')?.focus();return;}
+ const shift=event.target.closest('[data-shift]');
+ if(shift&&selected){demo.shift(selected,Number(shift.dataset.shift));return;}
+ if(event.target.closest('#return')&&selected){destination='backlog';slot=demo.list('backlog').length;demo.move(selected,'backlog');}
+});
+app.addEventListener('change',event=>{if(event.target.id==='owner'){destination=event.target.value;slot=0;render();app.querySelector('#owner')?.focus();}else if(event.target.id==='slot'){slot=Number(event.target.value);}});
+app.addEventListener('submit',event=>{event.preventDefault();if(!selected)return;const remaining=demo.list(destination).filter(t=>t.id!==selected);demo.move(selected,destination,remaining[slot]?.id??null);app.querySelector('.primary')?.focus();});
+document.querySelector('#undo').addEventListener('click',()=>demo.undo());
+document.querySelector('#reset').addEventListener('click',()=>{destination='maya';slot=0;demo.reset();});
+render();
+</script>
+</body>
+</html>

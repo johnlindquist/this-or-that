@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ticket inspector — Sprint distribution</title>
+<!-- Candidate 08: master-detail ticket inspector. Exploration draft for preference ranking, not production polish. -->
+<style>
+:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#263c3b;background:#edf1f0;font-synthesis:none;--accent:#166c65;--line:#d4ddda;--muted:#627570}
+*{box-sizing:border-box}body{margin:0}button,select{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.42}button,select{border:1px solid #bdccc7;border-radius:5px;background:#fff;color:#263c3b}button:hover:not(:disabled){background:#e5efeb}button:focus-visible,select:focus-visible{outline:3px solid #169887;outline-offset:2px}::selection{background:#b8e2d8}*{scrollbar-color:#a5bdb5 #edf1f0;scrollbar-width:thin}button{padding:7px 10px}h1,h2,h3,p{margin:0}#app{height:100dvh;min-height:540px;display:flex;flex-direction:column}header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);background:#f8faf9}h1{font-size:17px;letter-spacing:-.025em}.demo{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.tools{margin-left:auto;display:flex;gap:6px}.tools button{font-size:12px}.roster{display:flex;background:#f8faf9;padding:0 14px;border-bottom:1px solid var(--line);gap:5px;overflow-x:auto;flex:none}.person{border:0;border-radius:0;background:transparent;padding:13px 10px 12px;min-width:100px;border-bottom:3px solid transparent;text-align:left;display:flex;align-items:center;gap:8px}.person.active{border-bottom-color:var(--accent);background:#e4eeea}.initials{width:27px;height:27px;display:grid;place-items:center;border-radius:50%;background:#dce7e2;color:#41635b;font-size:10px;font-weight:700}.person strong{display:block;font-size:12px}.person small{display:block;font-size:10px;color:var(--muted);margin-top:3px;white-space:nowrap}.workbench{display:grid;grid-template-columns:255px minmax(0,1fr);min-height:0;flex:1}.master{background:#f0f4f2;border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}.pane-heading{height:43px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;font-size:11px;font-weight:650;color:var(--muted);border-bottom:1px solid var(--line)}.pane-heading span{font-weight:400}.tickets{overflow:auto;flex:1}.ticket{width:100%;border:0;border-bottom:1px solid #dde5e1;border-radius:0;text-align:left;background:transparent;padding:13px 15px;display:block}.ticket.selected{background:#d5e8e1;box-shadow:inset 0 0 0 1px #9cbdb1}.ticket-top{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#526d64}.ticket-title{display:block;font-size:12px;font-weight:600;line-height:1.45;margin-top:5px}.ticket-meta{display:flex;justify-content:space-between;font-size:10px;color:#526d64;margin-top:8px}.inspector{padding:22px 24px;background:#fcfdfc;overflow:auto;min-width:0}.record-id{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}.inspector h2{font-size:23px;line-height:1.2;letter-spacing:-.035em;margin-top:8px;max-width:450px}.facts{display:flex;gap:28px;margin:20px 0 22px;padding-bottom:19px;border-bottom:1px solid var(--line)}.facts div{display:flex;flex-direction:column;gap:5px}.facts dt{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}.facts dd{margin:0;font-size:13px;font-weight:600}.field{margin-bottom:18px}.field label{display:block;font-size:12px;font-weight:650;margin-bottom:7px}.field select{width:100%;padding:9px 10px;accent-color:var(--accent)}.field small{display:block;font-size:11px;color:var(--muted);line-height:1.4;margin-top:7px}.priority{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px}.priority button{font-size:11px;padding:7px 9px}.return{font-size:11px;background:transparent;color:var(--accent);border:0;text-decoration:underline;text-underline-offset:3px;padding:7px 0}.queue-context{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}.queue-context h3{font-size:11px;display:flex;justify-content:space-between;margin-bottom:9px}.queue-context h3 span{font-weight:400;color:var(--muted)}.queue-row{display:flex;align-items:baseline;gap:9px;width:100%;font-size:11px;text-align:left;border:0;border-radius:0;border-bottom:1px solid #e6ece8;background:transparent;padding:8px 2px}.queue-row.current{color:var(--accent);font-weight:650}.queue-row .rank{color:var(--muted);font-size:10px;width:14px;flex:none;font-variant-numeric:tabular-nums}.queue-row .title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.queue-row .pts{margin-left:auto;white-space:nowrap;font-size:10px;font-weight:400}.empty{padding:24px 16px;font-size:12px;color:var(--muted);line-height:1.6}.foot{border-top:1px solid var(--line);padding:9px 16px;display:flex;gap:12px;justify-content:space-between;font-size:10px;color:var(--muted);background:#f8faf9;min-height:31px}.foot span:last-child{white-space:nowrap}
+@media(min-width:1000px){.workbench{grid-template-columns:330px minmax(0,1fr)}.inspector{padding:30px 40px}.ticket{padding:16px 20px}.inspector h2{font-size:28px}.inspector-inner{max-width:680px}}@media(max-width:560px){header{padding:12px 10px;gap:6px}.demo{font-size:8px}.roster{padding:0 5px}.person{min-width:90px;padding-inline:6px}.workbench{grid-template-columns:185px minmax(0,1fr)}.ticket{padding:12px 9px}.inspector{padding:18px 13px}.inspector h2{font-size:19px}.priority{grid-template-columns:1fr 1fr}.priority select{grid-column:1/-1}.facts{gap:18px}.foot span:last-child{display:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+let activeOwner='all';
+let selected='SPR-101';
+let announcement='Select a ticket to edit its place in the sprint.';
+const app=document.querySelector('#app');
+const escapeHtml=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const demo=createDemo(render);
+function render(){
+  const focusId=document.activeElement?.id;
+  const visible=activeOwner==='all'?demo.owners.flatMap(owner=>demo.list(owner.id)):demo.list(activeOwner);
+  const ticket=demo.tickets.find(item=>item.id===selected);
+  const owner=ticket?demo.ownerOf(ticket.id):null;
+  const ownerData=demo.owners.find(item=>item.id===owner);
+  const queue=owner?demo.list(owner):[];
+  const rank=queue.findIndex(item=>item.id===selected);
+  const totalPoints=demo.tickets.reduce((sum,item)=>sum+item.points,0);
+  app.innerHTML=`<header><h1>Ticket inspector</h1><span class="demo">Demo data</span><div class="tools"><button id="undo" data-action="undo">Undo</button><button id="reset" data-action="reset">Reset</button></div></header>
+  <nav class="roster" aria-label="Developer roster"><button id="owner-all" class="person ${activeOwner==='all'?'active':''}" data-owner="all" aria-pressed="${activeOwner==='all'}"><span class="initials">ALL</span><span><strong>All tickets</strong><small>${demo.tickets.length} tickets · ${totalPoints} pt</small></span></button>${demo.owners.map(item=>`<button id="owner-${item.id}" class="person ${activeOwner===item.id?'active':''}" data-owner="${item.id}" aria-pressed="${activeOwner===item.id}"><span class="initials">${escapeHtml(item.initials)}</span><span><strong>${escapeHtml(item.name)}</strong><small>${demo.list(item.id).length} tickets · ${demo.points(item.id)} pt</small></span></button>`).join('')}</nav>
+  <main class="workbench"><section class="master" aria-label="Ticket list"><div class="pane-heading">${activeOwner==='all'?'Sprint tickets':escapeHtml(demo.owners.find(item=>item.id===activeOwner).name)}<span>${visible.length} records</span></div><div class="tickets">${visible.length?visible.map(item=>{const person=demo.owners.find(person=>person.id===demo.ownerOf(item.id));const position=demo.list(person.id).findIndex(t=>t.id===item.id)+1;return `<button id="ticket-${item.id}" class="ticket ${selected===item.id?'selected':''}" data-ticket-id="${item.id}" aria-pressed="${selected===item.id}"><span class="ticket-top"><span>${escapeHtml(item.id)}</span><span>${item.points} pt</span></span><span class="ticket-title">${escapeHtml(item.title)}</span><span class="ticket-meta"><span>${escapeHtml(person.name)}</span><span>Priority ${position}</span></span></button>`}).join(''):'<p class="empty">No tickets here yet.<br>Choose another developer or All tickets to make an assignment.</p>'}</div></section>
+  <section class="inspector" aria-label="Selected ticket inspector">${ticket?`<div class="inspector-inner"><p class="record-id">${escapeHtml(ticket.id)}</p><h2>${escapeHtml(ticket.title)}</h2><dl class="facts"><div><dt>Type</dt><dd>${escapeHtml(ticket.kind)}</dd></div><div><dt>Estimate</dt><dd>${ticket.points} points</dd></div></dl>
+  <div class="field"><label for="assignment">Assigned to</label><select id="assignment" data-action="assign">${demo.owners.map(item=>`<option value="${item.id}" ${item.id===owner?'selected':''}>${escapeHtml(item.name)} · ${demo.points(item.id)} pt</option>`).join('')}</select><small>Changing owner places this ticket last in their queue.</small></div>
+  <div class="field"><label for="priority">Queue priority</label><div class="priority"><select id="priority" data-action="priority">${queue.map((item,index)=>`<option value="${index}" ${index===rank?'selected':''}>${index+1}${index===0?' · First up':''}${index===queue.length-1&&index!==0?' · Last':''}</option>`).join('')}</select><button id="raise" data-action="raise" ${rank===0?'disabled':''} aria-label="Move ticket up one priority">Move up</button><button id="lower" data-action="lower" ${rank===queue.length-1?'disabled':''} aria-label="Move ticket down one priority">Move down</button></div><small>Position ${rank+1} of ${queue.length} in ${escapeHtml(ownerData.name)}’s queue. First is highest priority.</small></div>
+  <button id="return" class="return" data-action="backlog" ${owner==='backlog'?'disabled':''}>Return to backlog</button>
+  <section class="queue-context" aria-label="Owner queue"><h3>${escapeHtml(ownerData.name)}’s queue <span>${demo.points(owner)} points</span></h3>${queue.map((item,index)=>`<button class="queue-row ${item.id===selected?'current':''}" id="queue-${item.id}" data-ticket-id="${item.id}" aria-label="Inspect ${escapeHtml(item.id)}: ${escapeHtml(item.title)}"><span class="rank">${index+1}</span><span class="title">${escapeHtml(item.title)}</span><span class="pts">${item.points} pt</span></button>`).join('')}</section></div>`:'<p class="empty">Select a ticket from the list to see its assignment and priority.</p>'}</section></main><footer class="foot"><span role="status" aria-live="polite">${escapeHtml(announcement)}</span><span>Scratch workspace · changes apply immediately</span></footer>`;
+  if(focusId)document.getElementById(focusId)?.focus({preventScroll:true});
+}
+function assign(owner){
+  if(demo.ownerOf(selected)===owner)return;
+  if(activeOwner!=='all')activeOwner=owner;
+  announcement=`${selected} moved to ${demo.owners.find(item=>item.id===owner).name}.`;
+  demo.move(selected,owner);
+}
+app.addEventListener('click',event=>{
+  const button=event.target.closest('button');
+  if(!button||button.disabled)return;
+  if(button.dataset.owner){activeOwner=button.dataset.owner;const list=activeOwner==='all'?demo.tickets:demo.list(activeOwner);if(!list.some(item=>item.id===selected))selected=list[0]?.id??null;render();return;}
+  if(button.dataset.ticketId){selected=button.dataset.ticketId;announcement=`Inspecting ${selected}.`;render();return;}
+  const action=button.dataset.action;
+  if(action==='undo'){announcement='Undo requested; the latest saved change is restored if available.';demo.undo();render();}
+  if(action==='reset'){activeOwner='all';selected='SPR-101';announcement='Demo sprint restored to its starting assignments.';demo.reset();}
+  if(action==='backlog')assign('backlog');
+  if(action==='raise'||action==='lower'){announcement=`${selected} moved ${action==='raise'?'up':'down'} in priority.`;demo.shift(selected,action==='raise'?-1:1);}
+});
+app.addEventListener('change',event=>{
+  if(event.target.dataset.action==='assign')assign(event.target.value);
+  if(event.target.dataset.action==='priority'){
+    const owner=demo.ownerOf(selected);
+    const remaining=demo.list(owner).filter(item=>item.id!==selected);
+    const target=Number(event.target.value);
+    announcement=`${selected} is now priority ${target+1}.`;
+    demo.move(selected,owner,remaining[target]?.id??null);
+  }
+});
+render();
+</script>
+</body>
+</html>

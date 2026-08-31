@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Allocation sheet · Sprint distribution</title>
+<!-- Candidate 07: spreadsheet allocation with editable ownership and queue rank. Exploration draft for preference ranking, not production polish. -->
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#243347;background:#edf1f6;font-size:13px;font-variant-numeric:tabular-nums;--blue:#2165d6;--line:#d6dee8}*{box-sizing:border-box}body{margin:0}button,select{font:inherit;color:inherit}button{cursor:pointer;background:#fff;border:1px solid #c7d1df;border-radius:3px;padding:6px 10px}button:hover:not(:disabled){background:#edf4ff;border-color:#8daedd}button:disabled{opacity:.35;cursor:default}button:focus-visible,select:focus-visible,td:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}::selection{background:#caddff}main{min-height:100vh;display:flex;flex-direction:column}header{padding:15px 17px 12px;display:flex;gap:14px;align-items:center;background:white;border-bottom:1px solid var(--line)}h1{font-size:19px;letter-spacing:-.4px;margin:0 0 4px;font-weight:600}.subtitle{font-size:11px;color:#617186}.badge{color:#626e7c;font-size:10px;background:#eef1f5;padding:3px 5px;margin-left:6px;border-radius:2px}.header-actions{margin-left:auto;display:flex;gap:6px}.formula{display:flex;align-items:center;gap:10px;min-height:37px;border-bottom:1px solid var(--line);background:#f8fafd;padding:5px 12px;font-size:12px}.cell-address{font-family:ui-monospace,monospace;display:inline-block;width:43px;color:#174eac;font-weight:700;border-right:1px solid var(--line)}.formula strong{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.formula-label{color:#66778d;font-style:italic}.sheet-wrap{overflow:auto;background:white;flex:1;min-height:0;scrollbar-color:#aabbd1 #edf1f6}table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;min-width:610px}col.row{width:35px}col.kind{width:66px}col.points{width:42px}col.owner{width:116px}col.priority{width:129px}th,td{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}thead{position:sticky;top:0;z-index:2}thead tr.letters th{height:22px;background:#e9eef5;font-size:10px;font-weight:400;color:#64758d;text-align:center}thead tr.labels th{height:31px;background:#f5f7fa;font-size:11px;font-weight:600;color:#42546c;text-align:left;padding:0 9px}thead tr.labels th:first-child{text-align:center;padding:0}td{height:49px;background:#fff;padding:5px 9px;position:relative}tbody tr:nth-child(even) td{background:#fafbfd}tbody tr.selected td{background:#eef5ff}tbody tr.selected td.rownum{background:#dbe9ff;color:#174eac}td.active{box-shadow:inset 0 0 0 2px var(--blue);z-index:1}td.active:after{content:"";width:5px;height:5px;background:var(--blue);position:absolute;bottom:0;right:0;pointer-events:none}td.rownum{padding:0;text-align:center;background:#f1f4f8!important;color:#708096}.row-pick{border:0;background:transparent;width:100%;height:47px;padding:0;border-radius:0;color:inherit}.ticket-title{font-size:12px;line-height:1.25;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}.ticket-id{display:block;font-size:10px;color:#6b7a8f;margin-top:4px;font-family:ui-monospace,monospace}.kind-value{font-size:10px;text-transform:uppercase;letter-spacing:.3px;color:#63738a}.points-value{text-align:center;font-weight:600}select{max-width:100%;border:1px solid transparent;border-radius:2px;background:transparent;padding:5px 2px;cursor:pointer;font-size:12px}select:hover{background:white;border-color:#b9c9df}.owner-select{width:100%;color:#23579c}.owner-select[data-owner="backlog"]{color:#66758a}.priority-cell{padding:5px}.rank-controls{display:flex;align-items:center;gap:3px}.rank-select{width:44px;padding-left:3px}.step{width:29px;height:27px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:transparent;border-color:#d5deeb}.step svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.6}.sheet-bottom{display:flex;align-items:center;gap:12px;background:#f6f8fb;padding:10px 14px;border-bottom:1px solid var(--line);color:#6c7c91;font-size:11px}.sheet-tab{background:white;color:#1e5bbd;font-weight:600;padding:7px 13px;border:1px solid #cad7e9;border-bottom:2px solid var(--blue);margin:-4px 0}.summary{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:white}.total{padding:12px 15px;border-right:1px solid var(--line)}.total-name{font-size:11px;color:#617189;margin-bottom:6px}.total strong{font-size:17px;font-weight:600}.total small{font-size:10px;color:#6d7e92;margin-left:6px}.selection-bar{display:flex;gap:12px;align-items:center;padding:11px 14px;background:#e9f0fb;min-height:53px}.selection-text{flex:1;font-size:11px;line-height:1.5}.selection-text strong{display:block;font-weight:600;color:#245497}.selection-bar button{font-size:11px}.help{font-size:10px;color:#607086;padding:7px 14px;background:white;border-top:1px solid var(--line)}@media(min-height:760px){td{height:58px}.row-pick{height:56px}}@media(max-width:620px){header{padding:12px}h1{font-size:17px}.subtitle{font-size:10px}.total{padding:11px 8px}.total small{display:block;margin:4px 0 0}.sheet-bottom{gap:7px;font-size:10px}.selection-bar{padding:9px}.header-actions button{padding:6px 8px}}
+</style>
+</head>
+<body>
+<main>
+<header><div><h1>Allocation sheet <span class="badge">DEMO DATA</span></h1><div class="subtitle">Sprint distribution / editable working sheet</div></div><div class="header-actions"><button data-action="undo">Undo</button><button data-action="reset">Reset</button></div></header>
+<div class="formula"><span class="cell-address" id="address">A1</span><span class="formula-label">fx</span><strong id="formula-value"></strong></div>
+<div class="sheet-wrap"><table aria-label="Sprint ticket allocation sheet"><colgroup><col class="row"><col><col class="kind"><col class="points"><col class="owner"><col class="priority"></colgroup><thead><tr class="letters" aria-hidden="true"><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr><tr class="labels"><th>#</th><th scope="col">Ticket</th><th scope="col">Kind</th><th scope="col">Pts</th><th scope="col">Owner</th><th scope="col">Queue priority</th></tr></thead><tbody id="rows"></tbody></table><div class="sheet-bottom"><span class="sheet-tab">Sprint allocation</span><span>8 rows · grouped by owner, then priority</span></div></div>
+<div class="summary" id="summary" aria-label="Allocation totals"></div>
+<div class="selection-bar"><div class="selection-text" id="selection" aria-live="polite"></div><button id="return" data-action="backlog">Return to backlog</button></div>
+<div class="help">Edit an owner to append to their queue. Priority 1 is first. Select a row to inspect its allocation.</div>
+</main>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+let selected=null;
+let activeColumn='A';
+let ordered=[];
+const rows=document.querySelector('#rows');
+const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const arrow=up=>`<svg viewBox="0 0 16 16" aria-hidden="true"><path d="${up?'M4 10l4-4 4 4':'M4 6l4 4 4-4'}"/></svg>`;
+const demo=createDemo(render);
+selected=demo.tickets[0].id;
+function syncSelection(){
+  rows.querySelectorAll('tr').forEach(row=>{const isSelected=row.dataset.ticket===selected;row.classList.toggle('selected',isSelected);row.querySelector('.row-pick').setAttribute('aria-pressed',String(isSelected));row.querySelectorAll('td[data-column]').forEach(cell=>cell.classList.toggle('active',isSelected&&cell.dataset.column===activeColumn));});
+  const ticket=demo.tickets.find(t=>t.id===selected);
+  const owner=demo.owners.find(o=>o.id===demo.ownerOf(selected));
+  const rank=demo.list(owner.id).findIndex(t=>t.id===selected)+1;
+  document.querySelector('#address').textContent=activeColumn+(ordered.findIndex(t=>t.id===selected)+1);
+  document.querySelector('#formula-value').textContent={A:ticket.title,B:ticket.kind,C:String(ticket.points),D:owner.name,E:`Priority ${rank} of ${demo.list(owner.id).length}`}[activeColumn];
+  document.querySelector('#selection').innerHTML=`<strong>${esc(ticket.id)} selected</strong>${esc(owner.name)} · position ${rank} of ${demo.list(owner.id).length} · ${ticket.points} points`;
+  document.querySelector('#return').disabled=owner.id==='backlog';
+}
+function render(){
+  const focused=document.activeElement;
+  const restoreId=focused?.dataset.control;
+  ordered=demo.owners.flatMap(owner=>demo.list(owner.id));
+  rows.innerHTML=ordered.map((ticket,index)=>{
+    const owner=demo.ownerOf(ticket.id);
+    const queue=demo.list(owner);
+    const rank=queue.findIndex(t=>t.id===ticket.id);
+    return `<tr data-ticket="${ticket.id}"><td class="rownum"><button class="row-pick" data-control="${ticket.id}-row" aria-label="Select ${ticket.id}" aria-pressed="false">${index+1}</button></td><td data-column="A" tabindex="0" data-control="${ticket.id}-title"><span class="ticket-title" title="${esc(ticket.title)}">${esc(ticket.title)}</span><span class="ticket-id">${ticket.id}</span></td><td data-column="B" tabindex="0" data-control="${ticket.id}-kind"><span class="kind-value">${esc(ticket.kind)}</span></td><td data-column="C" tabindex="0" data-control="${ticket.id}-points" class="points-value">${ticket.points}</td><td data-column="D"><select class="owner-select" data-owner="${owner}" data-control="${ticket.id}-owner" data-edit="owner" aria-label="Owner for ${ticket.id}">${demo.owners.map(o=>`<option value="${o.id}" ${o.id===owner?'selected':''}>${esc(o.name)}</option>`).join('')}</select></td><td data-column="E" class="priority-cell"><div class="rank-controls"><select class="rank-select" data-edit="rank" data-control="${ticket.id}-rank" aria-label="Priority for ${ticket.id}">${queue.map((_,i)=>`<option value="${i}" ${rank===i?'selected':''}>${i+1}</option>`).join('')}</select><button class="step" data-action="up" data-control="${ticket.id}-up" aria-label="Move ${ticket.id} up" ${rank===0?'disabled':''}>${arrow(true)}</button><button class="step" data-action="down" data-control="${ticket.id}-down" aria-label="Move ${ticket.id} down" ${rank===queue.length-1?'disabled':''}>${arrow(false)}</button></div></td></tr>`;
+  }).join('');
+  document.querySelector('#summary').innerHTML=demo.owners.map(o=>`<div class="total"><div class="total-name">${esc(o.name)}</div><strong>${demo.points(o.id)} <span style="font-size:11px;font-weight:400">pts</span></strong><small>${demo.list(o.id).length} tickets</small></div>`).join('');
+  syncSelection();
+  if(restoreId){const next=Array.from(rows.querySelectorAll('[data-control]')).find(el=>el.dataset.control===restoreId);if(next&&!next.disabled)next.focus({preventScroll:true});else rows.querySelector(`tr[data-ticket="${selected}"] .row-pick`)?.focus({preventScroll:true});}
+}
+function activate(target){
+  const row=target.closest('tr[data-ticket]');
+  if(!row)return;
+  selected=row.dataset.ticket;
+  activeColumn=target.closest('[data-column]')?.dataset.column||'A';
+  syncSelection();
+}
+rows.addEventListener('focusin',event=>activate(event.target));
+rows.addEventListener('click',event=>activate(event.target));
+rows.addEventListener('change',event=>{
+  const select=event.target;
+  const id=select.closest('tr').dataset.ticket;
+  selected=id;
+  if(select.dataset.edit==='owner')demo.move(id,select.value);
+  if(select.dataset.edit==='rank'){
+    const owner=demo.ownerOf(id);
+    const remaining=demo.list(owner).filter(t=>t.id!==id);
+    demo.move(id,owner,remaining[Number(select.value)]?.id??null);
+  }
+});
+document.addEventListener('click',event=>{
+  const button=event.target.closest('button[data-action]');
+  if(!button||button.disabled)return;
+  const action=button.dataset.action;
+  if(action==='reset')demo.reset();
+  if(action==='undo')demo.undo();
+  if(action==='backlog')demo.move(selected,'backlog');
+  if(action==='up'||action==='down')demo.shift(button.closest('tr').dataset.ticket,action==='up'?-1:1);
+});
+render();
+</script>
+</body>
+</html>

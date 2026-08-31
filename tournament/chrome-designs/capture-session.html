@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Session · This or that</title>
+  <link rel="stylesheet" href="/chrome-designs/fonts.css">
+  <script src="/chrome-designs/runtime.js" defer></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --canvas: #202120;
+      --rail: #2d2e2c;
+      --toolbar: #333431;
+      --field: #252623;
+      --raised: #40413d;
+      --hover: #4c4d47;
+      --border: #4d4e48;
+      --control-border: #77796e;
+      --text: #eeeFE8;
+      --muted: #b8bbb0;
+      --accent: #e6a05b;
+      --accent-ink: #25211c;
+      --selected: #51422f;
+      --selected-text: #ffcf97;
+      --focus: #f3b774;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --type-small: 12px;
+      --type-label: 14px;
+      --type-body: 16px;
+      --type-title: 20px;
+      --radius: 3px;
+      --rail-width: 190px;
+      --preview-height: clamp(400px, 60vh, 550px);
+      --ease: cubic-bezier(.16, 1, .3, 1);
+      font-family: 'Roboto Condensed', sans-serif;
+      font-size: var(--type-body);
+      color: var(--text);
+      background: var(--canvas);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; }
+    button, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    button { cursor: pointer; }
+    button, .open-link { transition: background-color 160ms var(--ease), border-color 160ms var(--ease); }
+    button:disabled { cursor: not-allowed; opacity: .45; }
+    button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+    ::selection { background: var(--accent); color: var(--accent-ink); }
+    * { scrollbar-width: thin; scrollbar-color: var(--control-border) var(--canvas); }
+    textarea { caret-color: var(--accent); }
+    svg { width: var(--space-4); height: var(--space-4); fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    [hidden] { display: none !important; }
+    .topline { display: flex; align-items: center; min-height: 56px; border-bottom: 1px solid var(--border); background: var(--rail); }
+    .brand { width: var(--rail-width); flex-shrink: 0; padding: var(--space-4); font-size: var(--type-title); letter-spacing: -.02em; }
+    .project { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); flex: 1; min-width: 0; padding: var(--space-3) var(--space-5); }
+    .project-name { font-size: var(--type-title); font-weight: 400; }
+    .study-name { color: var(--muted); font-size: var(--type-label); }
+    .workspace { display: grid; grid-template-columns: var(--rail-width) minmax(0, 1fr); min-height: calc(100vh - 56px); }
+    .library { display: flex; flex-direction: column; background: var(--rail); border-right: 1px solid var(--border); }
+    .rail-heading { margin: 0; padding: var(--space-3) var(--space-4); display: flex; align-items: center; gap: var(--space-2); font-size: var(--type-body); font-weight: 400; border-bottom: 1px solid var(--border); }
+    .rail-heading svg { color: var(--accent); }
+    .library-section { padding: var(--space-4) var(--space-3); }
+    .section-label { display: block; color: var(--muted); font-size: var(--type-small); margin-bottom: var(--space-3); }
+    .candidate-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+    .candidate-item { display: flex; gap: var(--space-2); align-items: flex-start; font-size: var(--type-label); line-height: 1.4; padding: var(--space-2) 0; }
+    .side-label { font-size: var(--type-small); color: var(--muted); padding-top: 1px; min-width: var(--space-8); }
+    .candidate-item strong { display: block; font-weight: 400; }
+    .candidate-item small { color: var(--muted); font-size: var(--type-small); }
+    .notes-panel { border-top: 1px solid var(--border); }
+    .notes-heading { margin: 0 0 var(--space-4); font-size: var(--type-body); font-weight: 400; }
+    .note-field + .note-field { margin-top: var(--space-5); }
+    .note-field label { display: block; margin-bottom: var(--space-2); font-size: var(--type-label); }
+    textarea { display: block; width: 100%; min-height: 112px; resize: vertical; padding: var(--space-2); border: 1px solid var(--control-border); border-radius: var(--radius); background: var(--field); color: var(--text); font-family: 'Source Sans 3', sans-serif; font-size: var(--type-label); line-height: 1.45; }
+    textarea::placeholder { color: var(--muted); opacity: 1; }
+    .rail-tip { margin: auto 0 0; padding: var(--space-4) var(--space-3); color: var(--muted); border-top: 1px solid var(--border); font-family: 'Source Sans 3', sans-serif; font-size: var(--type-small); line-height: 1.5; }
+    .main { min-width: 0; display: flex; flex-direction: column; }
+    .context-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) var(--space-5); min-height: 48px; background: var(--toolbar); border-bottom: 1px solid var(--border); }
+    .context-title { display: flex; gap: var(--space-2); align-items: center; }
+    h1 { margin: 0; font-weight: 400; font-size: var(--type-body); }
+    .toolbar-actions { display: flex; gap: var(--space-2); }
+    .tool { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); min-height: 32px; background: transparent; border: 1px solid transparent; border-radius: var(--radius); color: var(--text); font-size: var(--type-label); }
+    .tool:hover { background: var(--raised); }
+    .tool[aria-expanded="true"] { background: var(--raised); border-color: var(--control-border); }
+    .preview-area { padding: var(--space-5); flex: 1; }
+    .preview-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+    .preview { min-width: 0; margin: 0; }
+    .preview-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2); padding-bottom: var(--space-3); min-height: 40px; }
+    .preview-name { display: flex; gap: var(--space-2); align-items: baseline; min-width: 0; }
+    .preview-name h2 { margin: 0; font-size: var(--type-body); font-weight: 400; }
+    .position { color: var(--muted); font-size: var(--type-small); }
+    .open-link { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--muted); font-size: var(--type-small); text-underline-offset: var(--space-1); text-decoration-color: var(--control-border); padding: var(--space-1); }
+    .open-link:hover { color: var(--text); background: var(--raised); }
+    .open-link svg { width: var(--space-3); height: var(--space-3); }
+    iframe { display: block; width: 100%; height: var(--preview-height); border: 1px solid var(--control-border); background: var(--field); }
+    .preview-meta { display: flex; justify-content: space-between; gap: var(--space-2); color: var(--muted); font-size: var(--type-small); padding-top: var(--space-2); font-variant-numeric: tabular-nums; }
+    .response-strip { background: var(--rail); border-top: 1px solid var(--border); padding: var(--space-4) var(--space-5) var(--space-3); }
+    .choose-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+    .vote { display: inline-flex; justify-content: center; align-items: center; gap: var(--space-2); min-height: 40px; padding: var(--space-2) var(--space-4); border: 1px solid var(--control-border); border-radius: var(--radius); background: var(--raised); color: var(--text); font-size: var(--type-body); }
+    .vote:hover { background: var(--hover); border-color: var(--muted); }
+    .vote[aria-pressed="true"] { color: var(--selected-text); background: var(--selected); border-color: var(--accent); }
+    .vote[aria-pressed="true"] svg { stroke-width: 2.5; }
+    .response-bottom { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); margin-top: var(--space-3); }
+    .other-responses { display: flex; flex-wrap: wrap; gap: var(--space-2); flex-shrink: 0; }
+    .other-responses .vote { font-size: var(--type-label); min-height: 32px; padding: var(--space-1) var(--space-3); background: transparent; border-color: var(--border); }
+    .other-responses .vote:hover { background: var(--raised); }
+    .other-responses .vote[aria-pressed="true"] { background: var(--selected); border-color: var(--accent); }
+    .status { margin: 0; color: var(--muted); font-family: 'Source Sans 3', sans-serif; font-size: var(--type-small); line-height: 1.4; text-align: right; }
+    @media (max-width: 1100px) {
+      .preview-area, .response-strip { padding-left: var(--space-3); padding-right: var(--space-3); }
+      .preview-pair, .choose-row { gap: var(--space-3); }
+      .response-bottom { align-items: flex-start; flex-direction: column; gap: var(--space-2); }
+      .status { text-align: left; }
+      .preview-header { align-content: flex-start; min-height: 68px; }
+    }
+    @media (max-width: 720px) {
+      .topline { align-items: flex-start; }
+      .brand { width: auto; white-space: nowrap; font-size: var(--type-body); }
+      .project { flex-direction: column; align-items: flex-end; gap: var(--space-1); padding: var(--space-4); }
+      .project-name { font-size: var(--type-body); text-align: right; }
+      .study-name { font-size: var(--type-small); }
+      .workspace { display: flex; flex-direction: column; }
+      .library { border-right: 0; border-bottom: 1px solid var(--border); }
+      .rail-heading { padding: var(--space-2) var(--space-3); }
+      .library-section { padding: var(--space-3); }
+      .candidate-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+      .candidate-item { padding: 0; }
+      .section-label { margin-bottom: var(--space-2); }
+      .notes-panel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+      .notes-heading { grid-column: 1 / -1; margin: 0; }
+      .note-field + .note-field { margin: 0; }
+      textarea { min-height: 80px; }
+      .rail-tip { display: none; }
+      .context-bar { padding: var(--space-2) var(--space-3); }
+      .tool { padding: var(--space-2); }
+      .preview-pair { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+      .preview-header { min-height: 40px; }
+      iframe { height: 460px; }
+      .choose-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
+      .vote { min-height: 44px; }
+      .other-responses { width: 100%; }
+      .other-responses .vote { flex: 1; min-height: 40px; }
+      .response-bottom { gap: var(--space-3); }
+    }
+    @media (prefers-reduced-motion: reduce) { button, .open-link { transition: none; } }
+  </style>
+</head>
+<body data-design="capture-session">
+  <!-- THESIS: A compact comparison session, with working notes kept beside the actual work. OWN-WORLD: Capture One's quiet charcoal tool surfaces, narrow library, warm active accents, and regular Roboto Condensed utility typography. FIRST VIEWPORT: A 190px library anchors two large interactive candidates; contextual tools sit above and response controls below. INTERACTION: Independent iframe previews, per-candidate notes, a notes toggle, larger views, and local sample responses with reset. SEED: 9743c350, user-pinned Capture One reference; Session is an independent layout, not a shared-markup theme. -->
+  <header class="topline">
+    <div class="brand">This or that</div>
+    <div class="project"><span class="project-name">Sprint distribution</span><span class="study-name">Session</span></div>
+  </header>
+  <div class="workspace">
+    <aside class="library" aria-label="Current candidates and notes">
+      <h2 class="rail-heading"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M2.5 5.5h6l2 2h7v9h-15z"/><path d="M2.5 5.5v-2h6l2 2h6v2"/></svg>Library</h2>
+      <section class="library-section" aria-label="Current pair">
+        <span class="section-label">Current pair</span>
+        <ul class="candidate-list">
+          <li class="candidate-item"><span class="side-label">Left</span><div><strong>Blueprint workbench</strong><small>Candidate 20</small></div></li>
+          <li class="candidate-item"><span class="side-label">Right</span><div><strong>Team routes</strong><small>Candidate 11</small></div></li>
+        </ul>
+      </section>
+      <section class="library-section notes-panel" id="session-notes" aria-labelledby="notes-heading">
+        <h2 class="notes-heading" id="notes-heading">Comparison notes</h2>
+        <div class="note-field"><label for="session-left-note">Left · Blueprint workbench</label><textarea id="session-left-note" data-note="left" placeholder="What works? What gets in the way?"></textarea></div>
+        <div class="note-field"><label for="session-right-note">Right · Team routes</label><textarea id="session-right-note" data-note="right" placeholder="What works? What gets in the way?"></textarea></div>
+      </section>
+      <p class="rail-tip">Try the controls inside each preview before making a choice.</p>
+    </aside>
+    <main class="main">
+      <div class="context-bar">
+        <div class="context-title"><svg aria-hidden="true" viewBox="0 0 20 20"><rect x="2.5" y="4" width="6" height="12"/><rect x="11.5" y="4" width="6" height="12"/></svg><h1>Compare</h1></div>
+        <div class="toolbar-actions">
+          <button class="tool" type="button" data-panel-toggle="session-notes" aria-controls="session-notes" aria-expanded="true"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M5 2.5h11v15H5zM2.5 6h5M2.5 10h5M2.5 14h5M10 6h3M10 10h3"/></svg>Notes</button>
+          <button class="tool" type="button" data-action="reset"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M4 6a7 7 0 1 1-1 7M4 2v4h4"/></svg>Reset</button>
+        </div>
+      </div>
+      <section class="preview-area" aria-label="Interactive candidate comparison">
+        <div class="preview-pair">
+          <figure class="preview">
+            <figcaption class="preview-header"><div class="preview-name"><span class="position">Left</span><h2>Blueprint workbench</h2></div><a class="open-link" href="/candidates/20-blueprint-desk.html" target="_blank" rel="noopener" aria-label="Open Blueprint workbench larger">Open larger<svg aria-hidden="true" viewBox="0 0 20 20"><path d="M11 3h6v6M17 3l-9 9M8 4H3v13h13v-5"/></svg></a></figcaption>
+            <iframe data-candidate="left" title="Blueprint workbench interactive preview" src="/candidates/20-blueprint-desk.html" sandbox="allow-scripts allow-same-origin"></iframe>
+            <div class="preview-meta"><span>Candidate 20</span><span>Interactive preview</span></div>
+          </figure>
+          <figure class="preview">
+            <figcaption class="preview-header"><div class="preview-name"><span class="position">Right</span><h2>Team routes</h2></div><a class="open-link" href="/candidates/11-metro-routes.html" target="_blank" rel="noopener" aria-label="Open Team routes larger">Open larger<svg aria-hidden="true" viewBox="0 0 20 20"><path d="M11 3h6v6M17 3l-9 9M8 4H3v13h13v-5"/></svg></a></figcaption>
+            <iframe data-candidate="right" title="Team routes interactive preview" src="/candidates/11-metro-routes.html" sandbox="allow-scripts allow-same-origin"></iframe>
+            <div class="preview-meta"><span>Candidate 11</span><span>Interactive preview</span></div>
+          </figure>
+        </div>
+      </section>
+      <footer class="response-strip" aria-label="Sample response">
+        <div class="choose-row">
+          <button type="button" class="vote" data-vote="left" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M16 10H4M9 5l-5 5 5 5"/></svg>Choose Blueprint workbench</button>
+          <button type="button" class="vote" data-vote="right" aria-pressed="false">Choose Team routes<svg aria-hidden="true" viewBox="0 0 20 20"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button>
+        </div>
+        <div class="response-bottom">
+          <div class="other-responses"><button type="button" class="vote" data-vote="skip" aria-pressed="false">Skip</button><button type="button" class="vote" data-vote="like" aria-pressed="false">Like both</button><button type="button" class="vote" data-vote="hate" aria-pressed="false">Hate both</button></div>
+          <p class="status" data-status role="status" aria-live="polite">Preview only. Responses are not recorded.</p>
+        </div>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

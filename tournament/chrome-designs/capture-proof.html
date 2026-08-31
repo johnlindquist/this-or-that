@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proof · This or that</title>
+  <link rel="stylesheet" href="/chrome-designs/fonts.css">
+  <script src="/chrome-designs/runtime.js" defer></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --mat: #d8d8d3;
+      --header: #e6e6e0;
+      --paper: #e9e9e2;
+      --ink: #292b29;
+      --muted: #575a56;
+      --rule: #b4b6af;
+      --frame: #8b8e85;
+      --rust: #884a36;
+      --blue: #365d74;
+      --footer: #232623;
+      --footer-ink: #eeeee6;
+      --footer-muted: #bcbfb6;
+      --footer-rule: #62675e;
+      --footer-hover: #383e36;
+      --selected: #d4ddc8;
+      --selected-ink: #263021;
+      --selection: #becdb9;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --text-small: 12px;
+      --text-body: 14px;
+      --text-title: 20px;
+      --control-height: 40px;
+      --preview-height: clamp(400px, 48vh, 500px);
+      --radius: 2px;
+      --ease: cubic-bezier(.16, 1, .3, 1);
+      font-family: 'Barlow', sans-serif;
+      font-size: var(--text-body);
+      color: var(--ink);
+      background: var(--mat);
+      accent-color: var(--blue);
+      scrollbar-color: var(--frame) var(--mat);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; min-height: 100svh; display: flex; flex-direction: column; }
+    ::selection { background: var(--selection); color: var(--ink); }
+    button, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    button { cursor: pointer; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    :focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+    svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .topline { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 48px; padding: var(--space-3) var(--space-10); background: var(--header); border-bottom: 1px solid var(--rule); }
+    .identity { display: flex; align-items: center; gap: var(--space-3); font-weight: 600; font-size: 16px; }
+    .identity svg { width: 20px; height: 20px; }
+    .view-name { display: flex; align-items: center; gap: var(--space-2); color: var(--muted); font-size: var(--text-small); }
+    .view-name strong { font-weight: 600; color: var(--ink); }
+    main { flex: 1; padding: var(--space-6) var(--space-10) var(--space-8); }
+    .sheet-heading { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-6); }
+    h1 { font-size: var(--text-title); line-height: 1.2; font-weight: 500; letter-spacing: -.02em; margin: 0; }
+    .sheet-heading p { margin: 0; font-family: 'Source Sans 3', sans-serif; color: var(--muted); }
+    .proof-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-8); position: relative; }
+    .proof-pair::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--rule); }
+    .candidate { min-width: 0; }
+    figure { margin: 0; }
+    iframe { width: 100%; height: var(--preview-height); display: block; background: var(--paper); border: 1px solid var(--frame); }
+    figcaption { display: flex; gap: var(--space-3); align-items: center; padding: var(--space-4) 0; min-height: 56px; }
+    .proof-number { font-variant-numeric: tabular-nums; font-size: var(--text-title); line-height: 1; font-weight: 500; color: var(--side-color); }
+    .caption-text { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2); min-width: 0; }
+    h2 { font-size: 16px; font-weight: 500; line-height: 1.25; margin: 0; }
+    .side-name { color: var(--side-color); font-size: var(--text-small); }
+    .open-preview { display: inline-flex; align-items: center; gap: var(--space-1); white-space: nowrap; font-family: 'Source Sans 3', sans-serif; font-size: var(--text-small); color: var(--muted); text-underline-offset: 3px; margin-left: auto; }
+    .open-preview:hover { color: var(--ink); }
+    .open-preview svg { width: 12px; height: 12px; }
+    .candidate-left { --side-color: var(--rust); }
+    .candidate-right { --side-color: var(--blue); }
+    .note { border-top: 1px solid var(--rule); padding: var(--space-2) var(--space-3); background: var(--paper); display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: var(--space-3); }
+    .note label { font-size: var(--text-small); color: var(--muted); }
+    textarea { display: block; min-width: 0; width: 100%; min-height: 44px; padding: var(--space-1) 0; resize: vertical; border: 0; border-radius: 0; color: var(--ink); background: transparent; font-family: 'Source Sans 3', sans-serif; line-height: 1.4; caret-color: var(--side-color); }
+    textarea::placeholder { color: var(--muted); opacity: 1; }
+    textarea:focus-visible { outline-offset: 2px; }
+    .action-footer { padding: var(--space-4) var(--space-10) var(--space-3); background: var(--footer); color: var(--footer-ink); }
+    .decision-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: var(--space-6); }
+    .vote { min-height: var(--control-height); border: 1px solid var(--footer-rule); border-radius: var(--radius); padding: var(--space-2) var(--space-4); background: transparent; color: var(--footer-ink); line-height: 1.2; display: inline-flex; justify-content: center; align-items: center; gap: var(--space-2); transition: background-color 160ms var(--ease), border-color 160ms var(--ease); }
+    .vote:hover:not(:disabled) { background: var(--footer-hover); border-color: var(--footer-muted); }
+    .vote[aria-pressed="true"] { background: var(--selected); border-color: var(--selected); color: var(--selected-ink); }
+    .vote:focus-visible, .reset:focus-visible { outline-color: var(--footer-ink); }
+    .choose { font-weight: 600; justify-self: start; }
+    .choose-right { justify-self: end; }
+    .joint-choices { display: flex; align-items: center; gap: var(--space-1); }
+    .joint-choices .vote { border-color: transparent; padding-inline: var(--space-3); font-family: 'Source Sans 3', sans-serif; }
+    .joint-choices .vote[aria-pressed="true"] { border-color: var(--selected); }
+    .footer-meta { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); margin-top: var(--space-3); font-family: 'Source Sans 3', sans-serif; font-size: var(--text-small); color: var(--footer-muted); }
+    .footer-meta p { margin: 0; line-height: 1.4; }
+    .reset { padding: 0; border: 0; background: transparent; color: var(--footer-muted); font-size: var(--text-small); text-decoration: underline; text-underline-offset: 3px; }
+    .reset:hover { color: var(--footer-ink); }
+    @media (max-width: 1100px) {
+      .topline, .action-footer { padding-inline: var(--space-6); }
+      main { padding-inline: var(--space-6); }
+      .proof-pair { gap: var(--space-6); }
+      .caption-text { display: block; }
+      .side-name { display: block; margin-top: var(--space-1); }
+      .decision-controls { gap: var(--space-3); }
+      .vote { padding-inline: var(--space-3); }
+      .joint-choices .vote { padding-inline: var(--space-2); }
+    }
+    @media (max-width: 760px) {
+      .topline { padding-inline: var(--space-4); }
+      .view-name span { display: none; }
+      main { padding: var(--space-6) var(--space-4); }
+      .sheet-heading { align-items: start; flex-direction: column; gap: var(--space-2); }
+      .proof-pair { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+      .proof-pair::before { display: none; }
+      iframe { height: 440px; }
+      .caption-text { display: flex; }
+      .side-name { margin-top: 0; }
+      .action-footer { padding: var(--space-5) var(--space-4) var(--space-4); }
+      .decision-controls { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-3); }
+      .choose { justify-self: stretch; min-height: 52px; text-align: left; }
+      .choose-right { grid-column: 2; grid-row: 1; }
+      .joint-choices { grid-column: 1 / -1; grid-row: 2; justify-content: center; }
+      .footer-meta { align-items: start; }
+      .footer-meta p { max-width: 26ch; }
+      .reset { min-height: 32px; white-space: nowrap; }
+    }
+    @media (prefers-reduced-motion: reduce) { .vote { transition: none; } }
+  </style>
+</head>
+<body data-design="capture-proof">
+  <!-- THESIS: Evaluate originals as photographic contact proofs, with neutral light-gray mats and precise numbered captions. OWN-WORLD: Capture One's image-first organization translated to a print-proofing table, Barlow lettering, paper annotation strips and a black decision bar. FIRST VIEWPORT: Two untouched interactive originals have equal prominence; their identifiers, notes and choices stay physically aligned. INTERACTION: Independent previews, side-specific notes and clearly labeled local sample responses. SEED: 9743c350, index 3; user-pinned Capture One reference takes precedence. -->
+  <header class="topline">
+    <div class="identity">
+      <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M2 7V2h5M13 2h5v5M18 13v5h-5M7 18H2v-5M10 4v12"/></svg>
+      <span>This or that</span>
+    </div>
+    <div class="view-name"><strong>Proof</strong><span> / </span><span>Comparison workspace</span></div>
+  </header>
+  <main>
+    <div class="sheet-heading">
+      <h1>Sprint distribution</h1>
+      <p>Compare the originals. Leave a note. Make a choice.</p>
+    </div>
+    <div class="proof-pair">
+      <section class="candidate candidate-left" aria-labelledby="proof-left-title">
+        <figure>
+          <iframe data-candidate="left" title="Blueprint workbench interactive preview" src="/candidates/20-blueprint-desk.html" sandbox="allow-scripts allow-same-origin"></iframe>
+          <figcaption>
+            <span class="proof-number" aria-label="Candidate 20">20</span>
+            <div class="caption-text"><h2 id="proof-left-title">Blueprint workbench</h2><span class="side-name">Left</span></div>
+            <a class="open-preview" href="/candidates/20-blueprint-desk.html" target="_blank" rel="noopener">Open larger<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3 7 9"/></svg></a>
+          </figcaption>
+        </figure>
+        <div class="note"><label for="proof-left-note">Left notes</label><textarea data-note="left" id="proof-left-note" rows="2" placeholder="What works in this direction?"></textarea></div>
+      </section>
+      <section class="candidate candidate-right" aria-labelledby="proof-right-title">
+        <figure>
+          <iframe data-candidate="right" title="Team routes interactive preview" src="/candidates/11-metro-routes.html" sandbox="allow-scripts allow-same-origin"></iframe>
+          <figcaption>
+            <span class="proof-number" aria-label="Candidate 11">11</span>
+            <div class="caption-text"><h2 id="proof-right-title">Team routes</h2><span class="side-name">Right</span></div>
+            <a class="open-preview" href="/candidates/11-metro-routes.html" target="_blank" rel="noopener">Open larger<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3 7 9"/></svg></a>
+          </figcaption>
+        </figure>
+        <div class="note"><label for="proof-right-note">Right notes</label><textarea data-note="right" id="proof-right-note" rows="2" placeholder="What works in this direction?"></textarea></div>
+      </section>
+    </div>
+  </main>
+  <footer class="action-footer" aria-label="Comparison responses">
+    <div class="decision-controls">
+      <button type="button" class="vote choose" data-vote="left" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 16 16"><path d="m7 4-4 4 4 4M3 8h10"/></svg>Choose Blueprint workbench</button>
+      <div class="joint-choices" role="group" aria-label="Other responses">
+        <button type="button" class="vote" data-vote="like" aria-pressed="false">Like both</button>
+        <button type="button" class="vote" data-vote="hate" aria-pressed="false">Hate both</button>
+        <button type="button" class="vote" data-vote="skip" aria-pressed="false">Skip</button>
+      </div>
+      <button type="button" class="vote choose choose-right" data-vote="right" aria-pressed="false">Choose Team routes<svg aria-hidden="true" viewBox="0 0 16 16"><path d="m9 4 4 4-4 4M13 8H3"/></svg></button>
+    </div>
+    <div class="footer-meta"><p data-status role="status" aria-live="polite">Preview only. Responses are not recorded.</p><button type="button" class="reset" data-action="reset">Clear responses &amp; notes</button></div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Canvas · This or that</title>
+  <link rel="stylesheet" href="/chrome-designs/fonts.css">
+  <script src="/chrome-designs/runtime.js" defer></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #eae9e5;
+      --paper: #fdfcfb;
+      --ink: #262724;
+      --muted: #62635e;
+      --line: #cacbc5;
+      --hover: #eeefeb;
+      --pressed: #e0e3dc;
+      --blue: #2257b5;
+      --blue-wash: #e9effc;
+      --violet: #6845ad;
+      --violet-wash: #f0eafb;
+      --focus: #2257b5;
+      --selection: #d7e3fb;
+      --scroll-thumb: #969990;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --text-small: 12px;
+      --text-body: 13px;
+      --text-label: 14px;
+      --text-title: 18px;
+      --radius-small: 6px;
+      --radius-dock: 12px;
+      --hairline: 1px;
+      --focus-width: 2px;
+      --panel-width: 304px;
+      --preview-height: clamp(440px, calc(100svh - 248px), 550px);
+      --dock-depth: 0 8px 32px rgb(38 39 36 / 12%), 0 2px 8px rgb(38 39 36 / 6%);
+      --ease: cubic-bezier(.16, 1, .3, 1);
+      font-family: 'Manrope', sans-serif;
+      font-synthesis: none;
+      color: var(--ink);
+      background: var(--canvas);
+      scrollbar-color: var(--scroll-thumb) var(--canvas);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; }
+    button, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { color: inherit; cursor: pointer; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    button, a, textarea { outline-offset: var(--space-1); }
+    :focus-visible { outline: var(--focus-width) solid var(--focus); }
+    ::selection { color: var(--ink); background: var(--selection); }
+    textarea { caret-color: var(--blue); }
+    [hidden] { display: none !important; }
+    svg { width: var(--space-4); height: var(--space-4); flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .project-bar { min-height: 64px; padding: var(--space-3) var(--space-6); display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); background: var(--paper); border-bottom: var(--hairline) solid var(--line); }
+    .project-path { display: flex; align-items: center; gap: var(--space-4); min-width: 0; font-size: var(--text-body); }
+    .brand { margin: 0; font-size: var(--text-label); font-weight: 750; white-space: nowrap; letter-spacing: -.03em; }
+    .path-divider { color: var(--line); }
+    .project-name { color: var(--muted); }
+    .notes-toggle { border: 0; background: var(--hover); border-radius: var(--radius-small); display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); font-size: var(--text-body); font-weight: 650; }
+    .notes-toggle:hover, .notes-toggle[aria-expanded="true"] { background: var(--pressed); }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1fr); min-height: calc(100svh - 64px); }
+    .workspace:has(.notes-panel:not([hidden])) { grid-template-columns: minmax(0, 1fr) var(--panel-width); }
+    .stage { min-width: 0; padding: var(--space-12) var(--space-8) var(--space-6); display: flex; flex-direction: column; gap: var(--space-10); }
+    .artboards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8); }
+    .artboard { margin: 0; min-width: 0; --side-color: var(--blue); --side-wash: var(--blue-wash); }
+    .artboard-right { --side-color: var(--violet); --side-wash: var(--violet-wash); }
+    .artboard-caption { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-3); font-size: var(--text-body); }
+    .artboard-name { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+    .side-label { display: inline-flex; gap: var(--space-1); align-items: center; color: var(--side-color); font-size: var(--text-small); font-weight: 700; }
+    .artboard-name strong { font-size: var(--text-label); font-weight: 650; letter-spacing: -.02em; }
+    .open-link { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--muted); font-size: var(--text-small); text-decoration: none; text-underline-offset: var(--space-1); white-space: nowrap; }
+    .open-link:hover { color: var(--ink); text-decoration: underline; }
+    .artboard iframe { display: block; width: 100%; height: var(--preview-height); border: var(--hairline) solid var(--line); background: var(--paper); }
+    .artboard:has(iframe:focus) iframe { outline: var(--focus-width) solid var(--side-color); outline-offset: var(--space-1); }
+    .response-area { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); margin-top: auto; }
+    .action-dock { display: flex; align-items: center; flex-wrap: wrap; justify-content: center; gap: var(--space-1); padding: var(--space-2); background: var(--paper); border-radius: var(--radius-dock); box-shadow: var(--dock-depth); }
+    .dock-choices, .dock-alternatives { display: flex; align-items: stretch; gap: var(--space-1); }
+    .dock-choices { padding-right: var(--space-2); margin-right: var(--space-1); border-right: var(--hairline) solid var(--line); }
+    .action-dock button { min-height: var(--space-10); padding: var(--space-2) var(--space-3); border: 0; border-radius: var(--radius-small); background: transparent; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); font-size: var(--text-small); font-weight: 650; white-space: nowrap; }
+    .action-dock button:hover { background: var(--hover); }
+    .action-dock button[aria-pressed="true"] { background: var(--pressed); }
+    .action-dock .choose-left { color: var(--blue); background: var(--blue-wash); }
+    .action-dock .choose-right { color: var(--violet); background: var(--violet-wash); }
+    .action-dock .choose-left:hover, .action-dock .choose-left[aria-pressed="true"] { color: var(--paper); background: var(--blue); }
+    .action-dock .choose-right:hover, .action-dock .choose-right[aria-pressed="true"] { color: var(--paper); background: var(--violet); }
+    .sample-status { margin: 0; color: var(--muted); text-align: center; font-size: var(--text-small); line-height: 1.6; }
+    .notes-panel { padding: var(--space-6); background: var(--paper); border-left: var(--hairline) solid var(--line); }
+    .notes-panel h2 { margin: 0 0 var(--space-2); font-size: var(--text-title); letter-spacing: -.025em; font-weight: 700; }
+    .notes-intro { margin: 0 0 var(--space-8); font-size: var(--text-body); color: var(--muted); line-height: 1.6; }
+    .note-field { margin-bottom: var(--space-6); }
+    .note-field label { display: block; font-size: var(--text-body); font-weight: 650; margin-bottom: var(--space-2); }
+    .note-field label span { display: block; color: var(--blue); font-size: var(--text-small); margin-bottom: var(--space-1); }
+    .note-field-right label span { color: var(--violet); }
+    .note-field textarea { display: block; width: 100%; min-height: 144px; resize: vertical; padding: var(--space-3); background: var(--paper); color: var(--ink); border: var(--hairline) solid var(--line); border-radius: var(--radius-small); font-size: var(--text-body); line-height: 1.6; }
+    .note-field textarea::placeholder { color: var(--muted); opacity: 1; }
+    .reset-button { min-height: var(--space-10); padding: var(--space-2) var(--space-3); border: var(--hairline) solid var(--line); border-radius: var(--radius-small); background: transparent; font-size: var(--text-small); }
+    .reset-button:hover { background: var(--hover); }
+    @media (max-width: 1199px) {
+      .workspace:has(.notes-panel:not([hidden])) { grid-template-columns: minmax(0, 1fr); }
+      .notes-panel { border-left: 0; border-top: var(--hairline) solid var(--line); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
+      .notes-panel header, .notes-panel .reset-button { grid-column: 1 / -1; }
+      .notes-intro, .note-field { margin-bottom: 0; }
+      .reset-button { justify-self: start; }
+    }
+    @media (max-width: 900px) {
+      .stage { padding: var(--space-8) var(--space-5) var(--space-6); gap: var(--space-8); }
+      .artboards { gap: var(--space-5); }
+      .artboard-caption { align-items: flex-start; }
+      .artboard-name { gap: var(--space-1); flex-direction: column; align-items: flex-start; }
+      .dock-choices { border-right: 0; padding-right: 0; margin-right: 0; }
+    }
+    @media (max-width: 660px) {
+      :root { --preview-height: 480px; }
+      .project-bar { padding: var(--space-3) var(--space-4); }
+      .project-path { display: block; }
+      .project-name { display: block; margin-top: var(--space-1); font-size: var(--text-small); }
+      .path-divider { display: none; }
+      .stage { padding: var(--space-8) var(--space-4) var(--space-6); }
+      .artboards { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+      .artboard-name { flex-direction: row; align-items: center; gap: var(--space-2); }
+      .action-dock { width: 100%; gap: var(--space-2); }
+      .dock-choices { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr); }
+      .action-dock button { min-height: 44px; }
+      .dock-alternatives { width: 100%; justify-content: center; }
+      .dock-alternatives button { flex: 1; padding-inline: var(--space-2); }
+      .notes-panel { display: block; padding: var(--space-6) var(--space-4); }
+      .notes-intro, .note-field { margin-bottom: var(--space-6); }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .action-dock { animation: dock-arrive 500ms var(--ease) both; }
+      @keyframes dock-arrive { from { transform: translateY(var(--space-2)); box-shadow: 0 2px 8px rgb(38 39 36 / 6%); } to { transform: translateY(0); box-shadow: var(--dock-depth); } }
+    }
+  </style>
+</head>
+<body data-design="figma-canvas">
+  <!-- THESIS: Treat comparison as two working artboards, not two voting cards. OWN-WORLD: Manrope, warm neutral canvas, precise blue and violet side labels, a pale floating action dock. FIRST VIEWPORT: Original interactive candidates dominate; captions sit outside their borders and the project path stays small. INTERACTION: The dock records only a local sample response; one Notes toggle reveals an outboard writing panel. Original previews retain their own controls. SEED: 9743c350; user-pinned Figma interface grammar, without its lime demo artwork, marketing purple, grid decoration, or imitation editor controls. -->
+  <header class="project-bar">
+    <nav class="project-path" aria-label="Project context">
+      <h1 class="brand">This or that</h1>
+      <svg class="path-divider" viewBox="0 0 16 16" aria-hidden="true"><path d="m10 3-4 10"/></svg>
+      <span class="project-name">Sprint distribution</span>
+    </nav>
+    <button class="notes-toggle" type="button" data-panel-toggle="canvas-notes" aria-controls="canvas-notes" aria-expanded="false">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2.5h10v8l-3 3H3zM10 13.5v-3h3M5.5 5.5h5M5.5 8h3"/></svg>
+      Notes
+    </button>
+  </header>
+  <div class="workspace">
+    <main class="stage" aria-label="Compare Sprint distribution designs">
+      <div class="artboards">
+        <figure class="artboard artboard-left">
+          <figcaption class="artboard-caption">
+            <div class="artboard-name">
+              <span class="side-label"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 2v12M11 2v12M2 5h12M2 11h12"/></svg>Left</span>
+              <strong>Blueprint workbench</strong>
+            </div>
+            <a class="open-link" href="/candidates/20-blueprint-desk.html" target="_blank" rel="noopener" aria-label="Open Blueprint workbench larger in a new tab">Open larger<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M9 3h4v4M13 3 7 9M7 3H3v10h10V9"/></svg></a>
+          </figcaption>
+          <iframe data-candidate="left" title="Blueprint workbench interactive preview" src="/candidates/20-blueprint-desk.html" sandbox="allow-scripts allow-same-origin"></iframe>
+        </figure>
+        <figure class="artboard artboard-right">
+          <figcaption class="artboard-caption">
+            <div class="artboard-name">
+              <span class="side-label"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 2v12M11 2v12M2 5h12M2 11h12"/></svg>Right</span>
+              <strong>Team routes</strong>
+            </div>
+            <a class="open-link" href="/candidates/11-metro-routes.html" target="_blank" rel="noopener" aria-label="Open Team routes larger in a new tab">Open larger<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M9 3h4v4M13 3 7 9M7 3H3v10h10V9"/></svg></a>
+          </figcaption>
+          <iframe data-candidate="right" title="Team routes interactive preview" src="/candidates/11-metro-routes.html" sandbox="allow-scripts allow-same-origin"></iframe>
+        </figure>
+      </div>
+      <footer class="response-area">
+        <div class="action-dock" role="group" aria-label="Try a sample response">
+          <div class="dock-choices">
+            <button class="choose-left" type="button" data-vote="left" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.5 8h-9m4-4-4 4 4 4"/></svg>Choose Blueprint workbench</button>
+            <button class="choose-right" type="button" data-vote="right" aria-pressed="false">Choose Team routes<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9m-4-4 4 4-4 4"/></svg></button>
+          </div>
+          <div class="dock-alternatives">
+            <button type="button" data-vote="like" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13 2.8 7.8a3 3 0 0 1 4.3-4.2L8 4.5l.9-.9a3 3 0 0 1 4.3 4.2Z"/></svg>Like both</button>
+            <button type="button" data-vote="hate" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="m4 4 8 8"/></svg>Hate both</button>
+            <button type="button" data-vote="skip" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 3 6 5-6 5zM12.5 3v10"/></svg>Skip</button>
+          </div>
+        </div>
+        <p class="sample-status" data-status role="status" aria-live="polite">Preview only. Responses are not recorded.</p>
+      </footer>
+    </main>
+    <aside class="notes-panel" id="canvas-notes" aria-labelledby="canvas-notes-title" hidden>
+      <header>
+        <h2 id="canvas-notes-title">Notes</h2>
+        <p class="notes-intro">What feels clearer? Keep a thought beside each design. Notes stay in this sample.</p>
+      </header>
+      <div class="note-field">
+        <label for="canvas-left-note"><span>Left artboard</span>Blueprint workbench</label>
+        <textarea data-note="left" id="canvas-left-note" placeholder="What works? What gets in the way?"></textarea>
+      </div>
+      <div class="note-field note-field-right">
+        <label for="canvas-right-note"><span>Right artboard</span>Team routes</label>
+        <textarea data-note="right" id="canvas-right-note" placeholder="What works? What gets in the way?"></textarea>
+      </div>
+      <button class="reset-button" type="button" data-action="reset">Clear notes &amp; sample response</button>
+    </aside>
+  </div>
+</body>
+</html>

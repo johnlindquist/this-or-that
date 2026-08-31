@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Team routes — Sprint distribution</title>
+<!-- Candidate 11: Team routes. Exploration draft: real SVG routes turn each owner's priority queue into ordered ticket stops. -->
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#17232c;background:#fff;font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,select{font:inherit}button,select{border:1px solid #b9c2c8;background:white;color:#17232c;border-radius:5px;padding:7px 10px;min-height:34px}button{cursor:pointer}button:hover:not(:disabled){background:#edf2f4}button:disabled{opacity:.4;cursor:default}:focus-visible{outline:3px solid #112e4d;outline-offset:3px}::selection{background:#c6e9ed}#app{height:100dvh;min-height:490px;display:flex;flex-direction:column}header{display:flex;align-items:center;justify-content:space-between;padding:15px 20px 12px;border-bottom:1px solid #e4e8eb;gap:12px}h1{font-size:23px;letter-spacing:-.6px;margin:0 0 3px}header p{margin:0;font-size:12px;color:#5c6872}.history{display:flex;gap:6px}.history button{font-size:12px}.map{flex:1;min-height:200px;overflow:auto;scrollbar-color:#b7c4c9 #f5f7f8;padding:8px 10px 0}svg{display:block;min-width:100%;font-family:Arial,Helvetica,sans-serif}.route-name{font-size:16px;font-weight:700}.route-info{font-size:11px;fill:#63727c}.stop{cursor:pointer;outline:none}.stop .hit{fill:transparent}.stop:hover .hit{fill:#f2f5f6}.stop:focus-visible .hit{fill:#edf4f7;stroke:#112e4d;stroke-width:2}.stop.selected .hit{fill:#edf4f7;stroke:#c7d9df}.stop .number{font-size:10px;font-weight:700;text-anchor:middle;dominant-baseline:central}.stop .ticket-id{font-size:10px;fill:#596973}.stop .ticket-title{font-size:12px;font-weight:600;fill:#17232c}.stop .points{font-size:10px;fill:#64727a}.empty{font-size:12px;fill:#6e7b84}.legend{display:flex;align-items:center;gap:8px;font-size:11px;color:#5b6973;padding:8px 20px;border-top:1px solid #e4e8eb}.legend svg{min-width:0;width:43px;height:14px}.desk{padding:12px 20px 15px;background:#f6f8f8;border-top:1px solid #dce3e5;min-height:135px}.desk-top{display:flex;align-items:start;justify-content:space-between;gap:10px;margin-bottom:11px}.desk h2{font-size:15px;margin:0 0 4px}.desk p{font-size:11px;color:#566670;margin:0}.close{padding:3px 8px;min-height:27px;font-size:11px}.controls{display:flex;flex-wrap:wrap;align-items:end;gap:8px}.controls label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:#52616a}.controls select{max-width:170px;font-size:12px}.controls button{font-size:12px}.controls .apply{background:#163c4b;border-color:#163c4b;color:white}.controls .apply:hover{background:#23576b}.priority{display:flex;gap:4px;margin-left:auto}.hint{padding-top:18px!important;font-size:14px!important;color:#3e525f!important}.status{height:14px;font-size:11px;margin-top:9px;color:#486270}@media(max-width:550px){header{padding:12px}.desk{padding:12px}.legend{padding-left:12px}.priority{margin-left:0}.controls select{max-width:140px}.history button{padding:6px}.desk-top{margin-bottom:8px}}
+</style>
+</head>
+<body>
+<div id="app"><header><div><h1>Team routes</h1><p>Sprint planning · Demo data</p></div><div class="history"><button id="undo" type="button">Undo</button><button id="reset" type="button">Reset</button></div></header><main class="map" aria-label="Team priority routes"><svg id="routes" aria-label="Tickets are stops, ordered left to right"></svg></main><div class="legend"><svg viewBox="0 0 43 14" aria-hidden="true"><path d="M2 7H40M34 2L40 7L34 12" fill="none" stroke="#536975" stroke-width="2"/></svg>Priority runs left to right · Select a stop to transfer or reorder</div><section id="desk" class="desk" aria-label="Selected ticket controls"></section></div>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+let selected=null;
+let notice='';
+const colors={maya:'#c14834',leo:'#246ec2',priya:'#158575',backlog:'#7a858e'};
+const routes=document.getElementById('routes');
+const desk=document.getElementById('desk');
+const demo=createDemo(render);
+const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function wrap(text,max=23){const result=[];let line='';for(const word of text.split(/\s+/)){if(line&&`${line} ${word}`.length>max){result.push(line);line=word;}else line=line?`${line} ${word}`:word;}if(line)result.push(line);return result;}
+function render(){
+ const focused=document.activeElement?.dataset.focus;
+ const owners=['maya','leo','priya','backlog'].map(id=>demo.owners.find(o=>o.id===id));
+ const longest=Math.max(3,...demo.tickets.map(t=>wrap(t.title).length));
+ const rowHeight=Math.max(99,63+longest*14);
+ const width=Math.max(700,175+Math.max(...owners.map(o=>demo.list(o.id).length))*174);
+ routes.setAttribute('width',width);routes.setAttribute('height',rowHeight*4+10);routes.setAttribute('viewBox',`0 0 ${width} ${rowHeight*4+10}`);
+ routes.innerHTML=owners.map((o,row)=>{
+  const tickets=demo.list(o.id),y=25+row*rowHeight,color=colors[o.id];
+  const end=Math.max(235,178+(tickets.length-1)*174+40);
+  return `<g data-owner="${o.id}"><text x="12" y="${y+5}" class="route-name" fill="${color}">${esc(o.name)}</text><text x="12" y="${y+23}" class="route-info">${tickets.length} stops · ${demo.points(o.id)} pts</text><path d="M132 ${y}H${end}" stroke="${color}" stroke-width="5" stroke-linecap="round" ${o.id==='backlog'?'stroke-dasharray="5 7"':''}/><path d="M${end-5} ${y-5}l6 5-6 5" fill="none" stroke="${color}" stroke-width="2"/>${!tickets.length?`<text x="166" y="${y+30}" class="empty">No tickets on this route</text>`:''}${tickets.map((t,i)=>{const x=178+i*174,lines=wrap(t.title);return `<g class="stop ${selected===t.id?'selected':''}" tabindex="0" role="button" aria-pressed="${selected===t.id}" aria-label="${esc(t.id+' '+t.title+', '+o.name+', priority '+(i+1)+', '+t.points+' points')}" data-ticket="${t.id}" data-focus="stop-${t.id}"><title>${esc(t.title)}</title><rect class="hit" x="${x-18}" y="${y-18}" width="163" height="${rowHeight-7}" rx="5"/><circle cx="${x}" cy="${y}" r="11" fill="white" stroke="${color}" stroke-width="3"/><text x="${x}" y="${y}" class="number" fill="${color}">${i+1}</text><text x="${x-9}" y="${y+27}" class="ticket-id">${esc(t.id)}</text><text x="${x-9}" y="${y+44}" class="ticket-title">${lines.map((line,k)=>`<tspan x="${x-9}" dy="${k?14:0}">${esc(line)}</tspan>`).join('')}</text><text x="${x-9}" y="${y+48+lines.length*14}" class="points">${esc(t.kind)} · ${t.points} pts</text></g>`;}).join('')}</g>`;
+ }).join('');
+ const ticket=demo.tickets.find(t=>t.id===selected);
+ if(!ticket){desk.innerHTML='<h2>Choose your next stop</h2><p class="hint">Select any ticket on the map to change its route or priority.</p><p class="status" role="status">'+esc(notice)+'</p>';return;}
+ const owner=demo.ownerOf(ticket.id),list=demo.list(owner),position=list.findIndex(t=>t.id===ticket.id);
+ desk.innerHTML=`<div class="desk-top"><div><h2>${esc(ticket.title)}</h2><p>${esc(ticket.id)} · ${ticket.points} pts · ${esc(demo.owners.find(o=>o.id===owner).name)} / stop ${position+1}</p></div><button class="close" data-action="close" data-focus="close">Close</button></div><div class="controls"><label>Route<select id="destination" data-focus="destination" aria-label="Assign ticket to route">${demo.owners.map(o=>`<option value="${o.id}" ${o.id===owner?'selected':''}>${esc(o.name)}</option>`).join('')}</select></label><label>Insert<select id="placement" data-focus="placement" aria-label="Position in destination route"></select></label><button class="apply" data-action="move" data-focus="move">Transfer</button><button data-action="backlog" data-focus="backlog" ${owner==='backlog'?'disabled':''}>To backlog</button><div class="priority"><button data-action="earlier" data-focus="earlier" ${position===0?'disabled':''} aria-label="Move ticket one stop earlier">Earlier</button><button data-action="later" data-focus="later" ${position===list.length-1?'disabled':''} aria-label="Move ticket one stop later">Later</button></div></div><div class="status" role="status">${esc(notice)}</div>`;
+ updatePlacement();
+ if(focused)document.querySelector(`[data-focus="${focused}"]`)?.focus({preventScroll:true});
+}
+function updatePlacement(){const owner=document.getElementById('destination').value;document.getElementById('placement').innerHTML='<option value="">At route end</option>'+demo.list(owner).filter(t=>t.id!==selected).map(t=>`<option value="${t.id}">Before ${esc(t.id)}</option>`).join('');}
+function pick(id){selected=id;notice='';render();document.getElementById('destination')?.focus({preventScroll:true});}
+routes.addEventListener('click',event=>{const stop=event.target.closest('[data-ticket]');if(stop)pick(stop.dataset.ticket);});
+routes.addEventListener('keydown',event=>{const stop=event.target.closest('[data-ticket]');if(stop&&(event.key==='Enter'||event.key===' ')){event.preventDefault();pick(stop.dataset.ticket);}});
+desk.addEventListener('change',event=>{if(event.target.id==='destination')updatePlacement();});
+desk.addEventListener('click',event=>{const action=event.target.closest('[data-action]')?.dataset.action;if(!action)return;if(action==='close'){const previous=selected;selected=null;notice='';render();document.querySelector(`[data-ticket="${previous}"]`)?.focus({preventScroll:true});return;}if(!selected)return;if(action==='move'){const owner=document.getElementById('destination').value,before=document.getElementById('placement').value||null;notice=`${selected} placed on ${demo.owners.find(o=>o.id===owner).name}'s route.`;demo.move(selected,owner,before);}else if(action==='backlog'){notice=`${selected} returned to backlog.`;demo.move(selected,'backlog');}else if(action==='earlier'||action==='later'){notice=`${selected} moved one stop ${action}.`;demo.shift(selected,action==='earlier'?-1:1);}});
+document.getElementById('reset').addEventListener('click',()=>{selected=null;notice='Demo routes reset.';demo.reset();});
+document.getElementById('undo').addEventListener('click',()=>{notice='Undo requested.';demo.undo();render();});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dispatch ledger — Sprint distribution</title>
+<style>
+:root{color-scheme:light;--ink:#182d47;--muted:#56677a;--rule:#ced5dc;--paper:#fff;--wash:#edf1f5;--accent:#315e92;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--paper)}
+*{box-sizing:border-box}body{margin:0}button,select{font:inherit;color:inherit}button,select{cursor:pointer}button{background:white;border:1px solid var(--rule);padding:7px 10px}button:hover,select:hover{background:var(--wash)}button:disabled{opacity:.3;cursor:default}button:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}::selection{background:var(--ink);color:white}*{scrollbar-color:#8a99aa var(--wash);scrollbar-width:thin}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 20px 14px;border-bottom:3px solid var(--ink)}h1{font-family:Georgia,'Times New Roman',serif;font-size:29px;line-height:1;margin:0 0 7px;font-weight:normal;letter-spacing:-.025em}.subtitle{font-size:11px;color:var(--muted)}.tools{display:flex;gap:6px}.tools button{font-size:12px;border-color:var(--ink)}
+.summary{padding:9px 20px;font-size:11px;border-bottom:1px solid var(--ink);display:flex;justify-content:space-between;gap:10px}.summary strong{font-variant-numeric:tabular-nums}.workspace{display:grid;grid-template-columns:109px minmax(0,1fr);min-height:calc(100dvh - 151px)}aside{border-right:1px solid var(--ink);padding-top:14px;background:#f7f8fa}.rail-label{font-size:9px;letter-spacing:.11em;text-transform:uppercase;padding:0 12px 9px;color:var(--muted)}.owner-tab{display:block;border:0;border-bottom:1px solid var(--rule);border-radius:0;width:100%;text-align:left;padding:14px 12px;background:transparent;font-size:12px}.owner-tab strong{display:block;font-weight:600}.owner-tab small{display:block;font-size:10px;margin-top:6px;font-variant-numeric:tabular-nums}.owner-tab[aria-pressed=true]{background:var(--ink);color:white}.owner-tab[aria-pressed=true]:hover{background:#28435f}
+main{min-width:0}.column-head{display:grid;grid-template-columns:49px minmax(0,1fr) 100px 58px;gap:10px;padding:13px 13px 9px;font-size:9px;text-transform:uppercase;letter-spacing:.09em;border-bottom:1px solid var(--ink);color:var(--muted)}.column-head span:last-child{text-align:center}.ticket{display:grid;grid-template-columns:49px minmax(0,1fr) 100px 58px;gap:10px;align-items:center;padding:12px 13px;border-bottom:1px solid var(--rule);min-height:63px}.ticket:hover{background:#f8fafc}.stamp{display:block;border:1px solid var(--ink);font-family:Georgia,'Times New Roman',serif;font-size:25px;line-height:32px;text-align:center;font-variant-numeric:tabular-nums;width:38px;height:35px}.ticket[data-owner=backlog] .stamp{border-style:dashed;color:var(--muted)}.ticket-title{font-family:Georgia,'Times New Roman',serif;font-size:16px;line-height:1.15;font-weight:normal;margin:0 0 6px;overflow-wrap:anywhere}.ticket-meta{display:flex;gap:8px;font-size:9px;color:var(--muted);font-variant-numeric:tabular-nums}.ticket-meta span+span{border-left:1px solid var(--rule);padding-left:8px}.assignment select{width:100%;font-size:11px;border:0;border-bottom:1px solid #8796a7;padding:6px 0;background:transparent;border-radius:0}.priority{display:flex;gap:3px}.priority button{width:27px;height:28px;padding:5px;display:grid;place-items:center}.priority svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.6;fill:none}.empty{font-family:Georgia,serif;padding:30px 18px;font-size:18px;color:var(--muted)}footer{padding:10px 16px;font-size:10px;line-height:1.5;color:var(--muted);border-top:1px solid var(--ink)}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(min-width:1000px){.workspace{grid-template-columns:145px minmax(0,1fr)}.ticket{min-height:76px}.ticket-title{font-size:20px}.column-head,.ticket{grid-template-columns:60px minmax(0,1fr) 145px 65px;padding-left:22px;padding-right:22px}.owner-tab{padding:18px}.ticket-meta{font-size:11px}}
+@media(max-width:560px){header{padding:15px 12px}h1{font-size:25px}.workspace{grid-template-columns:78px minmax(0,1fr)}.owner-tab{padding:13px 8px}.rail-label{padding-left:8px;font-size:8px}.column-head,.ticket{grid-template-columns:34px minmax(0,1fr) 79px;gap:7px;padding-left:8px;padding-right:8px}.column-head span:last-child{display:none}.stamp{width:30px;height:31px;font-size:21px;line-height:28px}.priority{grid-column:3;justify-content:flex-end}.ticket{padding-top:10px;padding-bottom:9px;row-gap:4px}.ticket-title{font-size:15px}.ticket-meta{flex-wrap:wrap;gap:4px}.summary{padding:9px 12px}.summary span:last-child{display:none}.tools button{padding:6px}.subtitle{font-size:10px}}
+</style>
+</head>
+<body>
+<!-- Candidate 03: Dispatch ledger. Exploration draft: horizontal editorial work register with a narrow owner rail, inline dispatch, and stamped queue priorities. -->
+<header><div><h1>Dispatch ledger</h1><div class="subtitle">Sprint distribution / Demo data</div></div><div class="tools"><button type="button" data-action="undo">Undo</button><button type="button" data-action="reset">Reset</button></div></header>
+<div class="summary" id="summary"></div>
+<div class="workspace"><aside aria-label="Filter ledger by owner" id="owners"></aside><main aria-label="Ticket ledger"><div class="column-head" aria-hidden="true"><span>Order</span><span>Work register</span><span>Assigned to</span><span>Move</span></div><div id="ledger"></div></main></div>
+<footer>Numbers are priority within each owner's queue. Move up or down to reorder; select Backlog to return a ticket.</footer>
+<div class="sr-only" role="status" aria-live="polite" id="status"></div>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+let filter='all';
+let message='';
+const demo=createDemo(render);
+const escape=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const arrow=direction=>`<svg viewBox="0 0 16 16" aria-hidden="true"><path d="${direction<0?'M3 10l5-5 5 5':'M3 6l5 5 5-5'}"/></svg>`;
+function render(){
+ const focused=document.activeElement?.dataset.focus;
+ const backlog=demo.list('backlog').length;
+ document.querySelector('#summary').innerHTML=`<span><strong>${demo.tickets.length-backlog} / ${demo.tickets.length}</strong> dispatched &nbsp; · &nbsp; <strong>${backlog}</strong> in backlog</span><span>Working copy · changes stay in this demo</span>`;
+ document.querySelector('#owners').innerHTML=`<div class="rail-label">Owner index</div><button class="owner-tab" type="button" data-filter="all" data-focus="filter-all" aria-pressed="${filter==='all'}"><strong>All entries</strong><small>${demo.tickets.length} tickets</small></button>`+demo.owners.map(owner=>`<button class="owner-tab" type="button" data-filter="${owner.id}" data-focus="filter-${owner.id}" aria-pressed="${filter===owner.id}"><strong>${escape(owner.name)}</strong><small>${demo.list(owner.id).length} tickets · ${demo.points(owner.id)} pt</small></button>`).join('');
+ const owners=demo.owners.filter(owner=>filter==='all'||owner.id===filter);
+ document.querySelector('#ledger').innerHTML=owners.map(owner=>demo.list(owner.id).map((ticket,index,list)=>`<article class="ticket" data-ticket-id="${ticket.id}" data-owner="${owner.id}" aria-label="${escape(ticket.id+' '+ticket.title)}"><div><span class="stamp" aria-label="Priority ${index+1} for ${escape(owner.name)}">${String(index+1).padStart(2,'0')}</span></div><div><h2 class="ticket-title">${escape(ticket.title)}</h2><div class="ticket-meta"><span>${escape(ticket.id)}</span><span>${escape(ticket.kind)}</span><span>${ticket.points} pt</span></div></div><div class="assignment"><label class="sr-only" for="assign-${ticket.id}">Assign ${escape(ticket.id)}</label><select id="assign-${ticket.id}" data-assign="${ticket.id}" data-focus="assign-${ticket.id}">${demo.owners.map(option=>`<option value="${option.id}" ${option.id===owner.id?'selected':''}>${escape(option.name)}</option>`).join('')}</select></div><div class="priority"><button type="button" data-shift="-1" data-ticket="${ticket.id}" data-focus="up-${ticket.id}" aria-label="Raise priority of ${ticket.id}" title="Raise priority" ${index===0?'disabled':''}>${arrow(-1)}</button><button type="button" data-shift="1" data-ticket="${ticket.id}" data-focus="down-${ticket.id}" aria-label="Lower priority of ${ticket.id}" title="Lower priority" ${index===list.length-1?'disabled':''}>${arrow(1)}</button></div></article>`).join('')).join('')||'<div class="empty">No entries here.<br>Assign tickets from All entries.</div>';
+ document.querySelector('#status').textContent=message;
+ if(focused){const next=document.querySelector(`[data-focus="${focused}"]`);if(next&&!next.disabled)next.focus({preventScroll:true});else if(next?.dataset.ticket)document.querySelector(`[data-assign="${next.dataset.ticket}"]`)?.focus({preventScroll:true});}
+}
+document.addEventListener('click',event=>{
+ const button=event.target.closest('button');
+ if(!button)return;
+ if(button.dataset.filter){filter=button.dataset.filter;message=filter==='all'?'Showing all entries':`Showing ${demo.owners.find(owner=>owner.id===filter).name}'s queue`;render();}
+ if(button.dataset.shift){message=`${button.dataset.ticket} priority updated`;demo.shift(button.dataset.ticket,Number(button.dataset.shift));}
+ if(button.dataset.action==='undo'){message='Undo requested';demo.undo();}
+ if(button.dataset.action==='reset'){message='Demo data restored';demo.reset();}
+});
+document.addEventListener('change',event=>{
+ const select=event.target.closest('[data-assign]');
+ if(!select)return;
+ message=`${select.dataset.assign} assigned to ${demo.owners.find(owner=>owner.id===select.value).name}`;
+ demo.move(select.dataset.assign,select.value);
+ if(!document.querySelector(`[data-assign="${select.dataset.assign}"]`))document.querySelector(`[data-filter="${filter}"]`)?.focus({preventScroll:true});
+});
+render();
+</script>
+</body>
+</html>

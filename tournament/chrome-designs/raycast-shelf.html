@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shelf · This or that</title>
+  <link rel="stylesheet" href="/chrome-designs/fonts.css">
+  <script src="/chrome-designs/runtime.js" defer></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #e9ebee;
+      --surface: #f8f9fa;
+      --field: #f0f2f4;
+      --hover: #e6e8eb;
+      --ink: #24272d;
+      --muted: #585e68;
+      --line: #c9cdd3;
+      --control-line: #a7adb6;
+      --accent: #925035;
+      --accent-ink: #713b26;
+      --selected: #f0e2d8;
+      --selected-hover: #e9d5c7;
+      --selection: #dec0ac;
+      --scrollbar: #929aa5;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --text-small: 12px;
+      --text-label: 14px;
+      --text-body: 16px;
+      --text-title: 20px;
+      --text-project: 24px;
+      --radius: 8px;
+      --radius-small: 4px;
+      --shelf-width: 220px;
+      --preview-height: clamp(440px, 58vh, 520px);
+      --ease: cubic-bezier(.16, 1, .3, 1);
+      font-family: 'Barlow', sans-serif;
+      font-size: var(--text-body);
+      font-synthesis: none;
+      color: var(--ink);
+      background: var(--canvas);
+    }
+    * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--scrollbar) var(--canvas); }
+    body { margin: 0; min-width: 320px; }
+    ::selection { background: var(--selection); color: var(--ink); }
+    h1, h2, h3, p { margin: 0; }
+    button, textarea { font: inherit; }
+    button { cursor: pointer; color: inherit; }
+    button, a { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    button:disabled { cursor: not-allowed; opacity: .45; }
+    :is(button, a, textarea):focus-visible { outline: 2px solid var(--accent); outline-offset: var(--space-1); }
+    a { color: inherit; text-underline-offset: var(--space-1); }
+    svg { display: block; flex: none; width: var(--space-4); height: var(--space-4); fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .topbar { min-height: 72px; padding: var(--space-4) var(--space-8); display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); border-bottom: 1px solid var(--line); background: var(--surface); }
+    .brand { display: flex; align-items: center; gap: var(--space-3); font-size: var(--text-title); font-weight: 600; letter-spacing: -.02em; }
+    .brand svg { color: var(--accent); width: var(--space-6); height: var(--space-6); }
+    .study { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-label); color: var(--muted); }
+    .study span { width: var(--space-6); height: 1px; background: var(--control-line); }
+    main { padding: var(--space-8); }
+    .project-line { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-6); margin-bottom: var(--space-8); }
+    h1 { font-size: var(--text-project); line-height: 1.2; font-weight: 600; letter-spacing: -.02em; }
+    .project-line p { color: var(--muted); font-size: var(--text-label); }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1fr) var(--shelf-width); gap: var(--space-8); align-items: start; }
+    .comparison { min-width: 0; }
+    .previews { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+    .candidate { min-width: 0; }
+    .candidate-heading { min-height: 76px; display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-2) 0 var(--space-4); }
+    .side-glyph { color: var(--accent); margin-top: var(--space-1); }
+    .side-glyph svg { width: var(--space-5); height: var(--space-5); }
+    .candidate-heading h2 { font-size: var(--text-title); line-height: 1.2; font-weight: 600; letter-spacing: -.015em; }
+    .side-caption { display: block; margin-top: var(--space-1); font: 400 var(--text-small)/1.5 'Inter', sans-serif; color: var(--muted); }
+    .preview { overflow: hidden; border: 1px solid var(--control-line); border-radius: var(--radius); background: var(--surface); transition: border-color 180ms var(--ease); }
+    iframe { display: block; width: 100%; height: var(--preview-height); border: 0; background: var(--surface); }
+    .candidate-footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding-top: var(--space-3); color: var(--muted); font: 400 var(--text-small)/1.5 'Inter', sans-serif; }
+    .open-link { display: inline-flex; align-items: center; gap: var(--space-1); text-decoration: none; }
+    .open-link:hover { color: var(--accent-ink); text-decoration: underline; }
+    .open-link svg { width: var(--space-3); height: var(--space-3); }
+    body:has([data-vote="left"][aria-pressed="true"]) .candidate-left .preview,
+    body:has([data-vote="right"][aria-pressed="true"]) .candidate-right .preview { border-color: var(--accent); }
+    body:has([data-vote="left"][aria-pressed="true"]) .candidate-left h2,
+    body:has([data-vote="right"][aria-pressed="true"]) .candidate-right h2 { color: var(--accent-ink); }
+    .shelf { position: sticky; top: var(--space-6); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+    .shelf-heading { padding: var(--space-4) var(--space-3); display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); border-bottom: 1px solid var(--line); }
+    .shelf-heading h2 { font-size: var(--text-body); font-weight: 600; }
+    .shelf-heading svg { color: var(--muted); }
+    .choice { padding: var(--space-3); }
+    .choice + .choice { border-top: 1px solid var(--line); }
+    .choose { width: 100%; min-height: 72px; display: flex; align-items: flex-start; gap: var(--space-2); padding: var(--space-3) var(--space-2); text-align: left; border: 1px solid var(--line); border-radius: var(--radius-small); background: var(--field); transition: background-color 180ms var(--ease), border-color 180ms var(--ease), color 180ms var(--ease); }
+    .choose > svg { margin-top: var(--space-1); }
+    .choose .label { flex: 1; min-width: 0; font-size: var(--text-body); line-height: 1.25; font-weight: 600; }
+    .choose .verb { display: block; margin-bottom: var(--space-1); color: var(--muted); font-size: var(--text-small); font-weight: 500; }
+    .choose .tick { width: var(--space-3); height: var(--space-3); visibility: hidden; margin-top: var(--space-1); }
+    .choose:hover:not(:disabled) { background: var(--hover); border-color: var(--control-line); }
+    .choose[aria-pressed="true"] { background: var(--selected); border-color: var(--accent); color: var(--accent-ink); }
+    .choose[aria-pressed="true"] .verb { color: var(--accent-ink); }
+    .choose[aria-pressed="true"] .tick { visibility: visible; }
+    .choose[aria-pressed="true"]:hover { background: var(--selected-hover); }
+    .note-label { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); margin: var(--space-3) 0 var(--space-2); font-size: var(--text-small); font-weight: 500; }
+    .note-label span { font-weight: 400; color: var(--muted); }
+    textarea { display: block; width: 100%; min-height: 80px; padding: var(--space-2); resize: vertical; background: var(--surface); color: var(--ink); border: 1px solid var(--control-line); border-radius: var(--radius-small); font: 400 var(--text-small)/1.5 'Inter', sans-serif; caret-color: var(--accent); }
+    textarea::placeholder { color: var(--muted); opacity: 1; }
+    textarea:hover { border-color: var(--muted); }
+    textarea:focus { border-color: var(--accent); }
+    .other-outcomes { border-top: 1px solid var(--line); padding: var(--space-3); }
+    .other-outcomes h3 { font-size: var(--text-small); font-weight: 500; color: var(--muted); margin-bottom: var(--space-2); }
+    .outcome-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-1); }
+    .outcome { display: inline-flex; justify-content: center; align-items: center; gap: var(--space-1); min-height: var(--space-10); padding: var(--space-2) var(--space-1); border: 1px solid transparent; border-radius: var(--radius-small); background: transparent; font-size: var(--text-label); font-weight: 500; transition: background-color 180ms var(--ease), color 180ms var(--ease); }
+    .outcome:hover:not(:disabled) { background: var(--hover); }
+    .outcome[aria-pressed="true"] { background: var(--selected); border-color: var(--accent); color: var(--accent-ink); }
+    .outcome[data-vote="skip"] { grid-column: 1 / -1; justify-content: space-between; padding-inline: var(--space-2); border-top-color: var(--line); }
+    .outcome[data-vote="skip"][aria-pressed="true"] { border-color: var(--accent); }
+    .keyboard-guide { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-3); border-top: 1px solid var(--line); color: var(--muted); font-size: var(--text-small); }
+    .keyboard-guide span { display: flex; align-items: center; gap: var(--space-1); }
+    kbd { display: inline-block; border: 1px solid var(--control-line); border-radius: var(--radius-small); padding: 0 var(--space-1); background: var(--field); font: 400 var(--text-small)/1.5 'Inter', sans-serif; color: var(--ink); }
+    .page-footer { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-6); border-top: 1px solid var(--line); padding-top: var(--space-4); margin-top: var(--space-8); }
+    .status { color: var(--muted); font: 400 var(--text-small)/1.5 'Inter', sans-serif; max-width: 65ch; }
+    .reset { flex: none; border: 0; border-radius: var(--radius-small); padding: var(--space-1) var(--space-2); background: transparent; color: var(--muted); font-size: var(--text-label); }
+    .reset:hover { color: var(--ink); background: var(--hover); }
+    @media (max-width: 1100px) {
+      main { padding: var(--space-6); }
+      .topbar { padding-inline: var(--space-6); }
+      .workspace { gap: var(--space-5); }
+      .previews { gap: var(--space-4); }
+      .candidate-heading { min-height: 100px; }
+      .candidate-footer { align-items: flex-start; flex-direction: column; }
+    }
+    @media (max-width: 800px) {
+      .workspace { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+      .shelf { position: static; }
+      .shelf-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .choice + .choice { border-top: 0; border-left: 1px solid var(--line); }
+      .outcome-group { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .outcome[data-vote="skip"] { grid-column: auto; border-top-color: transparent; justify-content: center; }
+      .keyboard-guide { justify-content: flex-start; gap: var(--space-4); }
+      .project-line p { display: none; }
+    }
+    @media (max-width: 560px) {
+      :root { --preview-height: 440px; }
+      main { padding: var(--space-5) var(--space-4); }
+      .topbar { min-height: 64px; padding: var(--space-4); }
+      .project-line { margin-bottom: var(--space-5); }
+      .previews { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+      .candidate-heading { min-height: 72px; }
+      .candidate-footer { flex-direction: row; }
+      .shelf-choices { display: block; }
+      .choice { padding: var(--space-4); }
+      .choice + .choice { border-left: 0; border-top: 1px solid var(--line); }
+      .choose { min-height: 64px; }
+      .choose .label { font-size: var(--text-title); }
+      .page-footer { align-items: flex-start; gap: var(--space-3); }
+      .status { max-width: 24ch; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body data-design="raycast-shelf">
+  <!-- THESIS: Bring command-row clarity out of the launcher and into a full-size comparison. OWN-WORLD: A light, cool-gray review field with Barlow lettering, Inter annotations, and restrained clay selection. FIRST VIEWPORT: Two equal interactive previews occupy the field; a narrow persistent action shelf connects each candidate to its response and note. INTERACTION: Native Tab and Enter discipline, explicit left/right actions, visible notes, and three secondary sample outcomes. No search imitation or ranking mutations. SEED: 9743c350, user-pinned Raycast reference, variant 2: Shelf. -->
+  <header class="topbar">
+    <div class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h7v12H4zM14 6h6v12h-6M7 9v6M17 9v6"/></svg>This or that</div>
+    <div class="study"><span aria-hidden="true"></span>Shelf</div>
+  </header>
+  <main>
+    <div class="project-line">
+      <h1>Sprint distribution</h1>
+      <p>Explore the previews. Keep your response close.</p>
+    </div>
+    <div class="workspace">
+      <section class="comparison" aria-label="Candidate comparison">
+        <div class="previews">
+          <article class="candidate candidate-left" aria-labelledby="shelf-left-title">
+            <header class="candidate-heading">
+              <span class="side-glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5v14M19 12H8m5-5-5 5 5 5"/></svg></span>
+              <div><h2 id="shelf-left-title">Blueprint workbench</h2><span class="side-caption">Left candidate</span></div>
+            </header>
+            <div class="preview"><iframe data-candidate="left" title="Blueprint workbench interactive preview" src="/candidates/20-blueprint-desk.html" sandbox="allow-scripts allow-same-origin"></iframe></div>
+            <footer class="candidate-footer"><span>Interactive preview</span><a class="open-link" href="/candidates/20-blueprint-desk.html" target="_blank" rel="noopener" aria-label="Open Blueprint workbench larger">Open larger<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6m0-6-9 9M10 5H5v14h14v-5"/></svg></a></footer>
+          </article>
+          <article class="candidate candidate-right" aria-labelledby="shelf-right-title">
+            <header class="candidate-heading">
+              <span class="side-glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 5v14M5 12h11m-5-5 5 5-5 5"/></svg></span>
+              <div><h2 id="shelf-right-title">Team routes</h2><span class="side-caption">Right candidate</span></div>
+            </header>
+            <div class="preview"><iframe data-candidate="right" title="Team routes interactive preview" src="/candidates/11-metro-routes.html" sandbox="allow-scripts allow-same-origin"></iframe></div>
+            <footer class="candidate-footer"><span>Interactive preview</span><a class="open-link" href="/candidates/11-metro-routes.html" target="_blank" rel="noopener" aria-label="Open Team routes larger">Open larger<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6m0-6-9 9M10 5H5v14h14v-5"/></svg></a></footer>
+          </article>
+        </div>
+      </section>
+      <aside class="shelf" aria-labelledby="shelf-actions-title">
+        <div class="shelf-heading"><h2 id="shelf-actions-title">Actions</h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h11M4 18h7M17 15l3 3-3 3"/></svg></div>
+        <div class="shelf-choices">
+          <section class="choice" aria-label="Left candidate response">
+            <button class="choose" type="button" data-vote="left" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5v14M19 12H8m5-5-5 5 5 5"/></svg><span class="label"><span class="verb">Choose</span>Blueprint workbench</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button>
+            <label class="note-label" for="shelf-left-note">Left notes <span>Optional</span></label>
+            <textarea id="shelf-left-note" data-note="left" placeholder="What stands out on the left?"></textarea>
+          </section>
+          <section class="choice" aria-label="Right candidate response">
+            <button class="choose" type="button" data-vote="right" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 5v14M5 12h11m-5-5 5 5-5 5"/></svg><span class="label"><span class="verb">Choose</span>Team routes</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button>
+            <label class="note-label" for="shelf-right-note">Right notes <span>Optional</span></label>
+            <textarea id="shelf-right-note" data-note="right" placeholder="What stands out on the right?"></textarea>
+          </section>
+        </div>
+        <section class="other-outcomes" aria-labelledby="shelf-other-title">
+          <h3 id="shelf-other-title">Other responses</h3>
+          <div class="outcome-group">
+            <button class="outcome" type="button" data-vote="like" aria-pressed="false">Like both</button>
+            <button class="outcome" type="button" data-vote="hate" aria-pressed="false">Hate both</button>
+            <button class="outcome" type="button" data-vote="skip" aria-pressed="false">Skip<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 6 6 6-6 6M18 6v12"/></svg></button>
+          </div>
+        </section>
+        <div class="keyboard-guide" aria-label="Keyboard guidance"><span><kbd>Tab</kbd> focus</span><span><kbd>Enter</kbd> choose</span></div>
+      </aside>
+    </div>
+    <footer class="page-footer">
+      <p class="status" data-status role="status" aria-live="polite">Preview only. Responses are not recorded.</p>
+      <button class="reset" type="button" data-action="reset">Clear sample</button>
+    </footer>
+  </main>
+</body>
+</html>

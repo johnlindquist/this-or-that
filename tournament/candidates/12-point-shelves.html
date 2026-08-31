@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Point shelves — sprint distribution</title>
+<!-- Candidate 12: Point shelves. Exploration draft: proportional inventory blocks with a readable ticket register, not a capacity planner. -->
+<style>
+:root{font-family:Arial,sans-serif;color:#292922;background:#eee9db;font-size:13px;--ochre:#c89636;--ink:#292922;--paper:#f8f5ed;--line:#c3bbab}*{box-sizing:border-box}body{margin:0}button,select{font:inherit}button{cursor:pointer;color:inherit}button:focus-visible,select:focus-visible{outline:3px solid #155c82;outline-offset:3px}button:disabled{opacity:.38;cursor:default}button:hover:not(:disabled){filter:brightness(.94)}::selection{background:#e2b859;color:#20201b}*{scrollbar-width:thin;scrollbar-color:#a18c64 #e7dfcf}header{display:flex;align-items:center;gap:10px;padding:15px 18px 12px;border-bottom:1px solid var(--ink)}h1{font-family:Georgia,serif;font-size:25px;font-weight:normal;margin:0;letter-spacing:-.6px}header p{font-size:11px;margin:3px 0 0;color:#675c45}.header-copy{flex:1}.plain{background:transparent;border:1px solid #81765f;padding:7px 10px;border-radius:3px}.demo{font-size:10px;text-transform:uppercase;letter-spacing:.08em;background:#dfd5bd;padding:5px 6px;white-space:nowrap}.layout{height:calc(100dvh - 207px);min-height:290px;display:grid;grid-template-columns:185px minmax(0,1fr)}aside{padding:15px 12px;overflow:auto;background:#e4dcc9;border-right:1px solid #9d947f}h2{font-size:13px;margin:0;font-weight:700}.bin-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}.subtle{font-size:11px;color:#665d4b}.bin-list{display:grid;gap:8px;margin-top:15px}.bin-ticket{width:100%;text-align:left;background:var(--paper);border:1px solid #9d947f;padding:10px;border-radius:2px}.bin-ticket[aria-pressed=true]{background:#f3d590;border:2px solid var(--ink);padding:9px}.bin-ticket small{font-size:10px;display:block;color:#655a46}.bin-ticket strong{font-size:12px;line-height:1.35;display:block;margin:7px 0}.bin-ticket .meta{display:flex;justify-content:space-between;font-size:10px}.workshop{overflow:auto;min-width:0;padding:12px 18px 18px}.legend{display:flex;justify-content:space-between;gap:10px;margin-bottom:13px;font-size:10px;color:#645a45}.scale{display:inline-block;width:24px;height:8px;background:var(--ochre);vertical-align:middle;margin-right:4px}.shelf{margin-bottom:20px}.shelf-heading{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}.shelf-heading h2{font-family:Georgia,serif;font-size:18px;font-weight:normal}.shelf-heading span{font-size:11px;color:#635941}.track-scroll{overflow-x:auto;padding:3px 3px 6px}.track{display:flex;gap:3px;align-items:flex-end;min-height:53px;width:max-content;min-width:100%;border-bottom:5px solid #554c3a;padding-bottom:3px}.block{flex:0 0 auto;width:calc(var(--points)*24px);height:43px;border:1px solid #725016;background:#c89636;display:flex;align-items:center;justify-content:center;position:relative;padding:0;color:#2a261d;font-weight:700;font-size:12px;border-radius:2px 2px 0 0}.block[aria-pressed=true]{background:#302f27;color:#f8e5b4;border-color:#302f27}.block[aria-pressed=true]:after{content:"";position:absolute;bottom:-7px;left:calc(50% - 4px);width:8px;height:4px;background:var(--ochre)}.empty{font-size:11px;color:#716650;padding:13px 0}.register{list-style:none;padding:0;margin:5px 0 0;display:grid;gap:2px}.register button{display:grid;grid-template-columns:18px 49px minmax(0,1fr) 25px;gap:5px;align-items:baseline;width:100%;padding:4px 5px;border:0;background:transparent;text-align:left;font-size:11px}.register button[aria-pressed=true]{background:#ded2b5}.register .number{color:#74674e;font-size:10px}.register .ticket-id{font-size:9px;color:#74674e}.register .ticket-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.register .points{text-align:right;font-variant-numeric:tabular-nums;color:#635941}.inspector{border-top:2px solid var(--ink);background:var(--paper);padding:12px 18px 14px;min-height:131px}.selection-head{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}.selection-head small{font-size:10px;color:#726447;white-space:nowrap}.selection-head strong{font-size:14px;line-height:1.3}.actions{display:flex;gap:18px;flex-wrap:wrap}.action-group{display:flex;align-items:center;gap:5px}.action-label{font-size:10px;text-transform:uppercase;letter-spacing:.07em;margin-right:3px;color:#6b5e44}.assign{padding:7px 9px;border:1px solid #a8997c;background:#eee7d7;border-radius:3px;font-size:11px}.assign[aria-pressed=true]{background:var(--ink);color:#f7e3b3;border-color:var(--ink)}.priority{background:transparent;border:1px solid #a8997c;padding:7px 9px;border-radius:3px;font-size:11px}.helper{margin:9px 0 0;font-size:10px;color:#70634b}#status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}@media(min-width:950px){.layout{grid-template-columns:230px minmax(0,1fr)}.workshop{padding-left:28px;padding-right:28px}.register{grid-template-columns:1fr 1fr}.shelf{margin-bottom:25px}.block{height:50px}}@media(max-width:540px){header{padding:11px;gap:6px}h1{font-size:22px}.demo{display:none}.layout{grid-template-columns:145px minmax(0,1fr);height:calc(100dvh - 245px)}.workshop{padding:12px 9px}.legend{display:block;line-height:1.8}.inspector{padding:10px;min-height:160px}.actions{gap:9px}.action-group{flex-wrap:wrap}.selection-head{align-items:flex-start}.register button{grid-template-columns:15px minmax(0,1fr) 20px}.register .ticket-id{display:none}.shelf-heading span{font-size:10px}}
+</style>
+</head>
+<body>
+<header><div class="header-copy"><h1>Point shelves</h1><p>Sprint inventory · select a ticket to place it</p></div><span class="demo">Demo data</span><button class="plain" data-action="undo" data-focus="undo">Undo</button><button class="plain" data-action="reset" data-focus="reset">Reset</button></header>
+<main id="app"></main><div id="status" role="status" aria-live="polite"></div>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+let selected = 'SPR-101';
+const app = document.querySelector('#app');
+const esc = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const demo = createDemo(render);
+function selectAttributes(ticket, place) {
+  return `data-ticket-id="${esc(ticket.id)}" data-select="${esc(ticket.id)}" data-focus="${place}-${esc(ticket.id)}" aria-pressed="${selected === ticket.id}" aria-label="Select ${esc(ticket.id)}: ${esc(ticket.title)}, ${ticket.points} points"`;
+}
+function render() {
+  const focus = document.activeElement?.dataset.focus;
+  const ticket = demo.tickets.find(t => t.id === selected) || demo.tickets[0];
+  selected = ticket.id;
+  const owner = demo.ownerOf(selected);
+  const queue = demo.list(owner);
+  const index = queue.findIndex(t => t.id === selected);
+  const backlog = demo.list('backlog');
+  app.innerHTML = `<div class="layout"><aside aria-label="Unassigned inventory"><div class="bin-head"><h2>Unassigned bin</h2><span>${backlog.length}</span></div><span class="subtle">${demo.points('backlog')} points waiting</span><div class="bin-list">${backlog.map(t => `<button class="bin-ticket" ${selectAttributes(t,'bin')}><small>${esc(t.id)}</small><strong>${esc(t.title)}</strong><span class="meta"><span>${esc(t.kind)}</span><b>${t.points} pt</b></span></button>`).join('') || '<p class="empty">Bin empty. All tickets have a shelf.</p>'}</div></aside><section class="workshop" aria-label="Developer shelves"><div class="legend"><span><i class="scale"></i>24px = 1 point</span><span>Left to right = priority · no capacity limit</span></div>${demo.owners.filter(o => o.id !== 'backlog').map(o => {
+    const list = demo.list(o.id);
+    return `<section class="shelf" data-owner-id="${esc(o.id)}" aria-label="${esc(o.name)} shelf"><div class="shelf-heading"><h2>${esc(o.name)}</h2><span>${demo.points(o.id)} pt / ${list.length} tickets</span></div><div class="track-scroll"><div class="track">${list.map(t => `<button class="block" style="--points:${t.points}" title="${esc(t.id)} · ${esc(t.title)} · ${t.points} points" ${selectAttributes(t,'block')}>${t.points}</button>`).join('') || '<span class="empty">Nothing shelved yet</span>'}</div></div><ol class="register">${list.map((t,i) => `<li><button ${selectAttributes(t,'row')}><span class="number">${i+1}.</span><span class="ticket-id">${esc(t.id.replace('SPR-','#'))}</span><span class="ticket-title">${esc(t.title)}</span><span class="points">${t.points}p</span></button></li>`).join('')}</ol></section>`;
+  }).join('')}</section></div><section class="inspector" aria-label="Selected ticket controls"><div class="selection-head"><small>${esc(ticket.id)} · ${ticket.points} pt</small><strong>${esc(ticket.title)}</strong></div><div class="actions"><div class="action-group"><span class="action-label">Place on</span>${demo.owners.map(o => `<button class="assign" data-assign="${esc(o.id)}" data-focus="assign-${esc(o.id)}" aria-pressed="${owner === o.id}" aria-label="${o.id === 'backlog' ? 'Return selected ticket to backlog' : `Assign selected ticket to ${esc(o.name)}`}">${o.id === 'backlog' ? 'Bin' : esc(o.name)}</button>`).join('')}</div><div class="action-group"><span class="action-label">Priority</span><button class="priority" data-shift="-1" data-focus="earlier" ${index === 0 ? 'disabled' : ''}>Earlier</button><button class="priority" data-shift="1" data-focus="later" ${index === queue.length-1 ? 'disabled' : ''}>Later</button></div></div><p class="helper">Position ${index+1} of ${queue.length} in ${owner === 'backlog' ? 'the unassigned bin' : esc(demo.owners.find(o => o.id === owner).name) + '’s shelf'}. Moving to another shelf appends at the end. Points describe size, not a limit.</p></section>`;
+  if (focus) document.querySelector(`[data-focus="${CSS.escape(focus)}"]`)?.focus({preventScroll:true});
+}
+document.addEventListener('click', event => {
+  const button = event.target.closest('button');
+  if (!button) return;
+  if (button.dataset.select) { selected = button.dataset.select; render(); return; }
+  if (button.dataset.assign) {
+    if (demo.ownerOf(selected) === button.dataset.assign) return;
+    demo.move(selected, button.dataset.assign);
+    document.querySelector('#status').textContent = `${selected} moved to ${button.textContent}.`;
+  } else if (button.dataset.shift) { demo.shift(selected, Number(button.dataset.shift)); }
+  else if (button.dataset.action === 'undo') { demo.undo(); }
+  else if (button.dataset.action === 'reset') { demo.reset(); }
+});
+render();
+</script>
+</body>
+</html>

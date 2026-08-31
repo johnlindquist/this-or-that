@@ -1,0 +1,242 @@
+{
+  "protocol": "this-or-that/chrome-mockups/v2",
+  "defaultId": "capture-lightbox",
+  "groups": [
+    {
+      "id": "capture-one",
+      "name": "Capture One",
+      "reference": "https://support.captureone.com/hc/en-us/articles/360002468897-The-Viewer-overview"
+    },
+    {
+      "id": "figma",
+      "name": "Figma",
+      "reference": "https://www.figma.com/blog/our-approach-to-designing-ui3/"
+    },
+    {
+      "id": "linear",
+      "name": "Linear",
+      "reference": "https://linear.app/now/how-we-redesigned-the-linear-ui"
+    },
+    {
+      "id": "things",
+      "name": "Things",
+      "reference": "https://culturedcode.com/things/features/"
+    },
+    {
+      "id": "raycast",
+      "name": "Raycast",
+      "reference": "https://manual.raycast.com/"
+    },
+    {
+      "id": "ia-writer",
+      "name": "iA Writer",
+      "reference": "https://ia.net/writer"
+    }
+  ],
+  "options": [
+    {
+      "id": "capture-lightbox",
+      "name": "Lightbox",
+      "number": "01",
+      "family": "Capture One",
+      "familyId": "capture-one",
+      "typeface": "Source Sans 3",
+      "description": "A wide charcoal proofing stage with a compact decision strip and lower notes inspector.",
+      "src": "/chrome-designs/capture-lightbox.html",
+      "reference": "https://support.captureone.com/hc/en-us/articles/360002468897-The-Viewer-overview"
+    },
+    {
+      "id": "capture-session",
+      "name": "Session",
+      "number": "02",
+      "family": "Capture One",
+      "familyId": "capture-one",
+      "typeface": "Roboto Condensed",
+      "description": "A photographic session desk with a persistent library and notes rail.",
+      "src": "/chrome-designs/capture-session.html",
+      "reference": "https://support.captureone.com/hc/en-us/articles/360002468897-The-Viewer-overview"
+    },
+    {
+      "id": "capture-proof",
+      "name": "Proof",
+      "number": "03",
+      "family": "Capture One",
+      "familyId": "capture-one",
+      "typeface": "Barlow",
+      "description": "A light contact-proof mat with under-image captions and a dark decision footer.",
+      "src": "/chrome-designs/capture-proof.html",
+      "reference": "https://support.captureone.com/hc/en-us/articles/360002468897-The-Viewer-overview"
+    },
+    {
+      "id": "figma-canvas",
+      "name": "Canvas",
+      "number": "04",
+      "family": "Figma",
+      "familyId": "figma",
+      "typeface": "Manrope",
+      "description": "Open artboards, external captions, a floating action dock and an outboard notes panel.",
+      "src": "/chrome-designs/figma-canvas.html",
+      "reference": "https://www.figma.com/blog/our-approach-to-designing-ui3/"
+    },
+    {
+      "id": "figma-inspect",
+      "name": "Inspect",
+      "number": "05",
+      "family": "Figma",
+      "familyId": "figma",
+      "typeface": "Figtree",
+      "description": "A light design workspace with a docked inspector for notes and responses.",
+      "src": "/chrome-designs/figma-inspect.html",
+      "reference": "https://www.figma.com/blog/our-approach-to-designing-ui3/"
+    },
+    {
+      "id": "figma-deck",
+      "name": "Deck",
+      "number": "06",
+      "family": "Figma",
+      "familyId": "figma",
+      "typeface": "Public Sans",
+      "description": "A dark presentation stage with generous artboards and an inset review console.",
+      "src": "/chrome-designs/figma-deck.html",
+      "reference": "https://www.figma.com/blog/our-approach-to-designing-ui3/"
+    },
+    {
+      "id": "linear-review",
+      "name": "Review",
+      "number": "07",
+      "family": "Linear",
+      "familyId": "linear",
+      "typeface": "Inter",
+      "description": "A precise review workbench with a context rail and split lower notes inspector.",
+      "src": "/chrome-designs/linear-review.html",
+      "reference": "https://linear.app/now/how-we-redesigned-the-linear-ui"
+    },
+    {
+      "id": "linear-triage",
+      "name": "Triage",
+      "number": "08",
+      "family": "Linear",
+      "familyId": "linear",
+      "typeface": "Geist",
+      "description": "A light horizontal triage desk with uncaged previews and a shared notes shelf.",
+      "src": "/chrome-designs/linear-triage.html",
+      "reference": "https://linear.app/now/how-we-redesigned-the-linear-ui"
+    },
+    {
+      "id": "linear-focus",
+      "name": "Focus",
+      "number": "09",
+      "family": "Linear",
+      "familyId": "linear",
+      "typeface": "IBM Plex Sans",
+      "description": "An edge-aligned dark comparison with title-adjacent choices and a notes drawer.",
+      "src": "/chrome-designs/linear-focus.html",
+      "reference": "https://linear.app/now/how-we-redesigned-the-linear-ui"
+    },
+    {
+      "id": "things-today",
+      "name": "Today",
+      "number": "10",
+      "family": "Things",
+      "familyId": "things",
+      "typeface": "Lato",
+      "description": "An open native-inspired workspace with a compact project and notes column.",
+      "src": "/chrome-designs/things-today.html",
+      "reference": "https://culturedcode.com/things/features/"
+    },
+    {
+      "id": "things-folio",
+      "name": "Folio",
+      "number": "11",
+      "family": "Things",
+      "familyId": "things",
+      "typeface": "Atkinson Hyperlegible Next",
+      "description": "Two complete paper-like reading paths with integrated annotations and decisions.",
+      "src": "/chrome-designs/things-folio.html",
+      "reference": "https://culturedcode.com/things/features/"
+    },
+    {
+      "id": "things-split",
+      "name": "Split",
+      "number": "12",
+      "family": "Things",
+      "familyId": "things",
+      "typeface": "Source Sans 3",
+      "description": "An evening split workspace with a centered project title and shared review drawer.",
+      "src": "/chrome-designs/things-split.html",
+      "reference": "https://culturedcode.com/things/features/"
+    },
+    {
+      "id": "raycast-command",
+      "name": "Command",
+      "number": "13",
+      "family": "Raycast",
+      "familyId": "raycast",
+      "typeface": "Outfit",
+      "description": "A focused dark comparison with a compact command dock and expandable notes.",
+      "src": "/chrome-designs/raycast-command.html",
+      "reference": "https://manual.raycast.com/"
+    },
+    {
+      "id": "raycast-shelf",
+      "name": "Shelf",
+      "number": "14",
+      "family": "Raycast",
+      "familyId": "raycast",
+      "typeface": "Barlow",
+      "description": "A light keyboard-first workspace with a right-side action and notes shelf.",
+      "src": "/chrome-designs/raycast-shelf.html",
+      "reference": "https://manual.raycast.com/"
+    },
+    {
+      "id": "raycast-spotlight",
+      "name": "Spotlight",
+      "number": "15",
+      "family": "Raycast",
+      "familyId": "raycast",
+      "typeface": "Roboto",
+      "description": "A centered decision band above paired previews and individual notes drawers.",
+      "src": "/chrome-designs/raycast-spotlight.html",
+      "reference": "https://manual.raycast.com/"
+    },
+    {
+      "id": "writer-manuscript",
+      "name": "Manuscript",
+      "number": "16",
+      "family": "iA Writer",
+      "familyId": "ia-writer",
+      "typeface": "Literata",
+      "description": "A two-page editorial review with serif titles and annotations below the previews.",
+      "src": "/chrome-designs/writer-manuscript.html",
+      "reference": "https://ia.net/writer"
+    },
+    {
+      "id": "writer-margin",
+      "name": "Margin",
+      "number": "17",
+      "family": "iA Writer",
+      "familyId": "ia-writer",
+      "typeface": "Source Serif 4",
+      "description": "A typographic review desk with an asymmetric marginalia and notes rail.",
+      "src": "/chrome-designs/writer-margin.html",
+      "reference": "https://ia.net/writer"
+    },
+    {
+      "id": "writer-contrast",
+      "name": "Contrast",
+      "number": "18",
+      "family": "iA Writer",
+      "familyId": "ia-writer",
+      "typeface": "IBM Plex Mono + Literata",
+      "description": "Contrasting charcoal and paper regions with serif titles and monospaced annotations.",
+      "src": "/chrome-designs/writer-contrast.html",
+      "reference": "https://ia.net/writer"
+    }
+  ],
+  "keyboard": {
+    "previous": "ArrowLeft",
+    "next": "ArrowRight",
+    "wrap": true,
+    "scope": "Non-editable surfaces in reviewer and embedded previews; arrows never vote."
+  }
+}

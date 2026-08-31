@@ -1,0 +1,154 @@
+[
+  {
+    "id": "source-sans-3",
+    "name": "Source Sans 3",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/source-sans-3:vf@latest/latin-wght-normal.woff2",
+    "file": "source-sans-3-100-900.woff2",
+    "license": "source-sans-3-LICENSE.txt"
+  },
+  {
+    "id": "roboto-condensed",
+    "name": "Roboto Condensed",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/roboto-condensed:vf@latest/latin-wght-normal.woff2",
+    "file": "roboto-condensed-100-900.woff2",
+    "license": "roboto-condensed-LICENSE.txt"
+  },
+  {
+    "id": "barlow",
+    "name": "Barlow",
+    "weight": "400",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/barlow@latest/latin-400-normal.woff2",
+    "file": "barlow-400.woff2",
+    "license": "barlow-LICENSE.txt"
+  },
+  {
+    "id": "barlow",
+    "name": "Barlow",
+    "weight": "700",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/barlow@latest/latin-700-normal.woff2",
+    "file": "barlow-700.woff2",
+    "license": "barlow-LICENSE.txt"
+  },
+  {
+    "id": "manrope",
+    "name": "Manrope",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/manrope:vf@latest/latin-wght-normal.woff2",
+    "file": "manrope-100-900.woff2",
+    "license": "manrope-LICENSE.txt"
+  },
+  {
+    "id": "figtree",
+    "name": "Figtree",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/figtree:vf@latest/latin-wght-normal.woff2",
+    "file": "figtree-100-900.woff2",
+    "license": "figtree-LICENSE.txt"
+  },
+  {
+    "id": "public-sans",
+    "name": "Public Sans",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/public-sans:vf@latest/latin-wght-normal.woff2",
+    "file": "public-sans-100-900.woff2",
+    "license": "public-sans-LICENSE.txt"
+  },
+  {
+    "id": "inter",
+    "name": "Inter",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/inter:vf@latest/latin-wght-normal.woff2",
+    "file": "inter-100-900.woff2",
+    "license": "inter-LICENSE.txt"
+  },
+  {
+    "id": "geist",
+    "name": "Geist",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/geist:vf@latest/latin-wght-normal.woff2",
+    "file": "geist-100-900.woff2",
+    "license": "geist-LICENSE.txt"
+  },
+  {
+    "id": "ibm-plex-sans",
+    "name": "IBM Plex Sans",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-sans:vf@latest/latin-wght-normal.woff2",
+    "file": "ibm-plex-sans-100-900.woff2",
+    "license": "ibm-plex-sans-LICENSE.txt"
+  },
+  {
+    "id": "lato",
+    "name": "Lato",
+    "weight": "400",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/lato@latest/latin-400-normal.woff2",
+    "file": "lato-400.woff2",
+    "license": "lato-LICENSE.txt"
+  },
+  {
+    "id": "lato",
+    "name": "Lato",
+    "weight": "700",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/lato@latest/latin-700-normal.woff2",
+    "file": "lato-700.woff2",
+    "license": "lato-LICENSE.txt"
+  },
+  {
+    "id": "atkinson-hyperlegible-next",
+    "name": "Atkinson Hyperlegible Next",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/atkinson-hyperlegible-next:vf@latest/latin-wght-normal.woff2",
+    "file": "atkinson-hyperlegible-next-100-900.woff2",
+    "license": "atkinson-hyperlegible-next-LICENSE.txt"
+  },
+  {
+    "id": "outfit",
+    "name": "Outfit",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/outfit:vf@latest/latin-wght-normal.woff2",
+    "file": "outfit-100-900.woff2",
+    "license": "outfit-LICENSE.txt"
+  },
+  {
+    "id": "roboto",
+    "name": "Roboto",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/roboto:vf@latest/latin-wght-normal.woff2",
+    "file": "roboto-100-900.woff2",
+    "license": "roboto-LICENSE.txt"
+  },
+  {
+    "id": "literata",
+    "name": "Literata",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/literata:vf@latest/latin-wght-normal.woff2",
+    "file": "literata-100-900.woff2",
+    "license": "literata-LICENSE.txt"
+  },
+  {
+    "id": "source-serif-4",
+    "name": "Source Serif 4",
+    "weight": "100 900",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/source-serif-4:vf@latest/latin-wght-normal.woff2",
+    "file": "source-serif-4-100-900.woff2",
+    "license": "source-serif-4-LICENSE.txt"
+  },
+  {
+    "id": "ibm-plex-mono",
+    "name": "IBM Plex Mono",
+    "weight": "400",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-mono@latest/latin-400-normal.woff2",
+    "file": "ibm-plex-mono-400.woff2",
+    "license": "ibm-plex-mono-LICENSE.txt"
+  },
+  {
+    "id": "ibm-plex-mono",
+    "name": "IBM Plex Mono",
+    "weight": "700",
+    "url": "https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-mono@latest/latin-700-normal.woff2",
+    "file": "ibm-plex-mono-700.woff2",
+    "license": "ibm-plex-mono-LICENSE.txt"
+  }
+]

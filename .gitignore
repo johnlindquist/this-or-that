@@ -1,0 +1,29 @@
+# Dependencies, generated output, and local session records
+node_modules/
+.data/
+.tournament-data/
+.data-e2e/
+.build/
+.notes/
+test-results/
+playwright-report/
+.artifacts/
+dist/
+.impeccable/review/
+coverage/
+*.log
+
+# Historical recording material and session-specific preference reports
+/lesson/
+/RESULTS.md
+/results/
+
+# Local credentials must never enter source control
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Workstation files
+.DS_Store

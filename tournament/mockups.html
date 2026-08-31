@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Design review · This or that</title>
+  <link rel="stylesheet" href="/chrome-designs/fonts.css">
+  <link rel="stylesheet" href="/mockups.css">
+  <script src="/mockups.js" defer></script>
+</head>
+<body>
+  <!-- THESIS: Let eighteen independently authored chrome designs occupy the screen; the reviewer is not a theme showroom. OWN-WORLD: restrained graphite review bar, Inter controls, quiet index. FIRST VIEWPORT: one actual design at full width beneath a compact 64px navigation bar. INTERACTION: Left/Right explore, editable controls retain arrows, Escape returns to the reviewer, no rankings are recorded. SEED: 9743c350; user explicitly pinned all six reference families and three variants per family, superseding a single assigned direction. -->
+  <svg class="symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="arrow-left" viewBox="0 0 24 24"><path d="m12 5-7 7 7 7M5 12h14"/></symbol>
+    <symbol id="arrow-right" viewBox="0 0 24 24"><path d="m12 5 7 7-7 7M5 12h14"/></symbol>
+    <symbol id="chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-2 2M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l2-2"/></symbol>
+    <symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></symbol>
+  </defs></svg>
+  <header class="review-bar" id="review-controls" tabindex="-1">
+    <a class="brand" href="/" aria-label="Return to This or that">This or that<span>Design review</span></a>
+    <nav class="navigation" aria-label="Explore designs">
+      <button id="previous-design" type="button" class="arrow-button" aria-label="Previous design" title="Previous design · Left arrow" disabled><svg><use href="#arrow-left"/></svg></button>
+      <button id="design-menu" type="button" class="current-design" aria-expanded="false" aria-controls="design-index" disabled>
+        <span id="design-position">— / 18</span><span class="design-identity"><strong id="design-name">Loading designs</strong><span id="design-family">Six references. Three takes each.</span></span><svg><use href="#chevron"/></svg>
+      </button>
+      <button id="next-design" type="button" class="arrow-button" aria-label="Next design" title="Next design · Right arrow" disabled><svg><use href="#arrow-right"/></svg></button>
+    </nav>
+    <div class="review-tools"><span class="keyboard-hint"><kbd>←</kbd><kbd>→</kbd> to explore</span><button id="about-design" type="button" class="tool-button" aria-label="About this design" aria-expanded="false" aria-controls="design-details"><svg><use href="#info"/></svg></button><button id="copy-link" type="button" class="tool-button" aria-label="Copy link" disabled><svg aria-hidden="true"><use href="#link"/></svg><span>Copy link</span></button></div>
+  </header>
+  <nav id="design-index" class="design-index" aria-label="All eighteen designs" hidden></nav>
+  <aside id="design-details" class="design-details" aria-label="About this design" hidden>
+    <p id="design-description"></p><p><strong id="design-typeface"></strong> <a id="reference-link" target="_blank" rel="noopener">View reference</a></p>
+    <p>Preview only. Arrow keys browse designs; they never vote. Text fields keep their normal arrow keys. Escape returns to the review controls. Sample notes, responses and demo interactions reset when you switch designs; saved tournaments are untouched.</p>
+    <div id="copy-fallback" hidden><label for="share-url">Copy this link</label><input id="share-url" readonly type="url"></div>
+  </aside>
+  <main id="review-stage" aria-label="Full-size design preview">
+    <iframe id="design-preview" title="Loading design preview" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" hidden></iframe>
+    <div id="preview-message" class="preview-message" role="status"><p id="preview-message-text">Loading the design collection…</p><button id="retry-preview" type="button" hidden>Try again</button></div>
+  </main>
+  <p id="review-announcement" class="sr-only" role="status" aria-live="polite"></p>
+  <noscript><p class="no-script">Enable JavaScript to browse these interactive design previews.</p></noscript>
+</body>
+</html>

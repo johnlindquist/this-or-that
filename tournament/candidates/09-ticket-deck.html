@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ticket deck · Sprint distribution</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#37281f;background:#fff7ef;font-synthesis:none;--orange:#c44b13;--line:#eddace}*{box-sizing:border-box}body{margin:0}button{font:inherit;cursor:pointer;color:inherit}button:focus-visible{outline:3px solid #174e94;outline-offset:3px}button:disabled{opacity:.35;cursor:default}button:hover:not(:disabled){filter:brightness(.95)}::selection{background:#f8bc8d;color:#37281f}body{scrollbar-color:#c77c51 #fff7ef}header{display:flex;align-items:center;justify-content:space-between;padding:16px 22px 12px;gap:12px}h1{font-size:19px;letter-spacing:-.5px;margin:0}.demo{font-size:11px;color:#795542;margin-left:9px;font-weight:normal}button.quiet{border:1px solid var(--line);border-radius:7px;background:#fff;padding:7px 11px;font-size:12px}.tools{display:flex;gap:6px}main{max-width:1100px;margin:auto;padding:0 22px 16px}.deck-nav{display:flex;align-items:center;gap:12px;margin:4px 0 14px}.steps{display:flex;flex:1;gap:5px}.step{flex:1;background:#f6e7dc;border:0;border-radius:4px;padding:7px 0;font-size:11px;color:#75513b}.step[aria-current="step"]{background:var(--orange);color:white;font-weight:bold}.position{font-size:12px;white-space:nowrap}.ticket{background:white;border-radius:16px;padding:24px 26px 17px;box-shadow:0 9px 25px #6333130d;min-height:223px;display:flex;flex-direction:column;justify-content:space-between}.meta{display:flex;gap:10px;align-items:center;color:#785845;font-size:12px}.kind{text-transform:capitalize;background:#fff0e3;border-radius:4px;padding:4px 7px}.ticket-main{display:flex;align-items:center;gap:25px;padding:17px 0 22px}.ticket h2{font-size:clamp(27px,4.6vw,45px);line-height:1.06;letter-spacing:-1.15px;margin:0;max-width:750px;flex:1;text-wrap:balance}.points{text-align:right;color:var(--orange);font-weight:bold;font-size:51px;line-height:1}.points span{display:block;font-size:11px;font-weight:normal;margin-top:5px;color:#785845}.ticket-foot{border-top:1px solid #f2e7de;padding-top:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px}.priority{display:flex;align-items:center;gap:6px}.priority button{border:0;background:#fff2e7;padding:6px 9px;border-radius:5px;font-size:11px}.assign-label{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px;font-size:12px}.assign-label strong{font-size:14px}.destinations{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.destination{border:0;border-radius:10px;padding:12px 14px;text-align:left;display:flex;gap:11px;align-items:center}.destination.maya{background:#c44b13;color:white}.destination.leo{background:#743418;color:white}.destination.priya{background:#ffd3b0;color:#603213}.initials{font-size:16px;font-weight:bold;border:1px solid currentColor;border-radius:50%;width:35px;height:35px;display:grid;place-items:center;flex-shrink:0}.destination strong{font-size:17px;display:block}.destination small{font-size:11px;display:block;margin-top:4px}.backlog-row{display:flex;justify-content:space-between;align-items:center;margin:9px 0 16px;gap:10px}.backlog-button{border:0;background:transparent;color:#9a3e17;text-decoration:underline;text-underline-offset:3px;padding:5px 0;font-size:12px}.backlog-row span{font-size:11px;color:#795542}.queues{border-top:1px solid var(--line);padding-top:12px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.queue-heading{display:flex;align-items:baseline;justify-content:space-between;gap:5px;margin:0 0 7px;font-size:12px}.queue-heading span{font-size:10px;color:#795542;font-weight:normal}.queue-items{display:flex;flex-wrap:wrap;gap:4px}.queue-ticket{background:white;border:1px solid #e8cbb7;border-radius:5px;font-size:11px;padding:6px 7px}.queue-ticket.active{border-color:var(--orange);background:#ffe0c7}.queue-ticket b{font-weight:normal;color:#9a3e17;margin-right:4px}.empty{font-size:11px;color:#795542;margin:5px 0}.queue-hint{font-size:10px;color:#795542;margin:12px 0 0}#status{font-size:11px;color:#795542;min-height:18px;padding:0 22px 8px;max-width:1144px;margin:auto}@media(min-height:760px){.ticket{min-height:300px}.ticket-main{padding:32px 0}.destinations{margin-bottom:12px}}@media(max-width:520px){header{padding:13px 14px}.demo{display:block;margin:3px 0 0}main{padding:0 14px 14px}.ticket{padding:20px 17px}.ticket h2{font-size:30px}.points{font-size:40px}.ticket-main{gap:15px}.destination{padding:11px 9px;gap:6px}.initials{display:none}.destination strong{font-size:16px}.ticket-foot{align-items:flex-start;flex-direction:column;gap:9px}.queues{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:15px}.backlog-row{align-items:flex-start}.backlog-row span{max-width:135px;text-align:right}}
+</style>
+</head>
+<body>
+<!-- Concept 09: focused triage deck. Exploration draft: oversized one-ticket decisions, automatic advance, and compact revisitable priority queues; intentionally not production polished. -->
+<header><h1>Ticket deck <span class="demo">Sprint planning · Demo data</span></h1><div class="tools"><button class="quiet" id="undo">Undo</button><button class="quiet" id="reset">Reset</button></div></header>
+<main id="app"></main>
+<p id="status" role="status" aria-live="polite">Choose a destination. Each assignment brings up the next ticket.</p>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+let index=0;
+const app=document.getElementById('app');
+const status=document.getElementById('status');
+const esc=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const demo=createDemo(render);
+function render(){
+  const focused=document.activeElement?.dataset.focus;
+  const ticket=demo.tickets[index];
+  const ownerId=demo.ownerOf(ticket.id);
+  const owner=demo.owners.find(person=>person.id===ownerId);
+  const queue=demo.list(ownerId);
+  const rank=queue.findIndex(item=>item.id===ticket.id);
+  app.innerHTML=`
+    <nav class="deck-nav" aria-label="Ticket deck navigation">
+      <button class="quiet" data-action="previous" data-focus="previous" ${index===0?'disabled':''}>Previous</button>
+      <div class="steps">${demo.tickets.map((item,i)=>`<button class="step" data-open="${i}" data-focus="step-${i}" aria-label="Open ${esc(item.id)}: ${esc(item.title)}" ${i===index?'aria-current="step"':''}>${i+1}</button>`).join('')}</div>
+      <span class="position">${index+1} / ${demo.tickets.length}</span>
+      <button class="quiet" data-action="next" data-focus="next" ${index===demo.tickets.length-1?'disabled':''}>Next</button>
+    </nav>
+    <article class="ticket" data-ticket-id="${esc(ticket.id)}" aria-labelledby="ticket-title">
+      <div class="meta"><span>${esc(ticket.id)}</span><span class="kind">${esc(ticket.kind)}</span></div>
+      <div class="ticket-main"><h2 id="ticket-title">${esc(ticket.title)}</h2><div class="points">${ticket.points}<span>points</span></div></div>
+      <div class="ticket-foot"><span>Currently with <strong>${esc(owner.name)}</strong></span><div class="priority"><span>Priority ${rank+1} of ${queue.length}</span><button data-shift="-1" data-focus="earlier" aria-label="Move ${esc(ticket.id)} earlier in ${esc(owner.name)} queue" ${rank===0?'disabled':''}>Earlier</button><button data-shift="1" data-focus="later" aria-label="Move ${esc(ticket.id)} later in ${esc(owner.name)} queue" ${rank===queue.length-1?'disabled':''}>Later</button></div></div>
+    </article>
+    <div class="assign-label"><strong>Who takes this one?</strong><span>Assign &amp; advance</span></div>
+    <div class="destinations">${demo.owners.filter(person=>person.id!=='backlog').map(person=>`<button class="destination ${esc(person.id)}" data-owner="${esc(person.id)}" data-focus="assign-${esc(person.id)}" aria-label="Assign ${esc(ticket.id)} to ${esc(person.name)} and advance"><span class="initials">${esc(person.initials)}</span><span><strong>${esc(person.name)}</strong><small>${demo.list(person.id).length} tickets · ${demo.points(person.id)} pts${ownerId===person.id?' · current':''}</small></span></button>`).join('')}</div>
+    <div class="backlog-row"><button class="backlog-button" data-owner="backlog" data-focus="assign-backlog">${ownerId==='backlog'?'Keep in backlog & advance':'Return to backlog & advance'}</button><span>New assignments go to the end of a queue.</span></div>
+    <section class="queues" aria-label="Owner queue summaries">${demo.owners.map(person=>`<section data-queue-owner="${esc(person.id)}"><h3 class="queue-heading">${esc(person.name)}<span>${demo.points(person.id)} pts</span></h3><div class="queue-items">${demo.list(person.id).map((item,i)=>`<button class="queue-ticket ${item.id===ticket.id?'active':''}" data-open="${demo.tickets.findIndex(value=>value.id===item.id)}" data-focus="queue-${esc(item.id)}" title="${esc(item.title)}" aria-label="Open ${esc(item.id)}: ${esc(item.title)}, priority ${i+1} in ${esc(person.name)}"><b>${i+1}.</b>${esc(item.id.replace('SPR-',''))}</button>`).join('')||'<p class="empty">No tickets yet</p>'}</div></section>`).join('')}</section>
+    <p class="queue-hint">Queues read left to right in priority order. Pick any ticket to revisit or reorder it.</p>`;
+  if(focused){const target=[...app.querySelectorAll('[data-focus]')].find(node=>node.dataset.focus===focused);if(target&&!target.disabled)target.focus({preventScroll:true});}
+}
+app.addEventListener('click',event=>{
+  const button=event.target.closest('button');
+  if(!button)return;
+  if(button.dataset.open!==undefined){index=Number(button.dataset.open);render();return;}
+  if(button.dataset.action){index+=button.dataset.action==='next'?1:-1;render();return;}
+  const ticket=demo.tickets[index];
+  if(button.dataset.shift){demo.shift(ticket.id,Number(button.dataset.shift));status.textContent=`${ticket.id} moved ${Number(button.dataset.shift)<0?'earlier':'later'} in its queue.`;return;}
+  if(button.dataset.owner){
+    const destination=button.dataset.owner;
+    const name=demo.owners.find(person=>person.id===destination).name;
+    const previousOwner=demo.ownerOf(ticket.id);
+    index=Math.min(index+1,demo.tickets.length-1);
+    if(previousOwner===destination){render();}else{demo.move(ticket.id,destination);}
+    status.textContent=`${ticket.id} ${previousOwner===destination?'kept with':'assigned to'} ${name}.${index===demo.tickets.length-1?' Final ticket in the deck; use Previous to revisit.':''}`;
+  }
+});
+document.getElementById('reset').addEventListener('click',()=>{index=0;demo.reset();status.textContent='Demo reset. Back to the first ticket.';});
+document.getElementById('undo').addEventListener('click',()=>{demo.undo();status.textContent='Undid the latest assignment or priority change, if available.';});
+render();
+</script>
+</body>
+</html>

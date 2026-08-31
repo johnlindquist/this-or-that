@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assignment mosaic — Sprint distribution</title>
+<!-- Candidate 18: Assignment mosaic. Exploratory draft for preference ranking; compact ID chips reveal one full-width assignment band. -->
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#fff;background:#1028a7;font-synthesis:none;--yellow:#ffed68;--line:#6578db}*{box-sizing:border-box}body{margin:0}button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}button:disabled{opacity:.4;cursor:default}::selection{background:var(--yellow);color:#132a9c}main{max-width:1200px;margin:auto;padding:20px;min-height:100vh;display:flex;flex-direction:column;gap:12px}header{display:flex;justify-content:space-between;align-items:center;gap:16px}h1{margin:0;font-size:27px;letter-spacing:-1px;line-height:1.1}header p{margin:6px 0 0;font-size:12px;color:#dce2ff}.tools{display:flex;gap:6px}.quiet{border:1px solid #8291e5;background:transparent;color:#fff;padding:7px 10px;font-size:12px}.quiet:hover{background:#2a44c0}.instruction{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:#dce2ff;padding:7px 0;border-top:1px solid var(--line)}.instruction strong{color:var(--yellow);font-weight:normal}.mosaic{display:grid;grid-template-columns:1.05fr 1.25fr 1.25fr;grid-template-areas:'backlog maya maya' 'backlog leo priya';gap:5px;flex:1;min-height:300px}.region{padding:17px 15px;display:flex;flex-direction:column;min-width:0}.region[data-owner=backlog]{grid-area:backlog;background:#1934b8}.region[data-owner=maya]{grid-area:maya;background:#234cde}.region[data-owner=leo]{grid-area:leo;background:#123ed1}.region[data-owner=priya]{grid-area:priya;background:#304ec9}.region-head{display:flex;align-items:baseline;justify-content:space-between;gap:7px;margin-bottom:7px}.region h2{font-size:17px;letter-spacing:-.4px;margin:0}.count{font-size:26px;font-weight:bold;color:var(--yellow);font-variant-numeric:tabular-nums}.totals{font-size:11px;color:#e2e8ff;margin-bottom:15px}.chips{display:flex;flex-wrap:wrap;align-content:flex-start;gap:7px}.chip{border:1px solid #8ba3ff;color:white;background:transparent;text-align:left;padding:9px 10px;min-width:94px;flex:0 1 auto}.chip:hover{background:#4364e3}.chip[aria-pressed=true]{background:var(--yellow);border-color:var(--yellow);color:#112989}.chip-id{font-size:12px;font-weight:bold;display:block;white-space:nowrap}.chip-meta{font-size:10px;display:block;margin-top:6px;opacity:.88}.empty{font-size:12px;line-height:1.5;color:#dce2ff;margin:6px 0}.detail{background:var(--yellow);color:#122988;padding:17px 18px;min-height:180px}.detail-top{display:flex;justify-content:space-between;gap:10px;font-size:11px;font-weight:bold}.detail h2{margin:9px 0 14px;font-size:21px;line-height:1.2;letter-spacing:-.4px}.detail-grid{display:flex;justify-content:space-between;gap:18px;align-items:end}.label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:bold;margin-bottom:6px}.segments{display:flex;flex-wrap:wrap;gap:0}.segments button{border:1px solid #253b9c;background:transparent;color:#122988;padding:8px 10px;font-size:12px;margin-right:-1px}.segments button[aria-pressed=true]{background:#122988;color:#fff}.segments button:hover{background:#e4d56a}.segments button[aria-pressed=true]:hover{background:#253ea9}.detail button:focus-visible{outline-color:#13298e}.priority{display:flex;gap:5px}.priority button,.return{background:transparent;border:1px solid #253b9c;color:#122988;font-size:11px;padding:8px}.priority button:hover:not(:disabled),.return:hover:not(:disabled){background:#eee07c}.detail-foot{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:11px;font-size:10px}.return{padding:4px 0;border:0;text-decoration:underline;text-underline-offset:3px}footer{font-size:10px;color:#dce2ff;display:flex;justify-content:space-between;gap:10px}#notice{color:var(--yellow)}@media(min-height:760px){.mosaic{min-height:420px}}@media(max-width:540px){main{padding:12px}h1{font-size:23px}.mosaic{grid-template-columns:1fr 1fr;grid-template-areas:'backlog maya' 'leo priya';min-height:350px}.region{padding:13px 11px}.detail-grid{align-items:start;flex-direction:column;gap:12px}.detail h2{font-size:19px}.instruction{font-size:10px}.detail-foot{align-items:start}.region-head{gap:4px}.region h2{font-size:16px}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+const app=document.querySelector('#app');
+let selected='SPR-101';
+let notice='Select any chip to open its title and controls.';
+const demo=createDemo(render);
+const escape=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+function render(){
+ const focusKey=document.activeElement?.dataset.focus;
+ const ticket=demo.tickets.find(ticket=>ticket.id===selected)??demo.tickets[0];
+ selected=ticket.id;
+ const owner=demo.ownerOf(selected);
+ const queue=demo.list(owner);
+ const rank=queue.findIndex(item=>item.id===selected);
+ const assigned=demo.tickets.length-demo.list('backlog').length;
+ app.innerHTML=`<header><div><h1>Assignment mosaic</h1><p>Sprint distribution / Demo data</p></div><div class="tools"><button class="quiet" data-action="undo" data-focus="undo">Undo</button><button class="quiet" data-action="reset" data-focus="reset">Reset</button></div></header>
+ <div class="instruction"><span>Pick a chip. Give it a home. Set its order.</span><strong>${assigned} / ${demo.tickets.length} assigned</strong></div>
+ <div class="mosaic" aria-label="Tickets grouped by owner">${demo.owners.map(person=>{const tickets=demo.list(person.id);return `<section class="region" data-owner="${person.id}" aria-label="${escape(person.name)} tickets"><div class="region-head"><h2>${escape(person.name)}</h2><span class="count" aria-label="${tickets.length} tickets">${tickets.length}</span></div><div class="totals">${demo.points(person.id)} points · ${tickets.length} ticket${tickets.length===1?'':'s'}</div><div class="chips">${tickets.length?tickets.map((item,index)=>`<button class="chip" data-ticket="${item.id}" data-focus="${item.id}" aria-pressed="${selected===item.id}" aria-controls="ticket-detail" aria-label="${item.id}: ${escape(item.title)}, priority ${index+1}, ${item.points} points" title="${escape(item.title)}"><span class="chip-id">${item.id}</span><span class="chip-meta">${index+1}. in order · ${item.points} pt</span></button>`).join(''):'<p class="empty">No tickets here.<br>Select a chip elsewhere to assign it.</p>'}</div></section>`}).join('')}</div>
+ <section class="detail" id="ticket-detail" aria-label="Selected ticket details"><div class="detail-top"><span>${ticket.id} / ${escape(ticket.kind)}</span><span>${ticket.points} points</span></div><h2>${escape(ticket.title)}</h2><div class="detail-grid"><div><span class="label" id="owner-label">Assign to</span><div class="segments" role="group" aria-labelledby="owner-label">${demo.owners.map(person=>`<button data-assign="${person.id}" data-focus="assign-${person.id}" aria-pressed="${owner===person.id}">${escape(person.name)}</button>`).join('')}</div></div><div><span class="label">Priority ${rank+1} of ${queue.length}</span><div class="priority"><button data-shift="-1" data-focus="earlier" ${rank===0?'disabled':''} aria-label="Move ${ticket.id} earlier in priority">Earlier</button><button data-shift="1" data-focus="later" ${rank===queue.length-1?'disabled':''} aria-label="Move ${ticket.id} later in priority">Later</button></div></div></div><div class="detail-foot"><span>New assignments join the end of the queue.</span><button class="return" data-assign="backlog" data-focus="return" ${owner==='backlog'?'disabled':''}>Return to backlog</button></div></section>
+ <footer><span id="notice" role="status">${escape(notice)}</span><span>Scratch workspace</span></footer>`;
+ if(focusKey){const target=Array.from(app.querySelectorAll('[data-focus]')).find(node=>node.dataset.focus===focusKey);if(target&&!target.disabled)target.focus({preventScroll:true});}
+}
+app.addEventListener('click',event=>{
+ const button=event.target.closest('button');
+ if(!button||button.disabled)return;
+ if(button.dataset.ticket){selected=button.dataset.ticket;notice=`${selected} selected.`;render();return;}
+ if(button.dataset.assign){const destination=button.dataset.assign;if(demo.ownerOf(selected)===destination)return;notice=`${selected} moved to ${demo.owners.find(person=>person.id===destination).name}.`;demo.move(selected,destination);return;}
+ if(button.dataset.shift){notice=`${selected} moved ${button.dataset.shift==='-1'?'earlier':'later'} in priority.`;demo.shift(selected,Number(button.dataset.shift));return;}
+ if(button.dataset.action==='reset'){notice='Demo assignments restored.';demo.reset();return;}
+ if(button.dataset.action==='undo'){notice='Undo requested.';demo.undo();}
+});
+render();
+</script>
+</body>
+</html>

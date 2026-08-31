@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Assignment matrix · Sprint distribution</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#111;background:#fff;font-synthesis:none;--green:#00b978;--line:#d6d6d6}*{box-sizing:border-box}body{margin:0}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:3px solid #006e4b;outline-offset:3px;position:relative;z-index:2}button:disabled{opacity:.25;cursor:default}::selection{background:#00b978;color:#000}header{height:76px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:2px solid #111}h1{font-size:24px;letter-spacing:-.8px;margin:0 0 4px;font-weight:800}header p{font-size:11px;margin:0;color:#505050}.tools{display:flex;gap:6px}.tools button{background:#fff;border:1px solid #111;padding:8px 11px;font-size:12px;font-weight:700}.tools button:hover{background:#111;color:#fff}main{padding:16px 20px 0}.instruction{display:flex;justify-content:space-between;gap:12px;font-size:11px;margin:0 0 12px;color:#444}.instruction strong{color:#111}.legend{display:flex;align-items:center;gap:6px;white-space:nowrap}.legend i{width:10px;height:10px;background:var(--green);display:inline-block;border:1px solid #111}.scroll{overflow:auto;scrollbar-color:#111 #eee}table{width:100%;min-width:580px;border-collapse:collapse;table-layout:fixed;border:1px solid #111}col.ticket{width:32%}col.points{width:6%}col.owner{width:12.5%}col.priority{width:12%}thead{background:#111;color:#fff}th{font-size:11px;text-align:left;height:57px;padding:9px}th.owner{text-align:center;border-left:1px solid #555}th.owner span{display:block;font-weight:400;font-size:10px;color:#ccc;margin-top:6px}th.numeric{text-align:center;padding:4px}td{height:52px;border-bottom:1px solid var(--line)}td.ticket{padding:6px 9px}td.ticket small{display:block;font-size:9px;font-weight:700;letter-spacing:.35px;color:#555;margin-bottom:4px}td.ticket strong{display:block;font-size:12px;line-height:1.2;font-weight:600;overflow-wrap:anywhere}.points{text-align:center;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}.owner-cell{border-left:1px solid var(--line);padding:4px}.choice{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:42px;background:#fff;border:1px solid transparent;color:#999}.choice .empty{width:13px;height:13px;border:1px solid #a0a0a0;border-radius:50%}.choice:hover{border-color:#111;background:#f0f0f0}.choice[aria-pressed="true"]{background:var(--green);border-color:#111;color:#052a1d;font-weight:800}.choice[aria-pressed="true"]:hover{background:#04a96f}.choice svg{width:16px;height:16px}.rank{font-variant-numeric:tabular-nums;font-size:12px}.priority-cell{border-left:1px solid var(--line);padding:4px}.arrows{display:flex;justify-content:center;gap:3px}.arrows button{width:25px;height:27px;display:grid;place-items:center;border:1px solid #bbb;background:#fff;padding:3px}.arrows button:not(:disabled):hover{color:#fff;background:#111;border-color:#111}.arrows svg{width:12px;height:12px}tfoot td{height:33px;padding:8px 10px;background:#f3f3f3;font-size:10px;border-top:1px solid #111;color:#444}footer{padding:13px 20px 16px;display:flex;justify-content:space-between;gap:14px;font-size:11px;color:#444}footer strong{color:#111}.demo-label{white-space:nowrap;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px}@media(min-width:1000px){td{height:64px}.choice{height:52px}main,footer{padding-left:32px;padding-right:32px}header{padding-left:32px;padding-right:32px}td.ticket strong{font-size:14px}}@media(max-width:600px){header{padding:12px;height:72px}h1{font-size:21px}main{padding:12px 10px 0}.instruction{font-size:10px}footer{padding:12px 10px}.tools button{padding:7px}header p{font-size:10px}}
+</style>
+</head>
+<body>
+<!-- Candidate 22: Assignment matrix. Exploration draft for preference ranking, not production polish. -->
+<header><div><h1>Assignment matrix</h1><p>One ticket. One owner. Make the call.</p></div><div class="tools"><button id="undo" type="button">Undo</button><button id="reset" type="button">Reset</button></div></header>
+<main>
+<div class="instruction"><span><strong>Click a cell to assign.</strong> Arrows adjust that owner’s queue.</span><span class="legend"><i aria-hidden="true"></i>Assigned · #priority</span></div>
+<div class="scroll" role="region" aria-label="Ticket assignment matrix" tabindex="0"><table aria-label="Sprint ticket ownership and priority"><colgroup><col class="ticket"><col class="points"><col class="owner"><col class="owner"><col class="owner"><col class="owner"><col class="priority"></colgroup><thead id="matrix-head"></thead><tbody id="matrix-body"></tbody><tfoot><tr><td colspan="7">Rows stay in ticket order. Priority numbers show each owner’s queue order; #1 is first.</td></tr></tfoot></table></div>
+</main>
+<footer><span id="summary" role="status" aria-live="polite"></span><span class="demo-label">Demo data · S0</span></footer>
+<script type="module">
+import {createDemo} from '/candidate-kit.js';
+const demo=createDemo(render);
+const escape=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const check='<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4 10 4 4 8-8" stroke="currentColor" stroke-width="2.5"/></svg>';
+const arrow=direction=>`<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="${direction<0?'m3 10 5-5 5 5':'m3 6 5 5 5-5'}" stroke="currentColor" stroke-width="2"/></svg>`;
+function render(){
+ const focused=document.activeElement?.id;
+ document.getElementById('matrix-head').innerHTML=`<tr><th scope="col">Ticket / work</th><th scope="col" class="numeric">Pts</th>${demo.owners.map(owner=>`<th scope="col" class="owner">${escape(owner.name)}<span>${demo.points(owner.id)} pts · ${demo.list(owner.id).length} tickets</span></th>`).join('')}<th scope="col" class="numeric">Priority</th></tr>`;
+ document.getElementById('matrix-body').innerHTML=demo.tickets.map(ticket=>{
+  const current=demo.ownerOf(ticket.id);
+  const queue=demo.list(current);
+  const rank=queue.findIndex(item=>item.id===ticket.id);
+  const ownerName=demo.owners.find(owner=>owner.id===current)?.name||current;
+  return `<tr data-ticket-id="${ticket.id}"><td class="ticket"><small>${escape(ticket.id)} · ${escape(ticket.kind)}</small><strong>${escape(ticket.title)}</strong></td><td class="points">${ticket.points}</td>${demo.owners.map(owner=>{
+   const selected=owner.id===current;
+   return `<td class="owner-cell"><button type="button" class="choice" id="assign-${ticket.id}-${owner.id}" data-ticket="${ticket.id}" data-owner="${owner.id}" aria-pressed="${selected}" aria-label="Assign ${escape(ticket.id)} to ${escape(owner.name)}${selected?`, currently priority ${rank+1}`:''}" title="${selected?'Assigned to':'Assign to'} ${escape(owner.name)}">${selected?`${check}<span class="rank">#${rank+1}</span>`:'<span class="empty" aria-hidden="true"></span>'}</button></td>`;
+  }).join('')}<td class="priority-cell"><div class="arrows"><button type="button" id="up-${ticket.id}" data-shift="-1" data-ticket="${ticket.id}" aria-label="Move ${escape(ticket.id)} earlier in ${escape(ownerName)} queue" title="Earlier in ${escape(ownerName)} queue" ${rank===0?'disabled':''}>${arrow(-1)}</button><button type="button" id="down-${ticket.id}" data-shift="1" data-ticket="${ticket.id}" aria-label="Move ${escape(ticket.id)} later in ${escape(ownerName)} queue" title="Later in ${escape(ownerName)} queue" ${rank===queue.length-1?'disabled':''}>${arrow(1)}</button></div></td></tr>`;
+ }).join('');
+ const remaining=demo.list('backlog').length;
+ document.getElementById('summary').innerHTML=`<strong>${demo.tickets.length-remaining} / ${demo.tickets.length} assigned</strong> · ${remaining} in backlog`;
+ if(focused)document.getElementById(focused)?.focus({preventScroll:true});
+}
+document.getElementById('matrix-body').addEventListener('click',event=>{
+ const button=event.target.closest('button');
+ if(!button||button.disabled)return;
+ if(button.dataset.owner){
+  if(demo.ownerOf(button.dataset.ticket)!==button.dataset.owner)demo.move(button.dataset.ticket,button.dataset.owner);
+ }else if(button.dataset.shift)demo.shift(button.dataset.ticket,Number(button.dataset.shift));
+});
+document.getElementById('undo').addEventListener('click',()=>demo.undo());
+document.getElementById('reset').addEventListener('click',()=>demo.reset());
+render();
+</script>
+</body>
+</html>

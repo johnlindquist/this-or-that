@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f2f0eb">
+  <title>Margin · This or that</title>
+  <link rel="stylesheet" href="/chrome-designs/fonts.css">
+  <script src="/chrome-designs/runtime.js" defer></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --stone: #f2f0eb;
+      --paper: #faf9f5;
+      --field: #eae7e1;
+      --ink: #292927;
+      --secondary: #61605b;
+      --rule: #cbc7bf;
+      --control-rule: #99948b;
+      --annotation: #782f39;
+      --annotation-wash: #e9dadd;
+      --serif: 'Source Serif 4', Georgia, serif;
+      --utility: 'IBM Plex Sans', sans-serif;
+      --text-small: 12px;
+      --text-label: 14px;
+      --text-body: 16px;
+      --text-heading: 24px;
+      --s1: 4px;
+      --s2: 8px;
+      --s3: 12px;
+      --s4: 16px;
+      --s5: 20px;
+      --s6: 24px;
+      --s8: 32px;
+      --s10: 40px;
+      --s12: 48px;
+      --rail-width: 208px;
+      --page-width: 1680px;
+      --preview-height: clamp(440px, 60vh, 544px);
+      --note-height: 120px;
+      --ease: cubic-bezier(.16, 1, .3, 1);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--stone); scrollbar-color: var(--control-rule) var(--stone); scrollbar-width: thin; }
+    body { margin: 0; color: var(--ink); font: var(--text-body)/1.5 var(--serif); }
+    ::selection { background: var(--annotation-wash); color: var(--annotation); }
+    ::-webkit-scrollbar { width: var(--s2); height: var(--s2); }
+    ::-webkit-scrollbar-track { background: var(--stone); }
+    ::-webkit-scrollbar-thumb { background: var(--control-rule); border: 2px solid var(--stone); }
+    button, textarea { font: inherit; }
+    button, a, textarea { -webkit-tap-highlight-color: var(--annotation-wash); }
+    button { cursor: pointer; }
+    button, a { touch-action: manipulation; }
+    button:focus-visible, a:focus-visible, textarea:focus-visible, iframe:focus-visible {
+      outline: 2px solid var(--annotation);
+      outline-offset: var(--s1);
+    }
+    a { color: inherit; text-underline-offset: var(--s1); text-decoration-thickness: 1px; }
+    a:hover { color: var(--annotation); }
+    svg { width: var(--s4); height: var(--s4); fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .desk { max-width: var(--page-width); margin-inline: auto; padding: 0 var(--s8) var(--s8); }
+    .masthead { display: flex; align-items: center; justify-content: space-between; gap: var(--s6); min-height: 72px; border-bottom: 1px solid var(--ink); }
+    .brand { font-size: var(--text-heading); font-weight: 600; letter-spacing: -.025em; }
+    .edition { font: var(--text-small)/1.5 var(--utility); color: var(--secondary); }
+    .edition strong { color: var(--ink); font-weight: 500; margin-right: var(--s3); }
+    .desk-layout { display: grid; grid-template-columns: var(--rail-width) minmax(0, 1fr); gap: var(--s8); padding-top: var(--s8); align-items: start; }
+    .margin { grid-column: 1; grid-row: 1; padding-right: var(--s6); border-right: 1px solid var(--rule); }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: var(--text-heading); line-height: 1.25; font-weight: 600; letter-spacing: -.02em; text-wrap: balance; }
+    .context { margin-top: var(--s3); color: var(--secondary); font: var(--text-label)/1.6 var(--utility); }
+    .margin-notes { margin-top: var(--s10); }
+    .note + .note { margin-top: var(--s8); }
+    .note label { display: block; color: var(--annotation); font: 500 var(--text-label)/1.5 var(--utility); }
+    .note-candidate { display: block; margin-top: var(--s1); margin-bottom: var(--s3); font-size: var(--text-body); line-height: 1.4; }
+    textarea { display: block; width: 100%; min-height: var(--note-height); resize: vertical; border: 0; border-bottom: 1px solid var(--control-rule); border-radius: 0; padding: var(--s3); background: var(--field); color: var(--ink); caret-color: var(--annotation); font: var(--text-label)/1.6 var(--utility); }
+    textarea::placeholder { color: var(--secondary); opacity: 1; }
+    textarea:hover { border-color: var(--ink); }
+    textarea:focus { background: var(--paper); border-color: var(--annotation); }
+    textarea:disabled { cursor: not-allowed; color: var(--secondary); }
+    .notes-help { margin-top: var(--s3); color: var(--secondary); font: var(--text-small)/1.5 var(--utility); }
+    .reset { margin-top: var(--s5); }
+    .comparison { min-width: 0; grid-column: 2; grid-row: 1; }
+    .surfaces { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s6); }
+    .candidate { min-width: 0; }
+    .candidate-heading { margin-bottom: var(--s4); }
+    h2 { font-size: var(--text-heading); font-weight: 600; line-height: 1.3; letter-spacing: -.025em; }
+    .candidate-meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s1) var(--s3); margin-top: var(--s2); color: var(--secondary); font: var(--text-small)/1.5 var(--utility); }
+    .position { color: var(--ink); font-weight: 500; }
+    .candidate-number { margin-left: var(--s2); font-variant-numeric: tabular-nums; }
+    .open { display: inline-flex; align-items: center; gap: var(--s1); min-height: var(--s6); }
+    .open svg { width: var(--s3); height: var(--s3); }
+    .preview { border: 1px solid var(--rule); background: var(--paper); }
+    iframe { display: block; width: 100%; height: var(--preview-height); border: 0; background: var(--paper); }
+    .candidate-decision { padding-top: var(--s3); }
+    .text-action { display: inline-flex; align-items: center; gap: var(--s2); min-height: var(--s10); border: 0; border-radius: 0; padding: var(--s2) 0; background: transparent; color: var(--ink); text-align: left; font: 500 var(--text-label)/1.5 var(--utility); }
+    .text-action .action-label { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: var(--s1); }
+    .text-action:hover { color: var(--annotation); }
+    .text-action:hover .action-label { text-decoration-thickness: 2px; }
+    .text-action[aria-pressed="true"] { color: var(--annotation); }
+    .text-action[aria-pressed="true"] .action-label { text-decoration-thickness: 2px; }
+    .choice-mark { display: inline-grid; place-items: center; width: var(--s5); height: var(--s5); border: 1px solid var(--control-rule); flex: none; }
+    .choice-mark svg { visibility: hidden; width: var(--s3); height: var(--s3); }
+    [aria-pressed="true"] .choice-mark { border-color: var(--annotation); background: var(--annotation); color: var(--paper); }
+    [aria-pressed="true"] .choice-mark svg { visibility: visible; }
+    .text-action:disabled { color: var(--secondary); cursor: not-allowed; text-decoration: none; opacity: .65; }
+    .text-action:disabled .action-label { text-decoration: none; }
+    .reset { color: var(--secondary); font-size: var(--text-small); font-weight: 400; }
+    .response { margin-top: var(--s6); padding-top: var(--s3); border-top: 1px solid var(--rule); }
+    .response-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s2) var(--s6); }
+    .response-actions { display: flex; flex-wrap: wrap; gap: var(--s6); }
+    .response-actions .text-action { font-weight: 400; }
+    .response-actions .text-action[aria-pressed="true"] { font-weight: 600; }
+    .response-hint { color: var(--secondary); font: var(--text-small)/1.5 var(--utility); }
+    .status { margin-top: var(--s2); color: var(--secondary); font: var(--text-small)/1.5 var(--utility); }
+    noscript p { margin-top: var(--s4); color: var(--annotation); font-family: var(--utility); }
+    @media (prefers-reduced-motion: no-preference) {
+      .choice-mark { transition: background-color 180ms var(--ease), border-color 180ms var(--ease); }
+    }
+    @media (max-width: 1100px) {
+      .desk { padding-inline: var(--s6); }
+      .desk-layout { grid-template-columns: minmax(0, 1fr); gap: var(--s8); }
+      .comparison { grid-column: 1; grid-row: 1; }
+      .margin { grid-column: 1; grid-row: 2; display: grid; grid-template-columns: var(--rail-width) minmax(0, 1fr); gap: var(--s8); border-right: 0; border-top: 1px solid var(--ink); padding: var(--s6) 0 0; }
+      .margin-notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3) var(--s6); margin: 0; }
+      .note + .note { margin: 0; }
+      .notes-help { grid-column: 1 / -1; margin: 0; }
+      .reset { margin-top: var(--s3); }
+    }
+    @media (max-width: 640px) {
+      :root { --preview-height: 480px; }
+      .desk { padding-inline: var(--s4); }
+      .masthead { min-height: 64px; gap: var(--s3); }
+      .edition strong { margin: 0; }
+      .edition span { display: none; }
+      .desk-layout { padding-top: var(--s6); }
+      .surfaces { grid-template-columns: minmax(0, 1fr); gap: var(--s8); }
+      .candidate-heading { margin-bottom: var(--s3); }
+      .text-action { min-height: var(--s12); }
+      .open { min-height: var(--s8); }
+      .margin { grid-template-columns: minmax(0, 1fr); gap: var(--s6); }
+      .margin-notes { grid-template-columns: minmax(0, 1fr); gap: var(--s6); }
+      .notes-help { grid-column: 1; }
+      .context { max-width: 34ch; }
+      .reset { margin-top: var(--s2); }
+      .response-actions { gap: var(--s5); }
+    }
+  </style>
+</head>
+<body data-design="writer-margin">
+  <!-- THESIS: An editorial review desk keeps annotations in the margin and the work in the field. OWN-WORLD: Stone paper, graphite rules, Source Serif 4 names and IBM Plex Sans utilities; a single oxblood proofreader's accent. FIRST VIEWPORT: A narrow, asymmetric project-and-notes rail beside two large interactive surfaces. INTERACTION: Ink-underlined choices and pair responses make local sample selections; notes remain editable beside the work. At narrow widths the margin moves below the stacked previews. SEED: 9743c350; user-pinned iA Writer reference, variant 2, Margin. -->
+  <div class="desk">
+    <header class="masthead">
+      <div class="brand">This or that</div>
+      <div class="edition"><strong>Margin</strong><span>Comparison study</span></div>
+    </header>
+    <div class="desk-layout">
+      <main class="comparison" aria-label="Compare designs for Sprint distribution">
+        <div class="surfaces">
+          <article class="candidate" aria-labelledby="margin-left-title">
+            <header class="candidate-heading">
+              <h2 id="margin-left-title">Blueprint workbench</h2>
+              <div class="candidate-meta">
+                <span><span class="position">Left</span><span class="candidate-number">Candidate 20</span></span>
+                <a class="open" href="/candidates/20-blueprint-desk.html" target="_blank" rel="noopener" aria-label="Open Blueprint workbench larger in a new tab">Open larger<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3h8v8M13 3 3 13"/></svg></a>
+              </div>
+            </header>
+            <div class="preview"><iframe data-candidate="left" title="Blueprint workbench interactive preview" src="/candidates/20-blueprint-desk.html" sandbox="allow-scripts allow-same-origin"></iframe></div>
+            <div class="candidate-decision">
+              <button class="text-action" type="button" data-vote="left" aria-pressed="false"><span class="choice-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m3 8 3 3 7-7"/></svg></span><span class="action-label">Choose Blueprint workbench</span></button>
+            </div>
+          </article>
+          <article class="candidate" aria-labelledby="margin-right-title">
+            <header class="candidate-heading">
+              <h2 id="margin-right-title">Team routes</h2>
+              <div class="candidate-meta">
+                <span><span class="position">Right</span><span class="candidate-number">Candidate 11</span></span>
+                <a class="open" href="/candidates/11-metro-routes.html" target="_blank" rel="noopener" aria-label="Open Team routes larger in a new tab">Open larger<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3h8v8M13 3 3 13"/></svg></a>
+              </div>
+            </header>
+            <div class="preview"><iframe data-candidate="right" title="Team routes interactive preview" src="/candidates/11-metro-routes.html" sandbox="allow-scripts allow-same-origin"></iframe></div>
+            <div class="candidate-decision">
+              <button class="text-action" type="button" data-vote="right" aria-pressed="false"><span class="choice-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m3 8 3 3 7-7"/></svg></span><span class="action-label">Choose Team routes</span></button>
+            </div>
+          </article>
+        </div>
+        <footer class="response" aria-label="Other responses">
+          <div class="response-line">
+            <div class="response-actions">
+              <button class="text-action" type="button" data-vote="like" aria-pressed="false"><span class="action-label">Like both</span></button>
+              <button class="text-action" type="button" data-vote="hate" aria-pressed="false"><span class="action-label">Hate both</span></button>
+              <button class="text-action" type="button" data-vote="skip" aria-pressed="false"><span class="action-label">Skip</span></button>
+            </div>
+            <span class="response-hint">Choose either, or respond to the pair.</span>
+          </div>
+          <p class="status" data-status role="status" aria-live="polite">Preview only. Responses are not recorded.</p>
+        </footer>
+      </main>
+      <aside class="margin" aria-label="Project and margin notes">
+        <div class="project-context">
+          <h1>Sprint distribution</h1>
+          <p class="context">Compare the two directions. Try the designs, then leave your impressions.</p>
+          <button class="text-action reset" type="button" data-action="reset"><span class="action-label">Clear notes &amp; response</span></button>
+        </div>
+        <div class="margin-notes">
+          <div class="note">
+            <label for="margin-left-note">Left note</label>
+            <span class="note-candidate" id="margin-left-note-name">Blueprint workbench</span>
+            <textarea id="margin-left-note" data-note="left" aria-describedby="margin-left-note-name margin-notes-help" placeholder="What works here? What would you change?"></textarea>
+          </div>
+          <div class="note">
+            <label for="margin-right-note">Right note</label>
+            <span class="note-candidate" id="margin-right-note-name">Team routes</span>
+            <textarea id="margin-right-note" data-note="right" aria-describedby="margin-right-note-name margin-notes-help" placeholder="What works here? What would you change?"></textarea>
+          </div>
+          <p class="notes-help" id="margin-notes-help">Optional notes. Nothing is submitted.</p>
+        </div>
+      </aside>
+    </div>
+    <noscript><p>Enable JavaScript to try sample responses. You can still open both designs above.</p></noscript>
+  </div>
+</body>
+</html>

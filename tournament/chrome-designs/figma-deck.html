@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Deck · This or that</title>
+  <link rel="stylesheet" href="/chrome-designs/fonts.css">
+  <script src="/chrome-designs/runtime.js" defer></script>
+  <style>
+    :root {
+      --stage: #19191c;
+      --strip: #222225;
+      --console: #29292e;
+      --field: #202024;
+      --hover: #39393f;
+      --edge: #49494f;
+      --line: #36363c;
+      --ink: #f0eef3;
+      --muted: #b3b0bb;
+      --quiet: #a09da9;
+      --accent: #bbaaff;
+      --accent-ink: #251b46;
+      --focus: #d0c4ff;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --text-small: 12px;
+      --text-body: 14px;
+      --text-title: 20px;
+      --radius-control: 6px;
+      --radius-console: 16px;
+      --frame-height: 460px;
+      --strip-height: 64px;
+      --page-width: 1568px;
+      --console-shadow: 0 12px 32px #0d0d104d;
+      --ease: cubic-bezier(.16, 1, .3, 1);
+    }
+    * { box-sizing: border-box; }
+    html { color-scheme: dark; background: var(--stage); scrollbar-color: var(--edge) var(--stage); }
+    body { margin: 0; color: var(--ink); font: 400 var(--text-body)/1.5 'Public Sans', sans-serif; }
+    ::selection { background: var(--accent); color: var(--accent-ink); }
+    button, textarea { font: inherit; }
+    button, a, textarea { -webkit-tap-highlight-color: transparent; }
+    button, a { touch-action: manipulation; }
+    button { cursor: pointer; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px solid var(--focus); outline-offset: var(--space-1); }
+    a { color: inherit; text-underline-offset: var(--space-1); }
+    svg { width: var(--space-4); height: var(--space-4); fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .project-strip { min-height: var(--strip-height); padding: var(--space-4) var(--space-8); display: flex; align-items: center; gap: var(--space-6); background: var(--strip); border-bottom: 1px solid var(--line); }
+    .brand { display: inline-flex; align-items: center; gap: var(--space-3); font-weight: 650; white-space: nowrap; }
+    .brand svg { width: var(--space-6); height: var(--space-6); }
+    .project { margin: 0; padding-left: var(--space-6); border-left: 1px solid var(--edge); font-size: var(--text-body); font-weight: 450; color: var(--muted); }
+    .view-name { margin-left: auto; display: flex; align-items: center; gap: var(--space-2); color: var(--accent); font-size: var(--text-small); }
+    main { max-width: var(--page-width); margin: 0 auto; padding: var(--space-10) var(--space-12) var(--space-8); }
+    .artboards { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-8); }
+    .artboard { min-width: 0; }
+    .artboard-heading { min-height: var(--space-8); margin-bottom: var(--space-4); display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); }
+    h2 { margin: 0; font-size: var(--text-title); line-height: 1.4; font-weight: 550; letter-spacing: -.025em; }
+    .side-label { display: flex; align-items: center; gap: var(--space-2); color: var(--muted); font-size: var(--text-small); white-space: nowrap; }
+    .candidate-id { color: var(--quiet); font-variant-numeric: tabular-nums; }
+    .frame { background: var(--field); outline: 1px solid var(--edge); }
+    iframe { display: block; width: 100%; height: var(--frame-height); border: 0; background: var(--field); }
+    .artboard-caption { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-3); color: var(--quiet); font-size: var(--text-small); }
+    .open-link { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--muted); text-decoration: none; }
+    .open-link:hover { color: var(--ink); text-decoration: underline; }
+    .review-console { margin-top: var(--space-8); padding: var(--space-5) var(--space-6); border-radius: var(--radius-console); background: var(--console); box-shadow: var(--console-shadow); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.6fr); column-gap: var(--space-6); row-gap: var(--space-3); }
+    .note { min-width: 0; }
+    .note label { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-2); font-size: var(--text-small); font-weight: 550; }
+    .optional { color: var(--quiet); font-weight: 400; }
+    textarea { display: block; width: 100%; min-height: var(--strip-height); resize: vertical; padding: var(--space-2) var(--space-3); border: 1px solid var(--edge); border-radius: var(--radius-control); color: var(--ink); background: var(--field); caret-color: var(--accent); line-height: 1.5; font-size: var(--text-small); transition: border-color 160ms var(--ease); }
+    textarea::placeholder { color: var(--muted); opacity: 1; }
+    textarea:hover { border-color: var(--quiet); }
+    textarea:focus { border-color: var(--accent); }
+    .decisions { min-width: 0; margin: 0; padding: 0 0 0 var(--space-6); border: 0; border-left: 1px solid var(--edge); }
+    .decision-label { margin-bottom: var(--space-2); font-size: var(--text-small); font-weight: 550; }
+    .choices { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-2); }
+    .choice { min-height: var(--space-12); padding: var(--space-2) var(--space-3); border: 1px solid var(--edge); border-radius: var(--radius-control); text-align: left; color: var(--ink); background: transparent; font-size: var(--text-small); line-height: 1.4; transition: background 160ms var(--ease), border-color 160ms var(--ease); }
+    .choice span { display: block; color: var(--muted); }
+    .choice strong { font-weight: 550; }
+    .choice:hover { border-color: var(--accent); background: var(--hover); }
+    .choice[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+    .choice[aria-pressed="true"] span { color: var(--accent-ink); }
+    .alternatives { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-4); margin-top: var(--space-2); }
+    .text-button { min-height: var(--space-8); padding: var(--space-1) 0; border: 0; border-radius: var(--radius-control); color: var(--muted); background: transparent; font-size: var(--text-small); text-underline-offset: var(--space-1); }
+    .text-button:hover { color: var(--ink); text-decoration: underline; }
+    .text-button[aria-pressed="true"] { color: var(--accent); text-decoration: underline; }
+    .skip { margin-left: auto; }
+    .console-foot { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); border-top: 1px solid var(--line); padding-top: var(--space-2); }
+    .status { margin: 0; color: var(--muted); font-size: var(--text-small); }
+    .console-foot .text-button { min-height: var(--space-6); flex: none; }
+    @media (min-width: 1600px) { :root { --frame-height: 520px; } }
+    @media (max-width: 1100px) {
+      :root { --frame-height: 420px; }
+      main { padding: var(--space-8); }
+      .artboards { gap: var(--space-6); }
+      .artboard-heading { align-items: flex-start; flex-direction: column; gap: var(--space-1); }
+      .review-console { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+      .decisions { grid-column: 1 / -1; padding: var(--space-4) 0 0; border-left: 0; border-top: 1px solid var(--edge); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-2) var(--space-6); align-items: center; }
+      .decision-label { grid-column: 1 / -1; margin: 0; }
+      .alternatives { margin-top: 0; }
+    }
+    @media (max-width: 680px) {
+      :root { --frame-height: 480px; }
+      .project-strip { padding: var(--space-4) var(--space-5); gap: var(--space-2) var(--space-4); flex-wrap: wrap; }
+      .project { flex-basis: 100%; order: 3; border-left: 0; padding-left: 0; font-size: var(--text-small); }
+      main { padding: var(--space-8) var(--space-5) var(--space-6); }
+      .artboards { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+      .artboard-heading { flex-direction: row; align-items: baseline; }
+      h2 { font-size: var(--text-title); }
+      .side-label { flex-direction: column; align-items: flex-end; gap: 0; }
+      .review-console { margin-top: var(--space-10); padding: var(--space-5); grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
+      textarea { min-height: calc(var(--space-10) * 2); }
+      .decisions { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+      .choice { min-height: calc(var(--space-8) * 2); }
+      .text-button { min-height: var(--space-10); }
+      .console-foot { align-items: flex-start; }
+      .status { max-width: 24ch; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+  </style>
+</head>
+<body data-design="figma-deck">
+  <!-- THESIS: Review two artboards as a presentation, not inside an editor. OWN-WORLD: Public Sans, a charcoal stage, quiet frame labels and a single lavender selection accent; Figma's floating tool palette becomes a broad inset review console. FIRST VIEWPORT: Two unchanged interactive candidates dominate, with generous separation and a lean project strip. INTERACTION: Independent candidate previews, notes and clearly labeled local sample choices; the console stays in document flow and stacks on small screens. SEED: 9743c350, user-pinned Figma reference family, variant 3, Deck. -->
+  <header class="project-strip">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="7" height="14" rx="1"/><rect x="14" y="5" width="7" height="14" rx="1"/></svg>
+      <span>This or that</span>
+    </div>
+    <h1 class="project">Sprint distribution</h1>
+    <span class="view-name"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 10 7-10 7Z"/></svg>Deck</span>
+  </header>
+  <main aria-label="Design comparison">
+    <section class="artboards" aria-label="Candidate presentations">
+      <article class="artboard" aria-labelledby="deck-left-title">
+        <header class="artboard-heading">
+          <h2 id="deck-left-title">Blueprint workbench</h2>
+          <div class="side-label"><span>Left</span><span class="candidate-id">/ 20</span></div>
+        </header>
+        <div class="frame">
+          <iframe data-candidate="left" title="Blueprint workbench interactive preview" src="/candidates/20-blueprint-desk.html" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+        <div class="artboard-caption">
+          <span>Interactive artboard</span>
+          <a class="open-link" href="/candidates/20-blueprint-desk.html" target="_blank" rel="noopener" aria-label="Open Blueprint workbench larger">Open larger<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6m0-6L10 14"/><path d="M10 4H4v16h16v-6"/></svg></a>
+        </div>
+      </article>
+      <article class="artboard" aria-labelledby="deck-right-title">
+        <header class="artboard-heading">
+          <h2 id="deck-right-title">Team routes</h2>
+          <div class="side-label"><span>Right</span><span class="candidate-id">/ 11</span></div>
+        </header>
+        <div class="frame">
+          <iframe data-candidate="right" title="Team routes interactive preview" src="/candidates/11-metro-routes.html" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+        <div class="artboard-caption">
+          <span>Interactive artboard</span>
+          <a class="open-link" href="/candidates/11-metro-routes.html" target="_blank" rel="noopener" aria-label="Open Team routes larger">Open larger<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6m0-6L10 14"/><path d="M10 4H4v16h16v-6"/></svg></a>
+        </div>
+      </article>
+    </section>
+    <section class="review-console" aria-label="Review console">
+      <div class="note">
+        <label for="deck-left-note">Left notes<span class="optional">Optional</span></label>
+        <textarea data-note="left" id="deck-left-note" placeholder="What stands out in Blueprint workbench?"></textarea>
+      </div>
+      <div class="note">
+        <label for="deck-right-note">Right notes<span class="optional">Optional</span></label>
+        <textarea data-note="right" id="deck-right-note" placeholder="What stands out in Team routes?"></textarea>
+      </div>
+      <div class="decisions" role="group" aria-labelledby="deck-choice-label">
+        <div class="decision-label" id="deck-choice-label">Which direction works better?</div>
+        <div class="choices">
+          <button class="choice" type="button" data-vote="left" aria-pressed="false"><span>Choose</span><strong>Blueprint workbench</strong></button>
+          <button class="choice" type="button" data-vote="right" aria-pressed="false"><span>Choose</span><strong>Team routes</strong></button>
+        </div>
+        <div class="alternatives">
+          <button class="text-button" type="button" data-vote="like" aria-pressed="false">Like both</button>
+          <button class="text-button" type="button" data-vote="hate" aria-pressed="false">Hate both</button>
+          <button class="text-button skip" type="button" data-vote="skip" aria-pressed="false">Skip</button>
+        </div>
+      </div>
+      <div class="console-foot">
+        <p class="status" data-status role="status" aria-live="polite">Preview only. Responses are not recorded.</p>
+        <button class="text-button" type="button" data-action="reset">Reset review</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

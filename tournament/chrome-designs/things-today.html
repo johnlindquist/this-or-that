@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Today · This or that</title>
+  <link rel="stylesheet" href="/chrome-designs/fonts.css">
+  <script src="/chrome-designs/runtime.js" defer></script>
+  <style>
+    :root {
+      --paper: #faf9f6;
+      --context: #eeede8;
+      --field: #f7f6f2;
+      --ink: #263547;
+      --secondary: #5c6470;
+      --line: #d5d7d7;
+      --accent: #285da0;
+      --accent-hover: #204d87;
+      --accent-soft: #e4ecf5;
+      --on-accent: #f8faff;
+      --hover: #e5e6e2;
+      --disabled: #777e87;
+      --selection: #cddff3;
+      --scroll-thumb: #9ba6b0;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --text-small: 13px;
+      --text-body: 15px;
+      --text-project: 18px;
+      --text-title: 22px;
+      --text-page: 28px;
+      --radius: 5px;
+      --line-width: 1px;
+      --focus-width: 2px;
+      --sidebar: 232px;
+      --preview-height: clamp(420px, 56vh, 520px);
+      --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); color: var(--ink); scrollbar-color: var(--scroll-thumb) var(--paper); }
+    body { margin: 0; font-family: 'Lato', sans-serif; font-size: var(--text-body); line-height: 1.5; }
+    ::selection { background: var(--selection); color: var(--ink); }
+    button, textarea { font: inherit; }
+    button, a, textarea { -webkit-tap-highlight-color: var(--selection); }
+    button { cursor: pointer; }
+    button:disabled { color: var(--disabled); cursor: not-allowed; opacity: .65; }
+    button:focus-visible, a:focus-visible, iframe:focus-visible { outline: var(--focus-width) solid var(--accent); outline-offset: var(--space-1); }
+    a { color: var(--accent); text-decoration: none; text-underline-offset: var(--space-1); }
+    a:hover { text-decoration: underline; }
+    h1, h2, p { margin: 0; }
+    svg { width: var(--space-4); height: var(--space-4); flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .workspace { min-height: 100vh; display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); }
+    .context { background: var(--context); padding: var(--space-8) var(--space-6) var(--space-6); border-right: var(--line-width) solid var(--line); display: flex; flex-direction: column; }
+    .brand { display: flex; gap: var(--space-2); align-items: center; font-weight: 700; letter-spacing: -.015em; }
+    .brand svg { width: var(--space-5); height: var(--space-5); color: var(--secondary); }
+    .project { margin-top: var(--space-12); }
+    .project h2 { font-size: var(--text-project); font-weight: 700; line-height: 1.35; letter-spacing: -.015em; }
+    .current-context { display: flex; gap: var(--space-2); align-items: center; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); padding: var(--space-2) var(--space-3); margin-top: var(--space-4); font-weight: 700; }
+    .notes { margin-top: var(--space-10); display: grid; gap: var(--space-6); }
+    .note-group label { display: block; font-weight: 700; line-height: 1.4; font-size: var(--text-small); margin-bottom: var(--space-2); }
+    .note-side { display: block; margin-top: var(--space-1); font-family: 'Source Sans 3', sans-serif; font-weight: 400; color: var(--secondary); }
+    textarea { width: 100%; display: block; min-height: 132px; resize: vertical; padding: var(--space-3); border: var(--line-width) solid var(--line); border-radius: var(--radius); background: var(--field); color: var(--ink); caret-color: var(--accent); font-family: 'Source Sans 3', sans-serif; font-size: var(--text-body); line-height: 1.5; transition: border-color 160ms var(--ease), background-color 160ms var(--ease); }
+    textarea::placeholder { color: var(--secondary); opacity: 1; }
+    textarea:hover { border-color: var(--scroll-thumb); }
+    textarea:focus { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-width); border-color: var(--accent); background: var(--paper); }
+    .note-footer { margin-top: var(--space-4); color: var(--secondary); font-family: 'Source Sans 3', sans-serif; font-size: var(--text-small); }
+    .reset { align-self: flex-start; margin-top: auto; padding: var(--space-2) 0; border: 0; background: transparent; color: var(--secondary); font-family: 'Source Sans 3', sans-serif; font-size: var(--text-small); text-align: left; }
+    .reset:hover { color: var(--accent); text-decoration: underline; text-underline-offset: var(--space-1); }
+    main { min-width: 0; padding: var(--space-10) var(--space-10) var(--space-6); }
+    .page-heading { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-6); padding-bottom: var(--space-8); }
+    h1 { font-size: var(--text-page); font-weight: 700; line-height: 1.2; letter-spacing: -.025em; }
+    .page-heading p { margin-top: var(--space-2); color: var(--secondary); font-family: 'Source Sans 3', sans-serif; font-size: var(--text-body); }
+    .comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
+    .candidate { min-width: 0; }
+    .candidate h2 { font-size: var(--text-title); line-height: 1.3; font-weight: 700; letter-spacing: -.02em; }
+    .candidate-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); font-family: 'Source Sans 3', sans-serif; font-size: var(--text-small); margin-top: var(--space-2); margin-bottom: var(--space-4); color: var(--secondary); }
+    .candidate-meta a { display: inline-flex; align-items: center; gap: var(--space-1); }
+    .candidate-meta svg { width: var(--space-3); height: var(--space-3); }
+    .preview { border: var(--line-width) solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--field); transition: border-color 180ms var(--ease); }
+    iframe { display: block; width: 100%; height: var(--preview-height); border: 0; background: var(--field); }
+    .choice-row { padding-top: var(--space-4); }
+    .choose { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: var(--space-10); padding: var(--space-2) var(--space-4); border: var(--line-width) solid transparent; border-radius: var(--radius); color: var(--accent); background: var(--accent-soft); font-size: var(--text-small); font-weight: 700; transition: color 180ms var(--ease), background-color 180ms var(--ease); }
+    .choose:hover { background: var(--selection); }
+    .choose svg { display: none; }
+    .choose[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); }
+    .choose[aria-pressed="true"]:hover { background: var(--accent-hover); }
+    .choose[aria-pressed="true"] svg { display: block; }
+    .candidate:has(.choose[aria-pressed="true"]) .preview { border-color: var(--accent); }
+    .candidate:has(.choose[aria-pressed="true"]) h2 { color: var(--accent); }
+    .feedback { margin-top: var(--space-8); border-top: var(--line-width) solid var(--line); padding-top: var(--space-4); display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-6); }
+    .feedback-options { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-1); margin-left: calc(-1 * var(--space-2)); }
+    .text-button { border: var(--line-width) solid transparent; border-radius: var(--radius); padding: var(--space-2); background: transparent; color: var(--secondary); font-size: var(--text-small); white-space: nowrap; }
+    .text-button:hover { background: var(--hover); color: var(--ink); }
+    .text-button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+    .status { color: var(--secondary); font-family: 'Source Sans 3', sans-serif; font-size: var(--text-small); max-width: 38ch; padding-top: var(--space-2); text-align: right; }
+    @media (max-width: 1100px) {
+      :root { --sidebar: 208px; --text-title: 20px; }
+      .context { padding-left: var(--space-5); padding-right: var(--space-5); }
+      main { padding-left: var(--space-6); padding-right: var(--space-6); }
+      .comparison { gap: var(--space-5); }
+      .feedback { gap: var(--space-4); }
+      .status { max-width: 28ch; }
+    }
+    @media (max-width: 760px) {
+      .workspace { display: block; }
+      .context { padding: var(--space-5); border-right: 0; border-bottom: var(--line-width) solid var(--line); }
+      .project { margin-top: var(--space-5); display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); }
+      .current-context { margin-top: 0; white-space: nowrap; }
+      .notes { margin-top: var(--space-5); grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+      textarea { min-height: 96px; }
+      .note-group label { min-height: var(--space-12); }
+      .note-footer { margin-top: var(--space-3); }
+      .reset { margin-top: var(--space-2); }
+      main { padding: var(--space-8) var(--space-5) var(--space-6); }
+      .comparison { grid-template-columns: 1fr; gap: var(--space-10); }
+      .page-heading { padding-bottom: var(--space-8); }
+      iframe { height: 460px; }
+      .feedback { display: block; }
+      .status { text-align: left; max-width: none; padding-top: var(--space-3); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body data-design="things-today">
+  <!-- THESIS: Give comparison the quiet concentration of Things Today, with generous reading space and small decisive controls. OWN-WORLD: Warm paper, navy Lato, Source Sans 3 annotations, a narrow contextual notebook, and restrained blue selection. FIRST VIEWPORT: Project and two labeled notes sit beside large candidate titles and independently interactive previews; choices sit directly beneath their candidates. INTERACTION: Notes stay editable, all five sample responses remain available, selected choices change both button and candidate title, and feedback is plain language. SEED: 9743c350; user-pinned Things reference takes precedence. -->
+  <div class="workspace">
+    <aside class="context" aria-label="Project and comparison notes">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="7" height="14" rx="1.5"/><rect x="14" y="5" width="7" height="14" rx="1.5"/></svg>
+        <span>This or that</span>
+      </div>
+      <section class="project" aria-labelledby="project-name">
+        <h2 id="project-name">Sprint distribution</h2>
+        <div class="current-context">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+          <span>Today</span>
+        </div>
+      </section>
+      <div class="notes">
+        <div class="note-group">
+          <label for="today-left-note">Blueprint workbench notes<span class="note-side">Left design</span></label>
+          <textarea id="today-left-note" data-note="left" placeholder="What stands out?" spellcheck="true"></textarea>
+        </div>
+        <div class="note-group">
+          <label for="today-right-note">Team routes notes<span class="note-side">Right design</span></label>
+          <textarea id="today-right-note" data-note="right" placeholder="What stands out?" spellcheck="true"></textarea>
+        </div>
+      </div>
+      <p class="note-footer">A little room for your impressions.</p>
+      <button class="reset" type="button" data-action="reset">Clear notes and response</button>
+    </aside>
+    <main>
+      <header class="page-heading">
+        <div>
+          <h1>Today</h1>
+          <p>Explore each preview, then make a choice.</p>
+        </div>
+      </header>
+      <div class="comparison">
+        <section class="candidate" aria-labelledby="today-left-title">
+          <h2 id="today-left-title">Blueprint workbench</h2>
+          <div class="candidate-meta">
+            <span>Left design</span>
+            <a href="/candidates/20-blueprint-desk.html" target="_blank" rel="noopener" aria-label="Open Blueprint workbench larger">Open larger<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3 7 9"/></svg></a>
+          </div>
+          <div class="preview"><iframe data-candidate="left" title="Blueprint workbench interactive preview" src="/candidates/20-blueprint-desk.html" sandbox="allow-scripts allow-same-origin"></iframe></div>
+          <div class="choice-row"><button class="choose" type="button" data-vote="left" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Choose Blueprint workbench</button></div>
+        </section>
+        <section class="candidate" aria-labelledby="today-right-title">
+          <h2 id="today-right-title">Team routes</h2>
+          <div class="candidate-meta">
+            <span>Right design</span>
+            <a href="/candidates/11-metro-routes.html" target="_blank" rel="noopener" aria-label="Open Team routes larger">Open larger<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3 7 9"/></svg></a>
+          </div>
+          <div class="preview"><iframe data-candidate="right" title="Team routes interactive preview" src="/candidates/11-metro-routes.html" sandbox="allow-scripts allow-same-origin"></iframe></div>
+          <div class="choice-row"><button class="choose" type="button" data-vote="right" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Choose Team routes</button></div>
+        </section>
+      </div>
+      <footer class="feedback">
+        <div class="feedback-options" role="group" aria-label="Other sample responses">
+          <button class="text-button" type="button" data-vote="like" aria-pressed="false">Like both</button>
+          <button class="text-button" type="button" data-vote="hate" aria-pressed="false">Hate both</button>
+          <button class="text-button" type="button" data-vote="skip" aria-pressed="false">Skip</button>
+        </div>
+        <p class="status" data-status role="status" aria-live="polite">Preview only. Responses are not recorded.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
